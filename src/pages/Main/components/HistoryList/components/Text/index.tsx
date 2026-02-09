@@ -1,6 +1,6 @@
 import { Flex } from "antd";
 import clsx from "clsx";
-import { type CSSProperties, type FC, useContext } from "react";
+import { type CSSProperties, forwardRef, useContext } from "react";
 import { Marker } from "react-mark.js";
 import { useSnapshot } from "valtio";
 import { MainContext } from "@/pages/Main";
@@ -11,7 +11,7 @@ interface TextProps extends DatabaseSchemaHistory<"text"> {
   expanded?: boolean;
 }
 
-const Text: FC<TextProps> = (props) => {
+const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
   const { value, subtype, expanded } = props;
   const { rootState } = useContext(MainContext);
   const { content } = useSnapshot(clipboardStore);
@@ -55,21 +55,28 @@ const Text: FC<TextProps> = (props) => {
   // 动态 line-clamp 样式
   const getLineClampStyle = (): CSSProperties => {
     if (expanded) {
-      return {};
+      return {
+        wordBreak: "break-all",
+        whiteSpace: "pre-wrap",
+      };
     }
     return {
       display: "-webkit-box",
       WebkitLineClamp: displayLines,
       WebkitBoxOrient: "vertical",
       overflow: "hidden",
+      wordBreak: "break-all",
+      whiteSpace: "pre-wrap", // 确保换行符被尊重
     };
   };
 
   return (
-    <div style={getLineClampStyle()}>
+    <div ref={ref} style={getLineClampStyle()}>
       {renderContent()}
     </div>
   );
-};
+});
+
+Text.displayName = "Text";
 
 export default Text;
