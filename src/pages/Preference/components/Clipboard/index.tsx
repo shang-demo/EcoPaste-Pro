@@ -5,6 +5,8 @@ import ProSwitch from "@/components/ProSwitch";
 import { clipboardStore } from "@/stores/clipboard";
 import AudioSettings from "./components/AudioSettings";
 import AutoPaste from "./components/AutoPaste";
+import DisplayLines from "./components/DisplayLines";
+import ImageDisplayHeight from "./components/ImageDisplayHeight";
 import OperationButton from "./components/OperationButton";
 import SearchPosition from "./components/SearchPosition";
 import WindowPosition from "./components/WindowPosition";
@@ -68,6 +70,10 @@ const ClipboardSettings = () => {
 
       <ProList header={t("preference.clipboard.content_settings.title")}>
         <AutoPaste />
+
+        <DisplayLines />
+
+        <ImageDisplayHeight />
 
         <ProSwitch
           description={t(

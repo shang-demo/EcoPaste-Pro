@@ -127,7 +127,9 @@
           "delete_confirm": "删除剪貼板內容時彈出確認對話方塊",
           "operation_button": "自定義操作剪貼簿內容的圖示按鈕",
           "paste_as_plain": "富文字和HTML格式在粘貼時僅保留純文字內容",
-          "show_original_content": "添加備註後，滑鼠懸停時是否顯示原內容"
+          "show_original_content": "添加備註後，滑鼠懸停時是否顯示原內容",
+          "display_lines": "設置剪貼簿列表中文字內容的預設顯示行數",
+          "image_display_height": "設置剪貼簿列表中圖片的預設顯示高度"
         },
         "label": {
           "auto_favorite": "自動收藏",
@@ -147,7 +149,12 @@
             "paste_plain": "貼上為純文本"
           },
           "paste_as_plain": "粘貼為純文字",
-          "show_original_content": "顯示原內容"
+          "show_original_content": "顯示原內容",
+          "display_lines": "文字顯示行數",
+          "image_display_height": "圖片顯示高度",
+          "image_display_height_unit": "像素",
+          "expand": "展開",
+          "collapse": "收起"
         },
         "title": "內容設定"
       },
@@ -175,6 +182,7 @@
           "window_position": "視窗位置",
           "window_position_center": "螢幕中央",
           "window_position_follow": "跟隨滑鼠",
+          "window_position_caret": "跟隨游標",
           "window_position_remember": "記住位置"
         },
         "title": "視窗設定"

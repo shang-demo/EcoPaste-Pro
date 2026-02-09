@@ -5987,6 +5987,7 @@ dependencies = [
  "tauri",
  "tauri-nspanel",
  "tauri-plugin",
+ "windows 0.58.0",
 ]
 
 [[package]]

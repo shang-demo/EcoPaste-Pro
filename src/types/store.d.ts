@@ -63,7 +63,7 @@ export interface ClipboardStore {
   // 窗口设置
   window: {
     style: "standard" | "dock";
-    position: "remember" | "follow" | "center";
+    position: "remember" | "follow" | "center" | "caret";
     backTop: boolean;
     showAll: boolean;
   };
@@ -90,6 +90,8 @@ export interface ClipboardStore {
     deleteConfirm: boolean;
     autoSort: boolean;
     showOriginalContent: boolean;
+    displayLines: number;      // 显示行数，默认 4
+    imageDisplayHeight: number; // 图片显示高度（像素），默认 100
   };
 
   // 历史记录

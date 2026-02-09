@@ -61,7 +61,7 @@
   },
   "bundle": {
     "active": true,
-    "createUpdaterArtifacts": true,
+    "createUpdaterArtifacts": false,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -79,10 +79,7 @@
     "fs": {
       "requireLiteralLeadingDot": false
     },
-    "updater": {
-      "endpoints": ["https://api.ecopaste.cn/update"],
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDcwNEIyQkUwRjNEMTg4NgpSV1NHR0QwUHZySUVCeXFRQzZ4aEpNRWdFdThVQ2I4b2dSQktRcmNtV1dYTFJJV1h2VmVVZXBWSgo="
-    }
+    "_updater_disabled": "Fork版本禁用自动更新，避免与官方版本冲突"
   },
   "productName": "EcoPaste",
   "version": "../package.json"

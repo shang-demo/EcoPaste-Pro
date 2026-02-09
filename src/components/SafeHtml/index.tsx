@@ -1,15 +1,21 @@
 import DOMPurify from "dompurify";
-import { type FC, type MouseEvent, useContext } from "react";
+import { type CSSProperties, type FC, type MouseEvent, useContext } from "react";
 import { Marker } from "react-mark.js";
+import { useSnapshot } from "valtio";
 import { MainContext } from "@/pages/Main";
+import { clipboardStore } from "@/stores/clipboard";
 
 interface SafeHtmlProps {
   value: string;
+  expanded?: boolean;
 }
 
 const SafeHtml: FC<SafeHtmlProps> = (props) => {
-  const { value } = props;
+  const { value, expanded } = props;
   const { rootState } = useContext(MainContext);
+  const { content } = useSnapshot(clipboardStore);
+
+  const displayLines = content.displayLines || 4;
 
   const handleClick = (event: MouseEvent) => {
     const { target, metaKey, ctrlKey } = event;
@@ -22,6 +28,19 @@ const SafeHtml: FC<SafeHtmlProps> = (props) => {
     event.stopPropagation();
   };
 
+  // 动态 line-clamp 样式
+  const getLineClampStyle = (): CSSProperties => {
+    if (expanded) {
+      return {};
+    }
+    return {
+      display: "-webkit-box",
+      WebkitLineClamp: displayLines,
+      WebkitBoxOrient: "vertical",
+      overflow: "hidden",
+    };
+  };
+
   return (
     <Marker mark={rootState.search}>
       <div
@@ -32,6 +51,7 @@ const SafeHtml: FC<SafeHtmlProps> = (props) => {
           }),
         }}
         onClick={handleClick}
+        style={getLineClampStyle()}
       />
     </Marker>
   );

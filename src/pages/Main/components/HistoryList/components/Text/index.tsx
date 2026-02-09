@@ -2,12 +2,21 @@ import { Flex } from "antd";
 import clsx from "clsx";
 import { type CSSProperties, type FC, useContext } from "react";
 import { Marker } from "react-mark.js";
+import { useSnapshot } from "valtio";
 import { MainContext } from "@/pages/Main";
+import { clipboardStore } from "@/stores/clipboard";
 import type { DatabaseSchemaHistory } from "@/types/database";
 
-const Text: FC<DatabaseSchemaHistory<"text">> = (props) => {
-  const { value, subtype } = props;
+interface TextProps extends DatabaseSchemaHistory<"text"> {
+  expanded?: boolean;
+}
+
+const Text: FC<TextProps> = (props) => {
+  const { value, subtype, expanded } = props;
   const { rootState } = useContext(MainContext);
+  const { content } = useSnapshot(clipboardStore);
+
+  const displayLines = content.displayLines || 4;
 
   const renderMarker = () => {
     return <Marker mark={rootState.search}>{value}</Marker>;
@@ -43,7 +52,24 @@ const Text: FC<DatabaseSchemaHistory<"text">> = (props) => {
     return renderMarker();
   };
 
-  return <div className="line-clamp-4">{renderContent()}</div>;
+  // 动态 line-clamp 样式
+  const getLineClampStyle = (): CSSProperties => {
+    if (expanded) {
+      return {};
+    }
+    return {
+      display: "-webkit-box",
+      WebkitLineClamp: displayLines,
+      WebkitBoxOrient: "vertical",
+      overflow: "hidden",
+    };
+  };
+
+  return (
+    <div style={getLineClampStyle()}>
+      {renderContent()}
+    </div>
+  );
 };
 
 export default Text;

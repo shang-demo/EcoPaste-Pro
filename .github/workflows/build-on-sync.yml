@@ -1,0 +1,100 @@
+name: Build on Sync
+
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: '创建 GitHub Release'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    
+    env:
+      CI: false
+      # 注意：如需启用自动更新签名，请在仓库 Secrets 中配置 TAURI_PRIVATE_KEY 和 TAURI_KEY_PASSWORD
+      # TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+      # TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version info
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          GIT_DESC=$(git describe --long --tags --always --dirty | sed 's/-g/-/')
+          BUILD_TIME=$(date +%Y%m%d%H%M)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "git_desc=$GIT_DESC" >> $GITHUB_OUTPUT
+          echo "build_time=$BUILD_TIME" >> $GITHUB_OUTPUT
+          echo "file_prefix=EcoPaste_${GIT_DESC}" >> $GITHUB_OUTPUT
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Windows app (x64)
+        run: pnpm tauri build --target x86_64-pc-windows-msvc
+
+      - name: Rename artifacts
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe "dist/${{ steps.version.outputs.file_prefix }}_x64-setup.exe"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64-build
+          path: dist/*.exe
+          retention-days: 7
+          compression-level: 0
+
+      - name: Create Release
+        if: github.event.inputs.create_release != 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: sync-${{ steps.version.outputs.build_time }}
+          name: "自动同步构建 v${{ steps.version.outputs.version }} (${{ steps.version.outputs.build_time }})"
+          body: |
+            ## 自动同步构建
+            
+            此版本由自动同步工作流构建，包含上游最新更改和自定义修改。
+            
+            - **版本**: ${{ steps.version.outputs.version }}
+            - **构建时间**: ${{ steps.version.outputs.build_time }}
+            - **Git 描述**: ${{ steps.version.outputs.git_desc }}
+          draft: false
+          prerelease: true
+          files: dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}

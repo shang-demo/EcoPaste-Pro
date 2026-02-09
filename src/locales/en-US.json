@@ -127,7 +127,9 @@
           "delete_confirm": "Pop-up confirmation dialog when deleting clipboard contents",
           "operation_button": "Customize icon buttons to operate on clipboard content",
           "paste_as_plain": "Rich text and HTML formatting retains only plain text content when pasting",
-          "show_original_content": "Whether to display the original content on mouse hover after adding a note"
+          "show_original_content": "Whether to display the original content on mouse hover after adding a note",
+          "display_lines": "Set the default number of lines displayed for text in the clipboard list",
+          "image_display_height": "Set the default display height for images in the clipboard list"
         },
         "label": {
           "auto_favorite": "Auto Favorite",
@@ -147,7 +149,12 @@
             "paste_plain": "Paste as Plain Text"
           },
           "paste_as_plain": "Paste as Plain Text",
-          "show_original_content": "Show Original Content"
+          "show_original_content": "Show Original Content",
+          "display_lines": "Text Display Lines",
+          "image_display_height": "Image Display Height",
+          "image_display_height_unit": "px",
+          "expand": "Expand",
+          "collapse": "Collapse"
         },
         "title": "Content Settings"
       },
@@ -175,6 +182,7 @@
           "window_position": "Window Position",
           "window_position_center": "Center on Screen",
           "window_position_follow": "Follow Mouse Cursor",
+          "window_position_caret": "Follow Input Caret",
           "window_position_remember": "Remember Position"
         },
         "title": "Window Settings"

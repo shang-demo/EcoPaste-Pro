@@ -1,17 +1,26 @@
 import { useMount } from "ahooks";
-import { type FC, useState } from "react";
+import { type CSSProperties, type FC, useContext, useState } from "react";
 import { EMFJS, RTFJS, WMFJS } from "rtf.js";
+import { useSnapshot } from "valtio";
 import SafeHtml from "@/components/SafeHtml";
+import { clipboardStore } from "@/stores/clipboard";
 import type { DatabaseSchemaHistory } from "@/types/database";
 
 RTFJS.loggingEnabled(false);
 WMFJS.loggingEnabled(false);
 EMFJS.loggingEnabled(false);
 
-const Rtf: FC<DatabaseSchemaHistory<"rtf">> = (props) => {
-  const { value } = props;
+interface RtfProps extends DatabaseSchemaHistory<"rtf"> {
+  expanded?: boolean;
+}
+
+const Rtf: FC<RtfProps> = (props) => {
+  const { value, expanded } = props;
+  const { content } = useSnapshot(clipboardStore);
 
   const [parsedHTML, setParsedHTML] = useState("");
+
+  const displayLines = content.displayLines || 4;
 
   useMount(async () => {
     const doc = new RTFJS.Document(stringToArrayBuffer(value), {});
@@ -49,7 +58,24 @@ const Rtf: FC<DatabaseSchemaHistory<"rtf">> = (props) => {
     }
   };
 
-  return <SafeHtml value={parsedHTML} />;
+  // 动态 line-clamp 样式
+  const getLineClampStyle = (): CSSProperties => {
+    if (expanded) {
+      return {};
+    }
+    return {
+      display: "-webkit-box",
+      WebkitLineClamp: displayLines,
+      WebkitBoxOrient: "vertical",
+      overflow: "hidden",
+    };
+  };
+
+  return (
+    <div style={getLineClampStyle()}>
+      <SafeHtml value={parsedHTML} expanded={expanded} />
+    </div>
+  );
 };
 
 export default Rtf;
