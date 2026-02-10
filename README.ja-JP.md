@@ -63,7 +63,7 @@
 
 ### Windows
 
-手動ダウンロード：[x86](https://api.ecopaste.cn/download?platform=windows-x86) | [x64](https://api.ecopaste.cn/download?platform=windows-x64) | [ARM64](https://api.ecopaste.cn/download?platform=windows-arm)
+最新バージョン: [EcoPaste_0.6.0-beta.3_Plus](https://github.com/2899/EcoPaste/releases/download/v0.6.0-beta.3_Plus/EcoPaste_0.6.0-beta.3_Plus_x64-setup.exe)
 
 ### MacOS
 
@@ -89,75 +89,107 @@ HomeBrew：[クリックして確認する](https://ecopaste.cn/guide/install#%E
 - 🤝 完善なドキュメントとコミュニティ機能をサポート、開発者と共に成長を目指す。
 - 🧩 継続的な最適化し、もっと驚きの機能があなたの発見を待っている。
 
+## 🚀 Fork 版の拡張機能
+
+> 本リポジトリは [EcoPasteHub/EcoPaste](https://github.com/EcoPasteHub/EcoPaste) の Fork 版であり、オリジナル版に基づき以下のユーザビリティ改善を追加しています：
+
+### 📏 テキスト表示行数の設定
+
+- **機能説明**：クリップボード履歴内のテキスト、リッチテキスト、HTMLコンテンツの表示行数をカスタマイズ可能
+- **設定場所**：設定 → クリップボード → 表示設定 → テキスト表示行数
+- **設定範囲**：1 - 20 行（デフォルト：4 行）
+- **効果**：
+  - コンテンツ行数 ≤ 設定値の場合：実際の行数で表示
+  - コンテンツ行数 > 設定値の場合：設定行数で切り捨て表示
+
+### 🖼️ 画像表示高さの設定
+
+- **機能説明**：クリップボード内の画像プレビューの最大高さをカスタマイズ可能
+- **設定場所**：設定 → クリップボード → 表示設定 → 画像表示高さ
+- **設定範囲**：50 - 500 ピクセル（デフォルト：100 ピクセル）
+- **効果**：画像プレビューの高さが設定値を超える場合、アスペクト比を維持したまま縮小表示
+
+### 🔄 展開/折りたたみ機能
+
+- **機能説明**：コンテンツが表示制限を超える場合、展開/折りたたみボタンを提供します。展開すると全内容をプレビューでき、折りたたむと設定に基づいて切り捨て表示されます。
+- **適用範囲**：
+  - テキストコンテンツ：設定行数を超える場合に展開ボタンを表示
+  - 画像コンテンツ：設定高さを超え、**かつ** 縮小後にコンテナ幅を満たさない場合に展開ボタンを表示
+- **操作方法**：履歴アイテム下部の展開/折りたたみボタンをクリックして表示状態を切り替え
+- **状態の保持**：展開/折りたたみ状態は仮想スクロールの影響を受けず、スクロール後も状態が維持されます
+
+### 📌 デフォルト折りたたみ機能
+
+- **機能説明**：ウィンドウがアクティブになったときに、展開されているすべてのコンテンツを自動的に折りたたむかどうかを設定可能
+- **設定場所**：設定 → クリップボード → 表示設定 → デフォルト折りたたみ
+- **動作**：
+  - **オン**：ウィンドウがアクティブになるたびに、表示設定を超えるコンテンツを自動的に折りたたむ
+  - **オフ**（デフォルト）：展開/折りたたみ状態は常に保持され、ウィンドウのアクティブ化の影響を受けない
+
+### 📍 カーソル位置追従ウィンドウ（Windows）
+
+- **機能説明**：クリップボードウィンドウを入力カーソルの位置に追従して表示可能
+- **設定場所**：設定 → クリップボード → ウィンドウ設定 → ウィンドウ位置 → カーソル追従
+- **仕組み**：
+  1. 現在の入力ボックス内のテキストカーソル位置の取得を優先
+  2. 取得できない場合（テキスト入力以外の場面など）は、マウス位置への追従にフォールバック
+- **対応プラットフォーム**：現在 Windows システムのみサポート
+- **使用シーン**：ドキュメント編集やコーディングなど、頻繁な貼り付けが必要なシーンに最適
+
+### 🎯 フォーカスを奪わないウィンドウ体験（Windows）
+
+- **機能説明**：クリップボードウィンドウを呼び出した際、元のアプリがフォーカスを維持し、Windows 標準の Win+V クリップボードと同様の体験を提供
+- **仕組み**：
+  - ショートカットキーでウィンドウを呼び出すと、ウィンドウ表示後すぐにフォーカスを元のアプリに戻す
+  - 元のアプリの入力カーソルは消えず、編集状態が完全に維持される
+  - クリップボードの履歴をクリックすると直接元のアプリに貼り付けられ、ウィンドウは自動的に隠れる
+  - 検索が必要な場合、クリップボードウィンドウをクリックすれば通常通り入力可能
+  - クリップボードウィンドウ外の領域をクリックすると自動的に隠れる
+- **使用フロー**：
+  1. 任意のアプリでショートカットキーを押す → クリップボードウィンドウが浮上、元のアプリはフォーカス維持
+  2. 履歴をマウスでクリックまたはダブルクリック → コンテンツが元のアプリに貼り付けられ、ウィンドウ消失
+  3. ウィンドウ外をクリック → ウィンドウが自動的に隠れる
+  4. 再度ショートカットキーを押す → ウィンドウが隠れる
+- **対応プラットフォーム**：現在 Windows システムのみサポート
+
+### ⚙️ 設定グループの最適化
+
+- 「表示設定」グループを新規追加し、表示関連の設定項目を合理的に分類：
+  - テキスト表示行数、画像表示高さ、デフォルト折りたたみ、操作ボタン、自動並べ替え、元の内容を表示
+- 「コンテンツ設定」は以下を保持：自動貼り付け、プレーンテキストとしてコピー、プレーンテキストとして貼り付け、自動お気に入り、削除確認
+
+### 🔧 設定の永続化
+
+- すべての新規設定項目はユーザーデータディレクトリに自動保存されます
+- アプリ更新後も設定は失われません
+- 設定の手動エクスポート/インポートは不要です
+
+### 🔄 アップストリームの自動同期
+
+- 本リポジトリは毎日自動的にアップストリームの EcoPasteHub/EcoPaste の更新をチェックします
+- 新しいバージョンがある場合、自動的にマージしてビルドをトリガーします
+- マージ競合が発生した場合は、手動対応のために Issue を作成して通知します
+
+## 🐛 オリジナル版の修正
+
+> 以下はオリジナル版 EcoPaste の既知の問題に対する修正です：
+
+### 📋 クリップボードコンテンツタイプ判定ロジック
+
+- **問題の説明**：
+  - ネット上の画像をコピーした際、アプリが「画像」タイプではなく「HTML」タイプとして誤認する場合がある
+  - スクリーンショット後、アプリがスクリーンショット画像を「画像」タイプではなく「ファイル」タイプとして誤認する場合がある
+- **修正案**：判定ロジックを修正し、コピー内容に画像データが含まれる場合、「画像」タイプとしての識別を優先するようにしました
+
+### 💾 データバックアップ入り口
+
+- **問題の説明**：データバックアップ機能の入り口が欠落している
+- **修正案**：データバックアップと復元機能が正常に利用できるように、データバックアップ機能の入り口を表示しました
+
+---
+
 ## 問題のフィードバック
 
 1. 🔍 まず、[よくある質問](https://ecopaste.cn/problem/macos/damage)を確認するか、既存の [issues](https://github.com/EcoPasteHub/EcoPaste/issues) をご覧ください。
 
 2. ❓ 問題が解決しない場合は、新しい [issue](https://github.com/EcoPasteHub/EcoPaste/issues/new/choose) を提出し、詳細な説明を添えてください。迅速な解決に役立てます。
-
-## 履歴スター
-
-<a href="https://star-history.com/#EcoPasteHub/EcoPaste&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=EcoPasteHub/EcoPaste&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=EcoPasteHub/EcoPaste&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=EcoPasteHub/EcoPaste&type=Date" />
- </picture>
-</a>
-
-## コミュニティ交流
-
-⚠️ ご注意: グループチャットは日常的な議論と経験の共有に限ります。問題のフィードバックや新しい機能のリクエストが必要な場合は、[問題のフィードバック](#問題のフィードバック)をご確認ください。
-
-<table>
-  <thead>
-    <tr>
-      <th width="33.3%">WeChat Group</th>
-      <th width="33.3%">QQ Group</th>
-      <th width="33.3%">Telegram</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://ecopaste.cn/community/wechat-group-dark.png" />
-          <source media="(prefers-color-scheme: light)" srcset="https://ecopaste.cn/community/wechat-group-light.png" />
-          <img src="https://ecopaste.cn/community/wechat-group-light.png" />
-        </picture>
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://ecopaste.cn/community/qq-group-dark.png" />
-          <source media="(prefers-color-scheme: light)" srcset="https://ecopaste.cn/community/qq-group-light.png" />
-          <img src="https://ecopaste.cn/community/qq-group-light.png" />
-        </picture>
-      </td>
-      <td>
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://ecopaste.cn/community/telegram-chat-dark.png" />
-          <source media="(prefers-color-scheme: light)" srcset="https://ecopaste.cn/community/telegram-chat-light.png" />
-          <img src="https://ecopaste.cn/community/telegram-chat-light.png" />
-        </picture>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-## 貢献者
-
-EcoPaste へ貴重なご貢献をいただいた皆様に感謝します！もし EcoPaste にご協力のご希望があれば、[貢献ガイド](./.github/CONTRIBUTING/ja-JP.md)をご覧ください。
-
-<a href="https://openomy.com/EcoPasteHub/EcoPaste" target="_blank" style="display: block; width: 100%;" align="center">
-  <img src="https://openomy.com/svg?repo=EcoPasteHub/EcoPaste&chart=bubble" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
-</a>
-
-## 寄付
-
-このプロジェクトがお役に立てば光栄に思い、応援しいただければ助かります！貴重なご寄付を頂戴していただければ，プロジェクトの維持と発展に活用させていただい、EcoPaste はコミュニティに価値を提供し続けるようになります。
-
-ご寄付の場合には必ずメッセージしていただき、[寄附者名簿](https://ecopaste.cn/sponsor/list)に記載させていただきます。ご支援とご協力を賜り御礼申し上げます。
-
-|                        WeChat Pay                         |                       Alipay                        |
-| :-------------------------------------------------------: | :-------------------------------------------------: |
-| ![wehcat-pay](https://ecopaste.cn/sponsor/wechat-pay.png) | ![ali-pay](https://ecopaste.cn/sponsor/ali-pay.png) |

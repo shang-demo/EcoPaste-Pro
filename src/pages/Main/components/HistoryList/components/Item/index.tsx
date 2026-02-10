@@ -33,16 +33,22 @@ const Item: FC<ItemProps> = (props) => {
   const { rootState } = useContext(MainContext);
   const { content } = useSnapshot(clipboardStore);
   const { t } = useTranslation();
-  const [expanded, setExpanded] = useState(false);
-  const [isOverflow, setIsOverflow] = useState(false);
+  const expanded = rootState.expandedIds.includes(id);
+  const [isOverflow, setIsOverflow] = useState(expanded);
   const contentRef = useRef<HTMLDivElement | HTMLImageElement>(null);
 
-  // 检查内容是否重叠
+  // 检查内容是否溢出（依赖 expanded 以便收起时重新检测）
   useEffect(() => {
     checkOverflow();
-  }, [content.displayLines, content.imageDisplayHeight, value, type, rootState.search]);
+  }, [content.displayLines, content.imageDisplayHeight, value, type, rootState.search, expanded]);
 
   const checkOverflow = () => {
+    // 展开状态：已展开说明之前检测过溢出，保持按钮显示
+    if (expanded) {
+      setIsOverflow(true);
+      return;
+    }
+
     if (!contentRef.current) {
       setIsOverflow(false);
       return;
@@ -51,9 +57,14 @@ const Item: FC<ItemProps> = (props) => {
     const element = contentRef.current;
     
     if (element instanceof HTMLImageElement) {
-        // 图片：检查原始高度是否大于当前渲染高度
-        // +1 是为了容错
-        setIsOverflow(element.naturalHeight > element.clientHeight + 1);
+        // 图片：超过设定高度 且 缩放后的渲染宽度未布满容器时显示按钮
+        const maxH = content.imageDisplayHeight || 100;
+        const containerWidth = element.parentElement?.clientWidth || element.clientWidth;
+        // 计算 maxHeight 约束下的渲染宽度（保持宽高比）
+        const renderedWidth = element.naturalHeight > 0
+          ? element.naturalWidth * (maxH / element.naturalHeight)
+          : element.naturalWidth;
+        setIsOverflow(element.naturalHeight > maxH && renderedWidth < containerWidth);
     } else {
         // 文本：检查 scrollHeight 是否大于 clientHeight
         setIsOverflow(element.scrollHeight > element.clientHeight + 1);
@@ -122,7 +133,11 @@ const Item: FC<ItemProps> = (props) => {
 
   const handleToggleExpand = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setExpanded(!expanded);
+    if (expanded) {
+      rootState.expandedIds = rootState.expandedIds.filter((eid: string) => eid !== id);
+    } else {
+      rootState.expandedIds = [...rootState.expandedIds, id];
+    }
   };
 
   const renderContent = () => {
@@ -191,7 +206,7 @@ const Item: FC<ItemProps> = (props) => {
       </div>
 
       {/* 展开/收起按钮 */}
-      {isOverflow && (
+      {(isOverflow || expanded) && (
         <div
           className="flex cursor-pointer items-center justify-center text-xs text-primary hover:text-primary-6"
           onClick={handleToggleExpand}

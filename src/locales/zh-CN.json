@@ -128,7 +128,7 @@
           "operation_button": "自定义操作剪贴板内容的图标按钮",
           "paste_as_plain": "富文本和HTML格式在粘贴时仅保留纯文本内容",
           "show_original_content": "添加备注后，鼠标悬停时是否显示原内容",
-          "display_lines": "设置剪贴板列表中文本内容的默认显示行数",
+          "display_lines": "设置剪贴板列表中纯文本、富文本、HTML格式内容的默认显示行数",
           "image_display_height": "设置剪贴板列表中图片的默认显示高度"
         },
         "label": {
@@ -157,6 +157,15 @@
           "collapse": "收起"
         },
         "title": "内容设置"
+      },
+      "display_settings": {
+        "hints": {
+          "default_collapse": "激活窗口时，超出容器显示设置的内容默认收起"
+        },
+        "label": {
+          "default_collapse": "默认收起"
+        },
+        "title": "显示设置"
       },
       "search_box_settings": {
         "hints": {

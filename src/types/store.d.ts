@@ -92,6 +92,7 @@ export interface ClipboardStore {
     showOriginalContent: boolean;
     displayLines: number;      // 显示行数，默认 4
     imageDisplayHeight: number; // 图片显示高度（像素），默认 100
+    defaultCollapse: boolean;  // 默认收起，默认 false
   };
 
   // 历史记录

@@ -42,10 +42,21 @@ export const useClipboard = (
       } as DatabaseSchemaHistory;
 
       if (files) {
-        Object.assign(data, files, {
-          group: "files",
-          search: files.value.join(" "),
-        });
+        // 如果文件都是图片且有图片数据，优先识别为图片（如截图工具）
+        const imageExtensions = /\.(png|jpg|jpeg|gif|bmp|webp|svg|ico|tiff?|avif)$/i;
+        const allFilesAreImages = files.value.length > 0 &&
+          files.value.every((f: string) => imageExtensions.test(f));
+
+        if (allFilesAreImages && image) {
+          Object.assign(data, image, {
+            group: "image",
+          });
+        } else {
+          Object.assign(data, files, {
+            group: "files",
+            search: files.value.join(" "),
+          });
+        }
       } else if (image) {
         // 还原 v0.5.0 逻辑：图片优先于 HTML/RTF
         // 从网页复制图片时，浏览器会同时提供 HTML + Image 格式

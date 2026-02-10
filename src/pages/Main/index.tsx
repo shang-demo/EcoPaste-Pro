@@ -42,12 +42,14 @@ export interface State {
   list: DatabaseSchemaHistory[];
   eventBus?: EventEmitter<EventBusPayload>;
   quickPasteKeys: string[];
+  expandedIds: string[];
 }
 
 const INITIAL_STATE: State = {
   group: "all",
   list: [],
   quickPasteKeys: [],
+  expandedIds: [],
 };
 
 interface MainContextValue {

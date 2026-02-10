@@ -17,6 +17,7 @@ export const clipboardStore = proxy<ClipboardStore>({
     showOriginalContent: false,
     displayLines: 4,
     imageDisplayHeight: 100,
+    defaultCollapse: false,
   },
 
   history: {

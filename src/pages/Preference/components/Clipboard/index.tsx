@@ -71,10 +71,6 @@ const ClipboardSettings = () => {
       <ProList header={t("preference.clipboard.content_settings.title")}>
         <AutoPaste />
 
-        <DisplayLines />
-
-        <ImageDisplayHeight />
-
         <ProSwitch
           description={t(
             "preference.clipboard.content_settings.hints.copy_as_plain",
@@ -99,8 +95,6 @@ const ClipboardSettings = () => {
           value={content.pastePlain}
         />
 
-        <OperationButton />
-
         <ProSwitch
           description={t(
             "preference.clipboard.content_settings.hints.auto_favorite",
@@ -124,6 +118,27 @@ const ClipboardSettings = () => {
           )}
           value={content.deleteConfirm}
         />
+      </ProList>
+
+      <ProList header={t("preference.clipboard.display_settings.title")}>
+        <DisplayLines />
+
+        <ImageDisplayHeight />
+
+        <ProSwitch
+          description={t(
+            "preference.clipboard.display_settings.hints.default_collapse",
+          )}
+          onChange={(value) => {
+            clipboardStore.content.defaultCollapse = value;
+          }}
+          title={t(
+            "preference.clipboard.display_settings.label.default_collapse",
+          )}
+          value={content.defaultCollapse}
+        />
+
+        <OperationButton />
 
         <ProSwitch
           description={t(

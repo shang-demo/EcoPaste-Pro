@@ -1,9 +1,7 @@
 import { useMount } from "ahooks";
-import { type CSSProperties, forwardRef, useState } from "react";
+import { forwardRef, useState } from "react";
 import { EMFJS, RTFJS, WMFJS } from "rtf.js";
-import { useSnapshot } from "valtio";
 import SafeHtml from "@/components/SafeHtml";
-import { clipboardStore } from "@/stores/clipboard";
 import type { DatabaseSchemaHistory } from "@/types/database";
 
 RTFJS.loggingEnabled(false);
@@ -17,11 +15,8 @@ interface RtfProps extends DatabaseSchemaHistory<"rtf"> {
 
 const Rtf = forwardRef<HTMLDivElement, RtfProps>((props, ref) => {
   const { value, expanded, onLoad } = props;
-  const { content } = useSnapshot(clipboardStore);
 
   const [parsedHTML, setParsedHTML] = useState("");
-
-  const displayLines = content.displayLines || 4;
 
   useMount(async () => {
     const doc = new RTFJS.Document(stringToArrayBuffer(value), {});
@@ -60,23 +55,8 @@ const Rtf = forwardRef<HTMLDivElement, RtfProps>((props, ref) => {
     }
   };
 
-  // 动态 line-clamp 样式
-  const getLineClampStyle = (): CSSProperties => {
-    if (expanded) {
-      return {};
-    }
-    return {
-      display: "-webkit-box",
-      WebkitLineClamp: displayLines,
-      WebkitBoxOrient: "vertical",
-      overflow: "hidden",
-    };
-  };
-
   return (
-    <div ref={ref} style={getLineClampStyle()}>
-      <SafeHtml value={parsedHTML} expanded={expanded} />
-    </div>
+    <SafeHtml ref={ref} value={parsedHTML} expanded={expanded} />
   );
 });
 

@@ -28,15 +28,13 @@ const SafeHtml = forwardRef<HTMLDivElement, SafeHtmlProps>((props, ref) => {
     event.stopPropagation();
   };
 
-  // 动态 line-clamp 样式
+  // 动态高度限制样式（使用 max-height 替代 -webkit-line-clamp，兼容块级 HTML 内容）
   const getLineClampStyle = (): CSSProperties => {
     if (expanded) {
       return {};
     }
     return {
-      display: "-webkit-box",
-      WebkitLineClamp: displayLines,
-      WebkitBoxOrient: "vertical",
+      maxHeight: `${displayLines * 1.5}em`,
       overflow: "hidden",
     };
   };

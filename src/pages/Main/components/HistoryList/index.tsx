@@ -38,6 +38,11 @@ const HistoryList = () => {
 
   useTauriListen(LISTEN_KEY.ACTIVATE_BACK_TOP, scrollToTop);
 
+  // 默认收起：激活窗口时清空展开状态
+  useTauriListen(LISTEN_KEY.ACTIVATE_DEFAULT_COLLAPSE, () => {
+    rootState.expandedIds = [];
+  });
+
   useUpdateEffect(() => {
     const { list } = rootState;
 

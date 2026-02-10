@@ -5,7 +5,7 @@ import { PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
 import { LISTEN_KEY, WINDOW_LABEL } from "@/constants";
 import { clipboardStore } from "@/stores/clipboard";
 import type { WindowLabel } from "@/types/plugin";
-import { isLinux } from "@/utils/is";
+
 import { getCursorMonitor } from "@/utils/monitor";
 
 const COMMAND = {
@@ -45,13 +45,10 @@ export const hideWindow = () => {
 export const toggleWindowVisible = async () => {
   const appWindow = getCurrentWebviewWindow();
 
-  let focused = await appWindow.isFocused();
+  // 使用 isVisible() 判断窗口状态，因为不夺焦模式下 isFocused() 始终为 false
+  const visible = await appWindow.isVisible();
 
-  if (isLinux) {
-    focused = await appWindow.isVisible();
-  }
-
-  if (focused) {
+  if (visible) {
     return hideWindow();
   }
 
@@ -61,6 +58,11 @@ export const toggleWindowVisible = async () => {
     // 激活时回到顶部
     if (window.backTop) {
       await emit(LISTEN_KEY.ACTIVATE_BACK_TOP);
+    }
+
+    // 默认收起：激活窗口时清空展开状态
+    if (clipboardStore.content.defaultCollapse) {
+      await emit(LISTEN_KEY.ACTIVATE_DEFAULT_COLLAPSE);
     }
 
     if (window.style === "standard" && window.position !== "remember") {
