@@ -37,24 +37,35 @@ export const updateHistory = async (
   return db.updateTable("history").set(nextData).where("id", "=", id).execute();
 };
 
-export const deleteHistory = async (data: DatabaseSchemaHistory) => {
+export const deleteHistory = async (
+  data: DatabaseSchemaHistory,
+  deleteLocalFile = true,
+) => {
   const { id, type, value } = data;
 
   const db = await getDatabase();
 
   await db.deleteFrom("history").where("id", "=", id).execute();
 
-  if (type !== "image") return;
+  if (!deleteLocalFile || type !== "image") return;
 
   let path = value;
 
-  const saveImagePath = await getDefaultSaveImagePath();
-
-  if (!value.startsWith(saveImagePath)) {
-    path = join(saveImagePath, value);
+  // Handle case where image value is an array or string
+  if (Array.isArray(value)) {
+    path = value[0];
   }
 
-  const existed = await exists(path);
+  const saveImagePath = await getDefaultSaveImagePath();
+
+  if (typeof path === 'string' && !path.startsWith(saveImagePath)) {
+    const isAbs = /^[a-zA-Z]:[\\/]/.test(path) || path.startsWith('/');
+    if (!isAbs) {
+        path = join(saveImagePath, path);
+    }
+  }
+
+  const existed = await exists(path as string);
 
   if (!existed) return;
 

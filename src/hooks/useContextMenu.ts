@@ -3,7 +3,7 @@ import { downloadDir } from "@tauri-apps/api/path";
 import { copyFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
 import { find, isArray, remove } from "es-toolkit/compat";
-import { type MouseEvent, useContext } from "react";
+import { type MouseEvent, useContext, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useSnapshot } from "valtio";
 import { deleteHistory, updateHistory } from "@/database/history";
@@ -29,6 +29,7 @@ export const useContextMenu = (props: UseContextMenuProps) => {
   const { t } = useTranslation();
   const { env } = useSnapshot(globalStore);
   const { rootState } = useContext(MainContext);
+  const deleteLocalFileRef = useRef(true);
 
   const pasteAsText = () => {
     return pasteToClipboard(data, true);
@@ -82,6 +83,11 @@ export const useContextMenu = (props: UseContextMenuProps) => {
       return revealItemInDir(value);
     }
 
+    if (type === "image") {
+      const path = Array.isArray(value) ? value[0] : value;
+      return revealItemInDir(path);
+    }
+
     const [file] = value;
 
     revealItemInDir(file);
@@ -93,15 +99,37 @@ export const useContextMenu = (props: UseContextMenuProps) => {
     if (!matched) return;
 
     let confirmed = true;
+    deleteLocalFileRef.current = true;
 
     if (clipboardStore.content.deleteConfirm) {
+      const { Checkbox } = await import("antd");
+      const { createElement } = await import("react");
+
+      const isImage = type === "image";
+
+      const content = createElement(
+        "div",
+        null,
+        createElement("div", null, t("clipboard.hints.delete_modal_content")),
+        isImage &&
+          createElement(
+            "div",
+            { style: { marginTop: 8 } },
+            createElement(Checkbox, {
+              defaultChecked: true,
+              onChange: (e: any) => {
+                deleteLocalFileRef.current = e.target.checked;
+              },
+            }, t("clipboard.hints.delete_local_file")),
+          ),
+      );
+
       confirmed = await deleteModal.confirm({
         afterClose() {
-          // 关闭确认框后焦点还在，需要手动取消焦点
           (document.activeElement as HTMLElement)?.blur();
         },
         centered: true,
-        content: t("clipboard.hints.delete_modal_content"),
+        content,
       });
     }
 
@@ -113,7 +141,7 @@ export const useContextMenu = (props: UseContextMenuProps) => {
 
     remove(rootState.list, { id });
 
-    deleteHistory(data);
+    deleteHistory(data, deleteLocalFileRef.current);
   };
 
   const pasteColorAs = async (format: "hex" | "rgb" | "cmyk") => {
@@ -237,7 +265,7 @@ export const useContextMenu = (props: UseContextMenuProps) => {
       },
       {
         action: openToFinder,
-        hide: type !== "files" && subtype !== "path",
+        hide: type !== "files" && subtype !== "path" && type !== "image",
         text: isMac
           ? t("clipboard.button.context_menu.show_in_finder")
           : t("clipboard.button.context_menu.show_in_file_explorer"),
