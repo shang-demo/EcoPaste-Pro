@@ -16,10 +16,10 @@ import { getAntdLocale, i18n } from "./locales";
 import { hideWindow, showWindow } from "./plugins/window";
 import { router } from "./router";
 import { globalStore } from "./stores/global";
+import { startAutoBackupScheduler } from "./utils/autoBackupScheduler";
 import { generateColorVars } from "./utils/color";
 import { isURL } from "./utils/is";
 import { restoreStore } from "./utils/store";
-import { startAutoBackupScheduler } from "./utils/autoBackupScheduler";
 
 const { defaultAlgorithm, darkAlgorithm } = theme;
 

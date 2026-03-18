@@ -62,20 +62,17 @@ export const transferData: TransferData[] = [
   {
     icon: "i-lucide:edit",
     key: "edit",
-    title:
-      "clipboard.button.context_menu.edit",
+    title: "clipboard.button.context_menu.edit",
   },
   {
     icon: "i-lucide:folder-open",
     key: "openFolder",
-    title:
-      "clipboard.button.context_menu.show_in_file_explorer",
+    title: "clipboard.button.context_menu.show_in_file_explorer",
   },
   {
     icon: "i-lucide:terminal",
     key: "runCommand",
-    title:
-      "clipboard.button.context_menu.run_command",
+    title: "clipboard.button.context_menu.run_command",
   },
 ];
 

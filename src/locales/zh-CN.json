@@ -12,38 +12,38 @@
         "note": "备注",
         "open_in_browser": "在浏览器访问",
         "paste": "粘贴",
-        "paste_selection": "粘贴选中内容",
         "paste_as_cmyk": "转为 CMYK 并粘贴",
         "paste_as_hex": "转为 HEX 并粘贴",
         "paste_as_path": "粘贴为路径",
         "paste_as_plain_text": "粘贴为纯文本",
         "paste_as_rgb": "转为 RGB 并粘贴",
+        "paste_selection": "粘贴选中内容",
         "preview_image": "查看图片",
+        "run_command": "运行",
         "send_email": "发送邮件",
         "show_in_file_explorer": "在资源管理器打开",
         "show_in_finder": "在 Finder 中显示",
-        "run_command": "运行",
         "unfavorite": "取消收藏"
       },
       "pin": "置顶",
-      "unpin": "取消置顶",
-      "setting": "设置"
+      "setting": "设置",
+      "unpin": "取消置顶"
     },
     "hints": {
-      "delete_modal_content": "确定要删除此项吗？",
       "delete_local_file": "同时删除本地文件",
+      "delete_modal_content": "确定要删除此项吗？",
       "search_placeholder": "搜索"
     },
     "label": {
       "code": "代码 ({{0}})",
       "color": "颜色",
+      "command": "指令",
       "email": "邮箱",
       "html": "HTML",
       "image": "图片",
       "link": "链接",
       "n_chars": "{{0}}个字符",
       "n_files": "{{0}}个文件（夹）",
-      "command": "指令",
       "path": "路径",
       "plain_text": "纯文本",
       "rtf": "富文本",
@@ -89,7 +89,15 @@
       "hints": {
         "click": "点击录制快捷键",
         "press": "按下录制快捷键"
-      }
+      },
+      "mode": {
+        "record": "录制",
+        "double": "双击"
+      },
+      "double_ctrl": "双击 Ctrl",
+      "double_alt": "双击 Alt",
+      "double_shift": "双击 Shift",
+      "double_cmd": "双击 Cmd"
     },
     "tray": {
       "label": {
@@ -139,13 +147,13 @@
         },
         "hints": {
           "auto_favorite": "新增或编辑备注后自动收藏",
-          "enable_text_selection": "控制剪贴板窗口是否支持选中部分文本，执行复制 / 粘贴操作，仅对纯文本、富文本、HTML 生效",
           "auto_paste": "鼠标左键操作时，快速粘贴内容至输入位置",
           "auto_sort": "复制已存在的内容时排列到最前面",
           "copy_as_plain": "富文本和HTML格式在复制时仅保留纯文本内容",
           "delete_confirm": "删除剪贴板内容时弹出确认对话框",
           "display_lines": "设置剪贴板列表中纯文本、富文本、HTML格式内容的最大显示行数",
           "enable_code_highlighting": "自动识别代码内容并语法高亮显示",
+          "enable_text_selection": "控制剪贴板窗口是否支持选中部分文本，执行复制 / 粘贴操作，仅对纯文本、富文本、HTML 生效",
           "image_display_height": "设置剪贴板列表中图片的最大显示高度",
           "operation_button": "自定义操作剪贴板内容的图标按钮",
           "paste_as_plain": "富文本和HTML格式在粘贴时仅保留纯文本内容",
@@ -154,7 +162,6 @@
         },
         "label": {
           "auto_favorite": "自动收藏",
-          "enable_text_selection": "文本片段选取",
           "auto_paste": "自动粘贴",
           "auto_paste_double": "双击",
           "auto_paste_single": "单击",
@@ -165,6 +172,7 @@
           "delete_confirm": "删除确认",
           "display_lines": "文本显示行数",
           "enable_code_highlighting": "代码语法高亮",
+          "enable_text_selection": "文本片段选取",
           "expand": "展开",
           "image_display_height": "图片显示高度",
           "image_display_height_unit": "像素",
@@ -232,20 +240,46 @@
           "cancel": "取消",
           "confirm_export": "导出",
           "confirm_import": "确定",
+          "deselect_all": "清空",
           "export": "导出数据",
-          "import": "导入数据"
+          "export_now": "立即导出",
+          "import": "导入数据",
+          "select_all": "全选",
+          "select_file": "选择本地文件..."
+        },
+        "hint": {
+          "export_all_types": "将导出{{scope}}的所有类型的数据",
+          "export_with_types": "导出{{scope}}的 {{count}} 种类型的数据",
+          "no_type_selected": "未选择任何类型",
+          "scope_all": "全部范围",
+          "scope_favorites": "收藏夹"
         },
         "hints": {
+          "click_to_toggle": "点击选中或排除特定格式的数据",
           "confirm_export": "导出的数据包含所有偏好设置和剪贴板内容，且均以明文形式保存，请妥善保管。",
           "confirm_import": "导入的剪贴板数据将覆盖现有数据，确定要继续吗？",
+          "drop_zone_format": "仅支持 EcoPaste 生成的 {{ext}} 格式数据包",
+          "export_scope": "选择要导出当前全部数据还是仅收藏的数据",
           "export_success": "导出成功",
-          "import_success": "导入成功"
+          "import_success": "导入成功",
+          "import_will_overwrite": "导入的剪贴板数据将覆盖现有数据"
         },
         "label": {
+          "backup_file": "备份数据包",
           "confirm_export": "导出须知",
-          "confirm_import": "导入须知"
+          "confirm_import": "导入须知",
+          "drop_zone_title": "点击或拖拽备份文件至此处",
+          "export_scope": "导出范围",
+          "filter_by_type": "按类型标签筛选",
+          "save_as_title": "导出数据 - 另存为",
+          "scope_all": "全部",
+          "scope_favorites": "仅收藏"
         },
-        "title": "导入和导出"
+        "tab": {
+          "export": "导出本地数据",
+          "import": "导入备份文件"
+        },
+        "title": "本地备份"
       },
       "storage_settings": {
         "hints": {
@@ -272,25 +306,25 @@
           "restore": "恢复",
           "restore_from": "从 WebDAV 恢复",
           "test": "检测",
-          "testing": "正在检测...",
+          "test_failed_short": "连接失败",
           "test_success_short": "连接成功",
-          "test_failed_short": "连接失败"
+          "testing": "正在检测..."
         },
         "hints": {
           "auto_strategy": "设置 WebDAV 自动备份启用状态和备份模式",
           "backup_success": "备份成功",
-          "confirm_restore": "从 WebDAV 恢复将会覆盖当前数据，是否继续？",
           "confirm_delete": "确定要删除此备份文件吗？",
           "confirm_delete_selected": "确定要删除选中的 {{total}} 个备份文件吗？",
+          "confirm_restore": "从 WebDAV 恢复将会覆盖当前数据，是否继续？",
           "delete_success": "删除成功",
           "error": "备份错误：{{error}}",
           "full_schedule": "设置 WebDAV 自动完整备份的时间",
+          "lite": "备份时跳过图片和文件(夹)类型的内容，仅保留文本等其他内容与设置以提升速度",
+          "lite_schedule": "设置 WebDAV 自动轻量备份的时间",
           "manual": "通过 WebDAV 进行备份与恢复",
           "max_backups": "限制 WebDAV 保留的最大备份数量",
           "restore_success": "恢复成功",
           "schedule": "设置 WebDAV 自动备份的时间",
-          "slim": "备份时跳过图片和文件(夹)类型的内容，仅保留文本等其他内容与设置以提升速度",
-          "slim_schedule": "设置 WebDAV 自动精简备份的时间",
           "test_failed": "连接失败：{{error}}",
           "test_success": "连接成功"
         },
@@ -299,47 +333,16 @@
           "auto_strategy": "自动备份策略",
           "filename": "备份文件名",
           "full_schedule": "完整备份周期",
+          "lite": "轻量备份",
+          "lite_schedule": "轻量备份周期",
           "manual": "数据备份与恢复",
           "max_backups": "最大备份数",
           "password": "WebDAV 密码",
           "path": "WebDAV 路径",
           "schedule": "备份周期",
-          "slim": "精简备份",
-          "slim_schedule": "精简备份周期",
           "status": "备份状态",
           "total": "共 {{total}} 个备份",
           "username": "WebDAV 用户名"
-        },
-        "schedule": {
-          "mode_fixed": "定时",
-          "mode_interval": "间隔",
-          "mode_cron": "Cron",
-          "interval_1m": "1分钟",
-          "interval_5m": "5分钟",
-          "interval_15m": "15分钟",
-          "interval_30m": "30分钟",
-          "interval_1h": "1小时",
-          "interval_2h": "2小时",
-          "interval_6h": "6小时",
-          "interval_12h": "12小时",
-          "interval_24h": "24小时",
-          "interval_48h": "48小时",
-          "interval_72h": "72小时",
-          "repeat_hourly": "每小时",
-          "repeat_daily": "每天",
-          "repeat_weekly": "每周",
-          "repeat_biweekly": "每两周",
-          "repeat_monthly": "每月",
-          "repeat_quarterly": "每季度",
-          "repeat_semi_annual": "每半年",
-          "repeat_yearly": "每年",
-          "minute": "分"
-        },
-        "strategy": {
-          "off": "关闭",
-          "full": "完整备份",
-          "slim": "精简备份",
-          "combined": "组合备份"
         },
         "placeholder": {
           "address": "https://example.com/dav/",
@@ -348,13 +351,44 @@
           "path": "例如 /EcoPaste",
           "username": "用户名"
         },
+        "schedule": {
+          "interval_1h": "1小时",
+          "interval_1m": "1分钟",
+          "interval_2h": "2小时",
+          "interval_5m": "5分钟",
+          "interval_6h": "6小时",
+          "interval_12h": "12小时",
+          "interval_15m": "15分钟",
+          "interval_24h": "24小时",
+          "interval_30m": "30分钟",
+          "interval_48h": "48小时",
+          "interval_72h": "72小时",
+          "minute": "分",
+          "mode_cron": "Cron",
+          "mode_fixed": "定时",
+          "mode_interval": "间隔",
+          "repeat_biweekly": "每两周",
+          "repeat_daily": "每天",
+          "repeat_hourly": "每小时",
+          "repeat_monthly": "每月",
+          "repeat_quarterly": "每季度",
+          "repeat_semi_annual": "每半年",
+          "repeat_weekly": "每周",
+          "repeat_yearly": "每年"
+        },
         "section_title": "WebDAV",
         "status": {
           "failed": "备份失败",
           "full_success": "完整备份成功",
+          "lite_success": "轻量备份成功",
           "never": "从未备份",
-          "slim_success": "精简备份成功",
           "success": "备份成功"
+        },
+        "strategy": {
+          "combined": "组合备份",
+          "full": "完整备份",
+          "lite": "轻量备份",
+          "off": "关闭"
         },
         "table": {
           "action": "操作",
@@ -408,8 +442,8 @@
         "clipboard": "剪贴板",
         "general": "通用设置",
         "history": "存储空间",
-        "storage": "存储空间",
-        "shortcut": "快捷键"
+        "shortcut": "快捷键",
+        "storage": "存储空间"
       }
     },
     "settings": {
@@ -494,41 +528,41 @@
       }
     },
     "storage": {
+      "auto_clean": {
+        "title": "自动清理设置"
+      },
       "storage_stats": {
-        "title": "存储统计",
-        "subtitle": "各类内容空间占用明细",
-        "total_label": "总计",
-        "items": "条目",
-        "used_space": "已占用空间",
-        "records": "条记录",
-        "top_usage": "主要占用",
-        "col_type": "类型",
-        "col_count": "数量",
-        "col_size": "大小",
-        "time_range": "时间范围",
-        "scope_all": "全部",
-        "scope_favorite": "收藏",
-        "time_range_opt": {
-          "all": "全部",
-          "today": "今天",
-          "yesterday": "昨天",
-          "last_3_days": "最近3天",
-          "this_week": "本周",
-          "this_month": "本月",
-          "custom": "自定义"
-        },
+        "button_cancel": "取消",
+        "button_confirm_clean": "确定删除",
         "clean_by_type": "按类型清理",
+        "clean_confirm": "确定要删除选中类型的所有未收藏记录吗？",
+        "clean_confirm_favorite": "确定要删除选中类型的所有已收藏记录吗？",
         "clean_hint": "选择类型标签批量清理 未收藏 的记录",
         "clean_hint_favorite": "选择类型标签批量清理 已收藏 的记录",
         "clean_selected": "清理选中",
-        "clean_confirm": "确定要删除选中类型的所有未收藏记录吗？",
-        "clean_confirm_favorite": "确定要删除选中类型的所有已收藏记录吗？",
         "clean_success": "清理成功",
-        "button_cancel": "取消",
-        "button_confirm_clean": "确定删除"
-      },
-      "auto_clean": {
-        "title": "自动清理设置"
+        "col_count": "数量",
+        "col_size": "大小",
+        "col_type": "类型",
+        "items": "条目",
+        "records": "条记录",
+        "scope_all": "全部",
+        "scope_favorite": "收藏",
+        "subtitle": "各类内容空间占用明细",
+        "time_range": "时间范围",
+        "time_range_opt": {
+          "all": "全部",
+          "custom": "自定义",
+          "last_3_days": "最近3天",
+          "this_month": "本月",
+          "this_week": "本周",
+          "today": "今天",
+          "yesterday": "昨天"
+        },
+        "title": "存储统计",
+        "top_usage": "主要占用",
+        "total_label": "总计",
+        "used_space": "已占用空间"
       }
     },
     "title": "偏好设置"

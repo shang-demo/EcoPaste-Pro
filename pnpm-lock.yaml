@@ -14,18 +14,12 @@ importers:
       '@ant-design/icons':
         specifier: ^5.6.1
         version: 5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@codemirror/lang-cpp':
-        specifier: ^6.0.3
-        version: 6.0.3
       '@codemirror/lang-css':
         specifier: ^6.3.1
         version: 6.3.1
       '@codemirror/lang-html':
         specifier: ^6.4.11
         version: 6.4.11
-      '@codemirror/lang-java':
-        specifier: ^6.0.2
-        version: 6.0.2
       '@codemirror/lang-javascript':
         specifier: ^6.2.4
         version: 6.2.4
@@ -38,12 +32,6 @@ importers:
       '@codemirror/lang-python':
         specifier: ^6.2.1
         version: 6.2.1
-      '@codemirror/lang-rust':
-        specifier: ^6.0.2
-        version: 6.0.2
-      '@codemirror/lang-sql':
-        specifier: ^6.10.0
-        version: 6.10.0
       '@codemirror/lang-xml':
         specifier: ^6.1.0
         version: 6.1.0
@@ -122,9 +110,6 @@ importers:
       filesize:
         specifier: ^10.1.6
         version: 10.1.6
-      highlight.js:
-        specifier: ^11.11.1
-        version: 11.11.1
       i18next:
         specifier: ^23.16.8
         version: 23.16.8
@@ -179,6 +164,9 @@ importers:
       rtf.js:
         specifier: ^3.0.9
         version: 3.0.9
+      shiki:
+        specifier: ^4.0.2
+        version: 4.0.2
       tauri-plugin-clipboard-x-api:
         specifier: ^2.0.1
         version: 2.0.1
@@ -198,6 +186,27 @@ importers:
       '@biomejs/biome':
         specifier: ^2.2.6
         version: 2.2.6
+      '@codemirror/lang-cpp':
+        specifier: ^6.0.3
+        version: 6.0.3
+      '@codemirror/lang-go':
+        specifier: ^6.0.1
+        version: 6.0.1
+      '@codemirror/lang-java':
+        specifier: ^6.0.2
+        version: 6.0.2
+      '@codemirror/lang-php':
+        specifier: ^6.0.2
+        version: 6.0.2
+      '@codemirror/lang-rust':
+        specifier: ^6.0.2
+        version: 6.0.2
+      '@codemirror/lang-sql':
+        specifier: ^6.10.0
+        version: 6.10.0
+      '@codemirror/lang-vue':
+        specifier: ^0.1.3
+        version: 0.1.3
       '@commitlint/cli':
         specifier: ^19.8.1
         version: 19.8.1(@types/node@22.18.11)(typescript@5.9.3)
@@ -228,9 +237,6 @@ importers:
       '@tauri-apps/cli':
         specifier: ^2.8.4
         version: 2.8.4
-      '@types/highlight.js':
-        specifier: ^10.1.0
-        version: 10.1.0
       '@types/is-url':
         specifier: ^1.2.32
         version: 1.2.32
@@ -496,6 +502,9 @@ packages:
   '@codemirror/lang-css@6.3.1':
     resolution: {integrity: sha512-kr5fwBGiGtmz6l0LSJIbno9QrifNMUusivHbnA1H6Dmqy4HZFte3UAICix1VuKo0lMPKQr2rqB+0BkKi/S3Ejg==}
 
+  '@codemirror/lang-go@6.0.1':
+    resolution: {integrity: sha512-7fNvbyNylvqCphW9HD6WFnRpcDjr+KXX/FgqXy5H5ZS0eC5edDljukm/yNgYkwTsgp2busdod50AOTIy6Jikfg==}
+
   '@codemirror/lang-html@6.4.11':
     resolution: {integrity: sha512-9NsXp7Nwp891pQchI7gPdTwBuSuT3K65NGTHWHNJ55HjYcHLllr0rbIZNdOzas9ztc1EUVBlHou85FFZS4BNnw==}
 
@@ -511,6 +520,9 @@ packages:
   '@codemirror/lang-markdown@6.5.0':
     resolution: {integrity: sha512-0K40bZ35jpHya6FriukbgaleaqzBLZfOh7HuzqbMxBXkbYMJDxfF39c23xOgxFezR+3G+tR2/Mup+Xk865OMvw==}
 
+  '@codemirror/lang-php@6.0.2':
+    resolution: {integrity: sha512-ZKy2v1n8Fc8oEXj0Th0PUMXzQJ0AIR6TaZU+PbDHExFwdu+guzOA4jmCHS1Nz4vbFezwD7LyBdDnddSJeScMCA==}
+
   '@codemirror/lang-python@6.2.1':
     resolution: {integrity: sha512-IRjC8RUBhn9mGR9ywecNhB51yePWCGgvHfY1lWN/Mrp3cKuHr0isDKia+9HnvhiWNnMpbGhWrkhuWOc09exRyw==}
 
@@ -519,6 +531,9 @@ packages:
 
   '@codemirror/lang-sql@6.10.0':
     resolution: {integrity: sha512-6ayPkEd/yRw0XKBx5uAiToSgGECo/GY2NoJIHXIIQh1EVwLuKoU8BP/qK0qH5NLXAbtJRLuT73hx7P9X34iO4w==}
+
+  '@codemirror/lang-vue@0.1.3':
+    resolution: {integrity: sha512-QSKdtYTDRhEHCfo5zOShzxCmqKJvgGrZwDQSdbvCRJ5pRLWBS7pD/8e/tH44aVQT6FKm0t6RVNoSUWHOI5vNug==}
 
   '@codemirror/lang-xml@6.1.0':
     resolution: {integrity: sha512-3z0blhicHLfwi2UgkZYRPioSgVTo9PV5GP5ducFH6FaHy0IAJRg+ixj5gTR1gnT/glAIC8xv4w2VL1LoZfs+Jg==}
@@ -1133,6 +1148,9 @@ packages:
   '@lezer/css@1.3.1':
     resolution: {integrity: sha512-PYAKeUVBo3HFThruRyp/iK91SwiZJnzXh8QzkQlwijB5y+N5iB28+iLk78o2zmKqqV0uolNhCwFqB8LA7b0Svg==}
 
+  '@lezer/go@1.0.1':
+    resolution: {integrity: sha512-xToRsYxwsgJNHTgNdStpcvmbVuKxTapV0dM0wey1geMMRc9aggoVyKgzYp41D2/vVOx+Ii4hmE206kvxIXBVXQ==}
+
   '@lezer/highlight@1.2.3':
     resolution: {integrity: sha512-qXdH7UqTvGfdVBINrgKhDsVTJTxactNNxLk7+UMwZhU13lMHaOBlJe9Vqp907ya56Y3+ed2tlqzys7jDkTmW0g==}
 
@@ -1153,6 +1171,9 @@ packages:
 
   '@lezer/markdown@1.6.3':
     resolution: {integrity: sha512-jpGm5Ps+XErS+xA4urw7ogEGkeZOahVQF21Z6oECF0sj+2liwZopd2+I8uH5I/vZsRuuze3OxBREIANLf6KKUw==}
+
+  '@lezer/php@1.0.5':
+    resolution: {integrity: sha512-W7asp9DhM6q0W6DYNwIkLSKOvxlXRrif+UXBMxzsJUuqmhE7oVU+gS3THO4S/Puh7Xzgm858UNaFi6dxTP8dJA==}
 
   '@lezer/python@1.1.18':
     resolution: {integrity: sha512-31FiUrU7z9+d/ElGQLJFXl+dKOdx0jALlP3KEOsGTex8mvj+SoE1FgItcHWK/axkxCHGUSpqIHt6JAWfWu9Rhg==}
@@ -1525,6 +1546,37 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@shikijs/core@4.0.2':
+    resolution: {integrity: sha512-hxT0YF4ExEqB8G/qFdtJvpmHXBYJ2lWW7qTHDarVkIudPFE6iCIrqdgWxGn5s+ppkGXI0aEGlibI0PAyzP3zlw==}
+    engines: {node: '>=20'}
+
+  '@shikijs/engine-javascript@4.0.2':
+    resolution: {integrity: sha512-7PW0Nm49DcoUIQEXlJhNNBHyoGMjalRETTCcjMqEaMoJRLljy1Bi/EGV3/qLBgLKQejdspiiYuHGQW6dX94Nag==}
+    engines: {node: '>=20'}
+
+  '@shikijs/engine-oniguruma@4.0.2':
+    resolution: {integrity: sha512-UpCB9Y2sUKlS9z8juFSKz7ZtysmeXCgnRF0dlhXBkmQnek7lAToPte8DkxmEYGNTMii72zU/lyXiCB6StuZeJg==}
+    engines: {node: '>=20'}
+
+  '@shikijs/langs@4.0.2':
+    resolution: {integrity: sha512-KaXby5dvoeuZzN0rYQiPMjFoUrz4hgwIE+D6Du9owcHcl6/g16/yT5BQxSW5cGt2MZBz6Hl0YuRqf12omRfUUg==}
+    engines: {node: '>=20'}
+
+  '@shikijs/primitive@4.0.2':
+    resolution: {integrity: sha512-M6UMPrSa3fN5ayeJwFVl9qWofl273wtK1VG8ySDZ1mQBfhCpdd8nEx7nPZ/tk7k+TYcpqBZzj/AnwxT9lO+HJw==}
+    engines: {node: '>=20'}
+
+  '@shikijs/themes@4.0.2':
+    resolution: {integrity: sha512-mjCafwt8lJJaVSsQvNVrJumbnnj1RI8jbUKrPKgE6E3OvQKxnuRoBaYC51H4IGHePsGN/QtALglWBU7DoKDFnA==}
+    engines: {node: '>=20'}
+
+  '@shikijs/types@4.0.2':
+    resolution: {integrity: sha512-qzbeRooUTPnLE+sHD/Z8DStmaDgnbbc/pMrU203950aRqjX/6AFHeDYT+j00y2lPdz0ywJKx7o/7qnqTivtlXg==}
+    engines: {node: '>=20'}
+
+  '@shikijs/vscode-textmate@10.0.2':
+    resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
+
   '@sindresorhus/merge-streams@2.3.0':
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
@@ -1676,10 +1728,6 @@ packages:
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
-
-  '@types/highlight.js@10.1.0':
-    resolution: {integrity: sha512-77hF2dGBsOgnvZll1vymYiNUtqJ8cJfXPD6GG/2M0aLRc29PkvB7Au6sIDjIEFcSICBhCh2+Pyq6WSRS7LUm6A==}
-    deprecated: This is a stub types definition. highlight.js provides its own type definitions, so you do not need this installed.
 
   '@types/is-url@1.2.32':
     resolution: {integrity: sha512-46VLdbWI8Sc+hPexQ6NLNR2YpoDyDZIpASHkJQ2Yr+Kf9Giw6LdCTkwOdsnHKPQeh7xTjTmSnxbE8qpxYuCiHA==}
@@ -2753,10 +2801,6 @@ packages:
   hastscript@9.0.1:
     resolution: {integrity: sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w==}
 
-  highlight.js@11.11.1:
-    resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
-    engines: {node: '>=12.0.0'}
-
   hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
 
@@ -3581,6 +3625,12 @@ packages:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
 
+  oniguruma-parser@0.12.1:
+    resolution: {integrity: sha512-8Unqkvk1RYc6yq2WBYRj4hdnsAxVze8i7iPfQr8e4uSP3tRv0rpZcbGUDvxfQQcdwHt/e9PrMvGCsa8OqG9X3w==}
+
+  oniguruma-to-es@4.3.4:
+    resolution: {integrity: sha512-3VhUGN3w2eYxnTzHn+ikMI+fp/96KoRSVK9/kMTcFqj1NRDh2IhQCKvYxDnWePKRXY/AqH+Fuiyb7VHSzBjHfA==}
+
   open@10.1.0:
     resolution: {integrity: sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw==}
     engines: {node: '>=18'}
@@ -4159,6 +4209,15 @@ packages:
   refractor@5.0.0:
     resolution: {integrity: sha512-QXOrHQF5jOpjjLfiNk5GFnWhRXvxjUVnlFxkeDmewR5sXkr3iM46Zo+CnRR8B+MDVqkULW4EcLVcRBNOPXHosw==}
 
+  regex-recursion@6.0.2:
+    resolution: {integrity: sha512-0YCaSCq2VRIebiaUviZNs0cBz1kg5kVS2UKUfNIx8YVs1cN3AV7NTctO5FOKBA+UT2BPJIWZauYHPqJODG50cg==}
+
+  regex-utilities@2.3.0:
+    resolution: {integrity: sha512-8VhliFJAWRaUiVvREIiW2NXXTmHs4vMNnSzuJVhscgmGav3g9VDxLrQndI3dZZVVdp0ZO/5v0xmX516/7M9cng==}
+
+  regex@6.1.0:
+    resolution: {integrity: sha512-6VwtthbV4o/7+OaAF9I5L5V3llLEsoPyq9P1JVXkedTP33c7MfCG0/5NOPcSJn0TzXcG9YUrR0gQSWioew3LDg==}
+
   regexp.prototype.flags@1.5.4:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
@@ -4392,6 +4451,10 @@ packages:
     resolution: {integrity: sha512-TiwcRcrkhHvbrZbnRcFYMLl30Dfov3HKqzp5tO5b4pt6G/SezKcYhmDg15zXVBswHmctSAQKznqNW2LO5tTDow==}
     engines: {node: '>=4'}
     hasBin: true
+
+  shiki@4.0.2:
+    resolution: {integrity: sha512-eAVKTMedR5ckPo4xne/PjYQYrU3qx78gtJZ+sHlXEg5IHhhoQhMfZVzetTYuaJS0L2Ef3AcCRzCHV8T0WI6nIQ==}
+    engines: {node: '>=20'}
 
   side-channel-list@1.0.0:
     resolution: {integrity: sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==}
@@ -5181,6 +5244,14 @@ snapshots:
       '@lezer/common': 1.5.1
       '@lezer/css': 1.3.1
 
+  '@codemirror/lang-go@6.0.1':
+    dependencies:
+      '@codemirror/autocomplete': 6.20.0
+      '@codemirror/language': 6.12.1
+      '@codemirror/state': 6.5.4
+      '@lezer/common': 1.5.1
+      '@lezer/go': 1.0.1
+
   '@codemirror/lang-html@6.4.11':
     dependencies:
       '@codemirror/autocomplete': 6.20.0
@@ -5223,6 +5294,14 @@ snapshots:
       '@lezer/common': 1.5.1
       '@lezer/markdown': 1.6.3
 
+  '@codemirror/lang-php@6.0.2':
+    dependencies:
+      '@codemirror/lang-html': 6.4.11
+      '@codemirror/language': 6.12.1
+      '@codemirror/state': 6.5.4
+      '@lezer/common': 1.5.1
+      '@lezer/php': 1.0.5
+
   '@codemirror/lang-python@6.2.1':
     dependencies:
       '@codemirror/autocomplete': 6.20.0
@@ -5241,6 +5320,15 @@ snapshots:
       '@codemirror/autocomplete': 6.20.0
       '@codemirror/language': 6.12.1
       '@codemirror/state': 6.5.4
+      '@lezer/common': 1.5.1
+      '@lezer/highlight': 1.2.3
+      '@lezer/lr': 1.4.8
+
+  '@codemirror/lang-vue@0.1.3':
+    dependencies:
+      '@codemirror/lang-html': 6.4.11
+      '@codemirror/lang-javascript': 6.2.4
+      '@codemirror/language': 6.12.1
       '@lezer/common': 1.5.1
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.8
@@ -5722,6 +5810,12 @@ snapshots:
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.8
 
+  '@lezer/go@1.0.1':
+    dependencies:
+      '@lezer/common': 1.5.1
+      '@lezer/highlight': 1.2.3
+      '@lezer/lr': 1.4.8
+
   '@lezer/highlight@1.2.3':
     dependencies:
       '@lezer/common': 1.5.1
@@ -5758,6 +5852,12 @@ snapshots:
     dependencies:
       '@lezer/common': 1.5.1
       '@lezer/highlight': 1.2.3
+
+  '@lezer/php@1.0.5':
+    dependencies:
+      '@lezer/common': 1.5.1
+      '@lezer/highlight': 1.2.3
+      '@lezer/lr': 1.4.8
 
   '@lezer/python@1.1.18':
     dependencies:
@@ -6075,6 +6175,46 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.52.5':
     optional: true
 
+  '@shikijs/core@4.0.2':
+    dependencies:
+      '@shikijs/primitive': 4.0.2
+      '@shikijs/types': 4.0.2
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
+      hast-util-to-html: 9.0.5
+
+  '@shikijs/engine-javascript@4.0.2':
+    dependencies:
+      '@shikijs/types': 4.0.2
+      '@shikijs/vscode-textmate': 10.0.2
+      oniguruma-to-es: 4.3.4
+
+  '@shikijs/engine-oniguruma@4.0.2':
+    dependencies:
+      '@shikijs/types': 4.0.2
+      '@shikijs/vscode-textmate': 10.0.2
+
+  '@shikijs/langs@4.0.2':
+    dependencies:
+      '@shikijs/types': 4.0.2
+
+  '@shikijs/primitive@4.0.2':
+    dependencies:
+      '@shikijs/types': 4.0.2
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
+
+  '@shikijs/themes@4.0.2':
+    dependencies:
+      '@shikijs/types': 4.0.2
+
+  '@shikijs/types@4.0.2':
+    dependencies:
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
+
+  '@shikijs/vscode-textmate@10.0.2': {}
+
   '@sindresorhus/merge-streams@2.3.0': {}
 
   '@tauri-apps/api@2.10.1': {}
@@ -6216,10 +6356,6 @@ snapshots:
   '@types/hast@3.0.4':
     dependencies:
       '@types/unist': 3.0.3
-
-  '@types/highlight.js@10.1.0':
-    dependencies:
-      highlight.js: 11.11.1
 
   '@types/is-url@1.2.32': {}
 
@@ -7685,8 +7821,6 @@ snapshots:
       property-information: 7.1.0
       space-separated-tokens: 2.0.2
 
-  highlight.js@11.11.1: {}
-
   hosted-git-info@2.8.9: {}
 
   html-parse-stringify@3.0.1:
@@ -8677,6 +8811,14 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
+  oniguruma-parser@0.12.1: {}
+
+  oniguruma-to-es@4.3.4:
+    dependencies:
+      oniguruma-parser: 0.12.1
+      regex: 6.1.0
+      regex-recursion: 6.0.2
+
   open@10.1.0:
     dependencies:
       default-browser: 5.2.1
@@ -9388,6 +9530,16 @@ snapshots:
       hastscript: 9.0.1
       parse-entities: 4.0.2
 
+  regex-recursion@6.0.2:
+    dependencies:
+      regex-utilities: 2.3.0
+
+  regex-utilities@2.3.0: {}
+
+  regex@6.1.0:
+    dependencies:
+      regex-utilities: 2.3.0
+
   regexp.prototype.flags@1.5.4:
     dependencies:
       call-bind: 1.0.8
@@ -9726,6 +9878,17 @@ snapshots:
       glob: 7.2.3
       interpret: 1.4.0
       rechoir: 0.6.2
+
+  shiki@4.0.2:
+    dependencies:
+      '@shikijs/core': 4.0.2
+      '@shikijs/engine-javascript': 4.0.2
+      '@shikijs/engine-oniguruma': 4.0.2
+      '@shikijs/langs': 4.0.2
+      '@shikijs/themes': 4.0.2
+      '@shikijs/types': 4.0.2
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
 
   side-channel-list@1.0.0:
     dependencies:

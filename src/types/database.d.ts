@@ -4,7 +4,12 @@ import type {
 } from "tauri-plugin-clipboard-x-api";
 import type { LiteralUnion } from "type-fest";
 
-export type DatabaseSchemaHistorySubtype = "url" | "email" | "color" | "path" | string;
+export type DatabaseSchemaHistorySubtype =
+  | "url"
+  | "email"
+  | "color"
+  | "path"
+  | string;
 
 export type DatabaseSchemaHistory<
   T extends ClipboardContentType = ClipboardContentType,

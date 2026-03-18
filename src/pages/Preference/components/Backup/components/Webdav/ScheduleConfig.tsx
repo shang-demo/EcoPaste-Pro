@@ -2,7 +2,10 @@ import { Button, Input, Popover, Select, Space } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ProListItem from "@/components/ProListItem";
-import type { ScheduleConfig as ScheduleConfigType, ScheduleMode } from "@/types/store";
+import type {
+  ScheduleConfig as ScheduleConfigType,
+  ScheduleMode,
+} from "@/types/store";
 
 interface Props {
   title: string;
@@ -11,35 +14,127 @@ interface Props {
   onChange: (config: Partial<ScheduleConfigType>) => void;
 }
 
-const SCHEDULE_MODE_OPTIONS: { label: string; value: ScheduleMode; labelKey: string }[] = [
-  { label: "定时", value: "fixed", labelKey: "preference.data_backup.webdav.schedule.mode_fixed" },
-  { label: "间隔", value: "interval", labelKey: "preference.data_backup.webdav.schedule.mode_interval" },
-  { label: "Cron", value: "cron", labelKey: "preference.data_backup.webdav.schedule.mode_cron" },
+const SCHEDULE_MODE_OPTIONS: {
+  label: string;
+  value: ScheduleMode;
+  labelKey: string;
+}[] = [
+  {
+    label: "定时",
+    labelKey: "preference.data_backup.webdav.schedule.mode_fixed",
+    value: "fixed",
+  },
+  {
+    label: "间隔",
+    labelKey: "preference.data_backup.webdav.schedule.mode_interval",
+    value: "interval",
+  },
+  {
+    label: "Cron",
+    labelKey: "preference.data_backup.webdav.schedule.mode_cron",
+    value: "cron",
+  },
 ];
 
 const INTERVAL_OPTIONS = [
-  { label: "1分钟", value: 1, labelKey: "preference.data_backup.webdav.schedule.interval_1m" },
-  { label: "5分钟", value: 5, labelKey: "preference.data_backup.webdav.schedule.interval_5m" },
-  { label: "15分钟", value: 15, labelKey: "preference.data_backup.webdav.schedule.interval_15m" },
-  { label: "30分钟", value: 30, labelKey: "preference.data_backup.webdav.schedule.interval_30m" },
-  { label: "1小时", value: 60, labelKey: "preference.data_backup.webdav.schedule.interval_1h" },
-  { label: "2小时", value: 120, labelKey: "preference.data_backup.webdav.schedule.interval_2h" },
-  { label: "6小时", value: 360, labelKey: "preference.data_backup.webdav.schedule.interval_6h" },
-  { label: "12小时", value: 720, labelKey: "preference.data_backup.webdav.schedule.interval_12h" },
-  { label: "24小时", value: 1440, labelKey: "preference.data_backup.webdav.schedule.interval_24h" },
-  { label: "48小时", value: 2880, labelKey: "preference.data_backup.webdav.schedule.interval_48h" },
-  { label: "72小时", value: 4320, labelKey: "preference.data_backup.webdav.schedule.interval_72h" },
+  {
+    label: "1分钟",
+    labelKey: "preference.data_backup.webdav.schedule.interval_1m",
+    value: 1,
+  },
+  {
+    label: "5分钟",
+    labelKey: "preference.data_backup.webdav.schedule.interval_5m",
+    value: 5,
+  },
+  {
+    label: "15分钟",
+    labelKey: "preference.data_backup.webdav.schedule.interval_15m",
+    value: 15,
+  },
+  {
+    label: "30分钟",
+    labelKey: "preference.data_backup.webdav.schedule.interval_30m",
+    value: 30,
+  },
+  {
+    label: "1小时",
+    labelKey: "preference.data_backup.webdav.schedule.interval_1h",
+    value: 60,
+  },
+  {
+    label: "2小时",
+    labelKey: "preference.data_backup.webdav.schedule.interval_2h",
+    value: 120,
+  },
+  {
+    label: "6小时",
+    labelKey: "preference.data_backup.webdav.schedule.interval_6h",
+    value: 360,
+  },
+  {
+    label: "12小时",
+    labelKey: "preference.data_backup.webdav.schedule.interval_12h",
+    value: 720,
+  },
+  {
+    label: "24小时",
+    labelKey: "preference.data_backup.webdav.schedule.interval_24h",
+    value: 1440,
+  },
+  {
+    label: "48小时",
+    labelKey: "preference.data_backup.webdav.schedule.interval_48h",
+    value: 2880,
+  },
+  {
+    label: "72小时",
+    labelKey: "preference.data_backup.webdav.schedule.interval_72h",
+    value: 4320,
+  },
 ];
 
 const REPEAT_OPTIONS = [
-  { label: "每小时", value: "hourly" as const, labelKey: "preference.data_backup.webdav.schedule.repeat_hourly" },
-  { label: "每天", value: "daily" as const, labelKey: "preference.data_backup.webdav.schedule.repeat_daily" },
-  { label: "每周", value: "weekly" as const, labelKey: "preference.data_backup.webdav.schedule.repeat_weekly" },
-  { label: "每两周", value: "biweekly" as const, labelKey: "preference.data_backup.webdav.schedule.repeat_biweekly" },
-  { label: "每月", value: "monthly" as const, labelKey: "preference.data_backup.webdav.schedule.repeat_monthly" },
-  { label: "每季度", value: "quarterly" as const, labelKey: "preference.data_backup.webdav.schedule.repeat_quarterly" },
-  { label: "每半年", value: "semi_annual" as const, labelKey: "preference.data_backup.webdav.schedule.repeat_semi_annual" },
-  { label: "每年", value: "yearly" as const, labelKey: "preference.data_backup.webdav.schedule.repeat_yearly" },
+  {
+    label: "每小时",
+    labelKey: "preference.data_backup.webdav.schedule.repeat_hourly",
+    value: "hourly" as const,
+  },
+  {
+    label: "每天",
+    labelKey: "preference.data_backup.webdav.schedule.repeat_daily",
+    value: "daily" as const,
+  },
+  {
+    label: "每周",
+    labelKey: "preference.data_backup.webdav.schedule.repeat_weekly",
+    value: "weekly" as const,
+  },
+  {
+    label: "每两周",
+    labelKey: "preference.data_backup.webdav.schedule.repeat_biweekly",
+    value: "biweekly" as const,
+  },
+  {
+    label: "每月",
+    labelKey: "preference.data_backup.webdav.schedule.repeat_monthly",
+    value: "monthly" as const,
+  },
+  {
+    label: "每季度",
+    labelKey: "preference.data_backup.webdav.schedule.repeat_quarterly",
+    value: "quarterly" as const,
+  },
+  {
+    label: "每半年",
+    labelKey: "preference.data_backup.webdav.schedule.repeat_semi_annual",
+    value: "semi_annual" as const,
+  },
+  {
+    label: "每年",
+    labelKey: "preference.data_backup.webdav.schedule.repeat_yearly",
+    value: "yearly" as const,
+  },
 ];
 
 // ─── iOS-style scroll wheel column (infinite circular loop) ──
@@ -60,7 +155,9 @@ const WheelColumn = ({ items, value, onChange, format }: WheelColumnProps) => {
   // Triple the items for infinite loop: [...items, ...items, ...items]
   const tripled = [...items, ...items, ...items];
   const selectedIdx = items.indexOf(value);
-  const [currentIdx, setCurrentIdx] = useState(count + Math.max(0, selectedIdx));
+  const [currentIdx, setCurrentIdx] = useState(
+    count + Math.max(0, selectedIdx),
+  );
   const isScrolling = useRef(false);
 
   useEffect(() => {
@@ -98,19 +195,25 @@ const WheelColumn = ({ items, value, onChange, format }: WheelColumnProps) => {
       isScrolling.current = false;
       if (!containerRef.current) return;
       let finalIdx = idx;
-      
+
       // If we scroll into the first or third copy, jump instantly to the middle copy
       if (finalIdx < count) {
         finalIdx += count;
         containerRef.current.style.scrollSnapType = "none"; // temp disable snap for jump
         containerRef.current.scrollTop = finalIdx * ITEM_HEIGHT;
         // restore snap in next tick
-        setTimeout(() => { if (containerRef.current) containerRef.current.style.scrollSnapType = "y mandatory" }, 0);
+        setTimeout(() => {
+          if (containerRef.current)
+            containerRef.current.style.scrollSnapType = "y mandatory";
+        }, 0);
       } else if (finalIdx >= count * 2) {
         finalIdx -= count;
         containerRef.current.style.scrollSnapType = "none";
         containerRef.current.scrollTop = finalIdx * ITEM_HEIGHT;
-        setTimeout(() => { if (containerRef.current) containerRef.current.style.scrollSnapType = "y mandatory" }, 0);
+        setTimeout(() => {
+          if (containerRef.current)
+            containerRef.current.style.scrollSnapType = "y mandatory";
+        }, 0);
       }
 
       setCurrentIdx(finalIdx);
@@ -130,14 +233,14 @@ const WheelColumn = ({ items, value, onChange, format }: WheelColumnProps) => {
       {/* Center highlight band */}
       <div
         style={{
-          position: "absolute",
-          top: ITEM_HEIGHT * 2,
-          left: 0,
-          right: 0,
-          height: ITEM_HEIGHT,
           background: "var(--ant-color-primary-bg, rgba(22,119,255,0.08))",
           borderRadius: 6,
+          height: ITEM_HEIGHT,
+          left: 0,
           pointerEvents: "none",
+          position: "absolute",
+          right: 0,
+          top: ITEM_HEIGHT * 2,
           zIndex: 1,
         }}
       />
@@ -146,14 +249,14 @@ const WheelColumn = ({ items, value, onChange, format }: WheelColumnProps) => {
         ref={containerRef}
         style={{
           height: "100%",
-          overflowY: "auto",
-          paddingTop: ITEM_HEIGHT * 2,
-          paddingBottom: ITEM_HEIGHT * 2,
-          scrollSnapType: "y mandatory",
-          position: "relative",
-          zIndex: 2,
-          scrollbarWidth: "none",
           msOverflowStyle: "none",
+          overflowY: "auto",
+          paddingBottom: ITEM_HEIGHT * 2,
+          paddingTop: ITEM_HEIGHT * 2,
+          position: "relative",
+          scrollbarWidth: "none",
+          scrollSnapType: "y mandatory",
+          zIndex: 2,
         }}
       >
         {tripled.map((item, idx) => {
@@ -161,22 +264,27 @@ const WheelColumn = ({ items, value, onChange, format }: WheelColumnProps) => {
           return (
             <div
               key={idx}
-              style={{
-                height: ITEM_HEIGHT,
-                lineHeight: `${ITEM_HEIGHT}px`,
-                textAlign: "center",
-                fontSize: 14,
-                fontWeight: isSelected ? 600 : 400,
-                color: isSelected ? "var(--ant-color-primary, #1677ff)" : undefined,
-                opacity: isSelected ? 1 : 0.45,
-                cursor: "pointer",
-                scrollSnapAlign: "center",
-                transition: "color 0.15s, opacity 0.15s, font-weight 0.15s",
-              }}
               onClick={() => {
                 setCurrentIdx(idx);
                 onChange(tripled[idx]);
-                containerRef.current?.scrollTo({ top: idx * ITEM_HEIGHT, behavior: "smooth" });
+                containerRef.current?.scrollTo({
+                  behavior: "smooth",
+                  top: idx * ITEM_HEIGHT,
+                });
+              }}
+              style={{
+                color: isSelected
+                  ? "var(--ant-color-primary, #1677ff)"
+                  : undefined,
+                cursor: "pointer",
+                fontSize: 14,
+                fontWeight: isSelected ? 600 : 400,
+                height: ITEM_HEIGHT,
+                lineHeight: `${ITEM_HEIGHT}px`,
+                opacity: isSelected ? 1 : 0.45,
+                scrollSnapAlign: "center",
+                textAlign: "center",
+                transition: "color 0.15s, opacity 0.15s, font-weight 0.15s",
               }}
             >
               {format ? format(item) : String(item).padStart(2, "0")}
@@ -199,7 +307,12 @@ interface TimeWheelPickerProps {
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 const MINUTES = Array.from({ length: 60 }, (_, i) => i);
 
-const TimeWheelPicker = ({ hour, minute, onConfirm, showHour = true }: TimeWheelPickerProps) => {
+const TimeWheelPicker = ({
+  hour,
+  minute,
+  onConfirm,
+  showHour = true,
+}: TimeWheelPickerProps) => {
   const { t } = useTranslation();
   const [tempHour, setTempHour] = useState(hour);
   const [tempMinute, setTempMinute] = useState(minute);
@@ -217,27 +330,50 @@ const TimeWheelPicker = ({ hour, minute, onConfirm, showHour = true }: TimeWheel
 
   const content = (
     <div>
-      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+      <div style={{ alignItems: "center", display: "flex", gap: 4 }}>
         {showHour && (
-          <WheelColumn items={HOURS} value={tempHour} onChange={setTempHour} />
+          <WheelColumn items={HOURS} onChange={setTempHour} value={tempHour} />
         )}
         {showHour && (
-          <span style={{ fontSize: 16, fontWeight: 600, lineHeight: `${WHEEL_HEIGHT}px` }}>:</span>
+          <span
+            style={{
+              fontSize: 16,
+              fontWeight: 600,
+              lineHeight: `${WHEEL_HEIGHT}px`,
+            }}
+          >
+            :
+          </span>
         )}
-        <WheelColumn items={MINUTES} value={tempMinute} onChange={setTempMinute} />
+        <WheelColumn
+          items={MINUTES}
+          onChange={setTempMinute}
+          value={tempMinute}
+        />
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, alignItems: "center", padding: "0 4px" }}>
+      <div
+        style={{
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: 8,
+          padding: "0 4px",
+        }}
+      >
         <span
           onClick={handleNow}
-          style={{ 
-            color: "var(--ant-color-primary, #1677ff)", 
-            cursor: "pointer", 
+          style={{
+            color: "var(--ant-color-primary, #1677ff)",
+            cursor: "pointer",
             fontSize: 14,
             fontWeight: 500,
-            userSelect: "none"
+            userSelect: "none",
           }}
         >
-          {t("preference.data_backup.webdav.schedule.now", "此刻").replace(/\s/g, "")}
+          {t("preference.data_backup.webdav.schedule.now", "此刻").replace(
+            /\s/g,
+            "",
+          )}
         </span>
         <Button
           onClick={() => {
@@ -267,7 +403,7 @@ const TimeWheelPicker = ({ hour, minute, onConfirm, showHour = true }: TimeWheel
       placement="bottom"
       trigger="click"
     >
-      <Button style={{ width: 90, textAlign: "center" }}>{displayText}</Button>
+      <Button style={{ textAlign: "center", width: 90 }}>{displayText}</Button>
     </Popover>
   );
 };
@@ -303,7 +439,9 @@ const ScheduleConfig = ({ title, description, value, onChange }: Props) => {
           />
           {value.mode === "interval" && (
             <Select
-              onChange={(intervalMinutes: number) => onChange({ intervalMinutes })}
+              onChange={(intervalMinutes: number) =>
+                onChange({ intervalMinutes })
+              }
               options={intervalOptions}
               style={{ width: 90 }}
               value={value.intervalMinutes}
@@ -323,7 +461,9 @@ const ScheduleConfig = ({ title, description, value, onChange }: Props) => {
                 <TimeWheelPicker
                   hour={value.fixedHour}
                   minute={value.fixedMinute}
-                  onConfirm={(h, m) => onChange({ fixedHour: h, fixedMinute: m })}
+                  onConfirm={(h, m) =>
+                    onChange({ fixedHour: h, fixedMinute: m })
+                  }
                 />
               ) : (
                 <TimeWheelPicker

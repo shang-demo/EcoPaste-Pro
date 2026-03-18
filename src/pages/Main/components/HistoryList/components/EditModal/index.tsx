@@ -172,7 +172,11 @@ const EditModal = forwardRef<EditModalRef>((_, ref) => {
 
   // 判断是否使用Markdown编辑器
   const shouldUseMarkdownEditor = () => {
-    return selectedType.startsWith("rtf|") || selectedType.startsWith("html|") || selectedType === "text|markdown";
+    return (
+      selectedType.startsWith("rtf|") ||
+      selectedType.startsWith("html|") ||
+      selectedType === "text|markdown"
+    );
   };
 
   // 判断是否使用颜色选择器

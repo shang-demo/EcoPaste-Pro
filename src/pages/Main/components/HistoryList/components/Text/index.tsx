@@ -70,7 +70,13 @@ const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
 
     if (subtype?.startsWith("code_") && content.enableCodeHighlighting) {
       const language = subtype.replace("code_", "");
-      return <SyntaxHighlighter value={value} language={language} expanded={expanded} />;
+      return (
+        <SyntaxHighlighter
+          expanded={expanded}
+          language={language}
+          value={value}
+        />
+      );
     }
 
     return renderMarker();
@@ -80,12 +86,12 @@ const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
   const getLineClampStyle = (): CSSProperties => {
     if (subtype?.startsWith("code_") && content.enableCodeHighlighting) {
       if (expanded) return {};
-      
+
       return {
         display: "-webkit-box",
-        WebkitLineClamp: codeDisplayLines,
-        WebkitBoxOrient: "vertical",
         overflow: "hidden",
+        WebkitBoxOrient: "vertical",
+        WebkitLineClamp: codeDisplayLines,
       };
     }
 
@@ -93,34 +99,34 @@ const Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
       if (expanded) {
         return {
           color: "#1677FE",
-          wordBreak: "break-all",
           whiteSpace: "pre-wrap",
+          wordBreak: "break-all",
         };
       }
       return {
         color: "#1677FE",
         display: "-webkit-box",
-        WebkitLineClamp: displayLines,
-        WebkitBoxOrient: "vertical",
         overflow: "hidden",
-        wordBreak: "break-all",
+        WebkitBoxOrient: "vertical",
+        WebkitLineClamp: displayLines,
         whiteSpace: "pre-wrap",
+        wordBreak: "break-all",
       };
     }
 
     if (expanded) {
       return {
-        wordBreak: "break-all",
         whiteSpace: "pre-wrap",
+        wordBreak: "break-all",
       };
     }
     return {
       display: "-webkit-box",
-      WebkitLineClamp: displayLines,
-      WebkitBoxOrient: "vertical",
       overflow: "hidden",
-      wordBreak: "break-all",
+      WebkitBoxOrient: "vertical",
+      WebkitLineClamp: displayLines,
       whiteSpace: "pre-wrap",
+      wordBreak: "break-all",
     };
   };
 

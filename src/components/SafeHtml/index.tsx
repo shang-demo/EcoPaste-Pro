@@ -46,7 +46,7 @@ const SafeHtml = forwardRef<HTMLDivElement, SafeHtmlProps>((props, ref) => {
 
   const renderStyle: CSSProperties = {
     overflowWrap: "anywhere",
-    whiteSpace: "pre-wrap",
+    whiteSpace: "normal",
     wordBreak: "break-word",
     ...getLineClampStyle(),
   };

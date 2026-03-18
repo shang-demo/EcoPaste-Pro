@@ -6,16 +6,16 @@
  */
 import { subscribe } from "valtio";
 import { clipboardStore } from "@/stores/clipboard";
-import type { AutoBackupStrategy, ScheduleConfig } from "@/types/store";
+import type { ScheduleConfig } from "@/types/store";
+import { formatDate } from "@/utils/dayjs";
 import {
   backupToWebdav,
   getDefaultWebdavBackupFileName,
 } from "@/utils/webdavBackup";
-import { formatDate } from "@/utils/dayjs";
 
 // ─── Scheduler state ────────────────────────────────────────
 let fullTimer: ReturnType<typeof setTimeout> | null = null;
-let slimTimer: ReturnType<typeof setTimeout> | null = null;
+let liteTimer: ReturnType<typeof setTimeout> | null = null;
 let isRunning = false;
 
 // ─── Helpers ────────────────────────────────────────────────
@@ -130,13 +130,13 @@ function computeDelay(config: ScheduleConfig): number {
 
 // ─── Core scheduling ────────────────────────────────────────
 
-async function executeBackup(slim: boolean) {
+async function executeBackup(lite: boolean) {
   try {
-    const fileName = await getDefaultWebdavBackupFileName(undefined, slim);
-    await backupToWebdav(fileName, slim);
+    const fileName = await getDefaultWebdavBackupFileName(undefined, lite);
+    await backupToWebdav(fileName, lite);
     clipboardStore.webdav.lastBackupStatus = "success";
     clipboardStore.webdav.lastBackupAt = formatDate();
-    clipboardStore.webdav.lastBackupMode = slim ? "slim" : "full";
+    clipboardStore.webdav.lastBackupMode = lite ? "lite" : "full";
     clipboardStore.webdav.lastBackupError = undefined;
   } catch (error: any) {
     clipboardStore.webdav.lastBackupStatus = "error";
@@ -165,22 +165,22 @@ function scheduleFullBackup() {
   }, delay);
 }
 
-function scheduleSlimBackup() {
-  if (slimTimer) {
-    clearTimeout(slimTimer);
-    slimTimer = null;
+function scheduleLiteBackup() {
+  if (liteTimer) {
+    clearTimeout(liteTimer);
+    liteTimer = null;
   }
 
   const strategy = clipboardStore.webdav.autoStrategy;
-  if (strategy !== "slim" && strategy !== "combined") return;
+  if (strategy !== "lite" && strategy !== "combined") return;
 
-  const config = clipboardStore.webdav.slimSchedule;
+  const config = clipboardStore.webdav.liteSchedule;
   const delay = computeDelay(config);
 
-  slimTimer = setTimeout(async () => {
+  liteTimer = setTimeout(async () => {
     await executeBackup(true);
     // Re-schedule after completion
-    scheduleSlimBackup();
+    scheduleLiteBackup();
   }, delay);
 }
 
@@ -189,9 +189,9 @@ function stopAll() {
     clearTimeout(fullTimer);
     fullTimer = null;
   }
-  if (slimTimer) {
-    clearTimeout(slimTimer);
-    slimTimer = null;
+  if (liteTimer) {
+    clearTimeout(liteTimer);
+    liteTimer = null;
   }
 }
 
@@ -206,12 +206,12 @@ function applyStrategy() {
     case "full":
       scheduleFullBackup();
       break;
-    case "slim":
-      scheduleSlimBackup();
+    case "lite":
+      scheduleLiteBackup();
       break;
     case "combined":
       scheduleFullBackup();
-      scheduleSlimBackup();
+      scheduleLiteBackup();
       break;
   }
 }

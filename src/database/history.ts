@@ -12,7 +12,9 @@ export const selectHistory = async (
 ) => {
   const db = await getDatabase();
 
-  let qb = db.selectFrom("history").select(historyColumns as (keyof DatabaseSchemaHistory)[]) as QueryBuilder;
+  let qb = db
+    .selectFrom("history")
+    .select(historyColumns as (keyof DatabaseSchemaHistory)[]) as QueryBuilder;
 
   if (fn) {
     qb = fn(qb);
@@ -57,10 +59,10 @@ export const deleteHistory = async (
 
   const saveImagePath = getSaveImagePath();
 
-  if (typeof path === 'string' && !path.startsWith(saveImagePath)) {
-    const isAbs = /^[a-zA-Z]:[\\/]/.test(path) || path.startsWith('/');
+  if (typeof path === "string" && !path.startsWith(saveImagePath)) {
+    const isAbs = /^[a-zA-Z]:[\\/]/.test(path) || path.startsWith("/");
     if (!isAbs) {
-        path = join(saveImagePath, path);
+      path = join(saveImagePath, path);
     }
   }
 

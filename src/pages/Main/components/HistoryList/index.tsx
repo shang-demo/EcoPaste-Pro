@@ -10,9 +10,9 @@ import { useHistoryList } from "@/hooks/useHistoryList";
 import { useKeyboard } from "@/hooks/useKeyboard";
 import { useTauriListen } from "@/hooks/useTauriListen";
 import { MainContext } from "../..";
+import EditModal, { type EditModalRef } from "./components/EditModal";
 import Item from "./components/Item";
 import NoteModal, { type NoteModalRef } from "./components/NoteModal";
-import EditModal, { type EditModalRef } from "./components/EditModal";
 
 const HistoryList = () => {
   const { rootState } = useContext(MainContext);
@@ -86,8 +86,8 @@ const HistoryList = () => {
                 <Item
                   data={data}
                   deleteModal={deleteModal}
-                  handleNote={() => noteModelRef.current?.open(data.id)}
                   handleEdit={() => editModalRef.current?.open(data.id)}
+                  handleNote={() => noteModelRef.current?.open(data.id)}
                   index={index}
                 />
               </div>
@@ -103,8 +103,8 @@ const HistoryList = () => {
       <FloatButton.BackTop
         duration={0}
         onClick={scrollToTop}
-        target={() => scrollerRef.current!}
         style={{ bottom: 24 }}
+        target={() => scrollerRef.current!}
       />
 
       {contextHolder}

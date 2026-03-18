@@ -113,7 +113,7 @@ const Header: FC<HeaderProps> = (props) => {
       case "copy":
         return writeToClipboard(data);
       case "pastePlain":
-        return pasteToClipboard(data, true);
+        return pasteToClipboard(data, true, { pinned: rootState.pinned });
       case "note":
         return handleNote();
       case "star":
@@ -161,45 +161,56 @@ const Header: FC<HeaderProps> = (props) => {
     renderType(),
     renderCount(),
     renderPixel(),
-    dayjs(createTime).format("YY/M/D H:mm")
-  ].filter(Boolean).join(" · ");
+    dayjs(createTime).format("YY/M/D H:mm"),
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
-  const timeDisplay = dayjs().diff(dayjs(createTime), "days") > 3
-    ? dayjs(createTime).format("YY/M/D H:mm")
-    : dayjs(createTime).locale(i18n.language).fromNow();
+  const timeDisplay =
+    dayjs().diff(dayjs(createTime), "days") > 3
+      ? dayjs(createTime).format("YY/M/D H:mm")
+      : dayjs(createTime).locale(i18n.language).fromNow();
 
   return (
-    <div className="relative text-color-2 h-[22px] flex items-center">
-      <div 
-        className="flex-1 overflow-hidden whitespace-nowrap text-[11px] flex items-center gap-2"
+    <div className="relative flex h-[22px] items-center text-color-2">
+      <div
+        className="flex flex-1 items-center gap-2 overflow-hidden whitespace-nowrap text-[11px]"
         title={fullTextInfo}
       >
         {data.sourceAppIcon && (
           <img
             alt={data.sourceAppName}
-            className="h-3.5 w-3.5 rounded-sm object-contain flex-shrink-0"
+            className="h-3.5 w-3.5 flex-shrink-0 rounded-sm object-contain"
             src={data.sourceAppIcon}
             title={data.sourceAppName}
           />
         )}
         {!data.sourceAppIcon && data.sourceAppName && (
-          <span className="text-12 opacity-70 flex-shrink-0" title={data.sourceAppName}>
+          <span
+            className="flex-shrink-0 text-12 opacity-70"
+            title={data.sourceAppName}
+          >
             [{data.sourceAppName}]
           </span>
         )}
         <span className="flex-shrink-0">{renderType()}</span>
         <span className="flex-shrink-0">{renderCount()}</span>
-        {renderPixel() && <span className="flex-shrink-0">{renderPixel()}</span>}
+        {renderPixel() && (
+          <span className="flex-shrink-0">{renderPixel()}</span>
+        )}
         <span className="truncate">{timeDisplay}</span>
       </div>
 
       <Flex
         align="center"
-        className={clsx("absolute right-0 pl-2 opacity-0 transition group-hover:opacity-100", {
-          "bg-primary-1": rootState.activeId === id,
-          "bg-color-1": rootState.activeId !== id,
-          "opacity-100": rootState.activeId === id,
-        })}
+        className={clsx(
+          "absolute right-0 pl-2 opacity-0 transition group-hover:opacity-100",
+          {
+            "bg-color-1": rootState.activeId !== id,
+            "bg-primary-1": rootState.activeId === id,
+            "opacity-100": rootState.activeId === id,
+          },
+        )}
         gap={6}
         onDoubleClick={(event) => event.stopPropagation()}
       >
@@ -223,8 +234,7 @@ const Header: FC<HeaderProps> = (props) => {
             type !== "image"
           )
             return null;
-          if (key === "runCommand" && subtype !== "command")
-            return null;
+          if (key === "runCommand" && subtype !== "command") return null;
 
           const isFavorite = key === "star" && favorite;
 
@@ -233,11 +243,7 @@ const Header: FC<HeaderProps> = (props) => {
               className={clsx({ "text-gold!": isFavorite })}
               hoverable
               key={key}
-              name={
-                isFavorite
-                  ? activeIcon
-                  : icon
-              }
+              name={isFavorite ? activeIcon : icon}
               onClick={(event) => handleClick(event, key)}
               title={t(title)}
             />

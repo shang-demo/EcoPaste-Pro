@@ -21,6 +21,7 @@ const FilesDisplayLines = () => {
 
   return (
     <ProSelect
+      className="w-30"
       description={t(
         "preference.clipboard.display_settings.hints.files_display_lines",
       )}
@@ -28,9 +29,10 @@ const FilesDisplayLines = () => {
         clipboardStore.content.filesDisplayLines = value;
       }}
       options={options}
-      title={t("preference.clipboard.display_settings.label.files_display_lines")}
+      title={t(
+        "preference.clipboard.display_settings.label.files_display_lines",
+      )}
       value={content.filesDisplayLines || 3}
-      className="w-30"
     />
   );
 };

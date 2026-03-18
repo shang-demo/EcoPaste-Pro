@@ -130,6 +130,16 @@ pub fn get_active_window_process() -> Result<(String, String), String> {
 }
 
 #[tauri::command]
+pub fn get_clipboard_sequence_number() -> u32 {
+    #[cfg(target_os = "windows")]
+    unsafe {
+        windows::Win32::System::DataExchange::GetClipboardSequenceNumber()
+    }
+    #[cfg(not(target_os = "windows"))]
+    0
+}
+
+#[tauri::command]
 pub fn get_source_app_info() -> Result<SourceAppInfo, String> {
     #[cfg(target_os = "windows")]
     {

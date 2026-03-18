@@ -6,9 +6,9 @@ import { useContext, useRef } from "react";
 import { LISTEN_KEY } from "@/constants";
 import { selectHistory } from "@/database/history";
 import { MainContext } from "@/pages/Main";
+import { dayjs } from "@/utils/dayjs";
 import { isBlank } from "@/utils/is";
 import { getSaveImagePath, join } from "@/utils/path";
-import { dayjs } from "@/utils/dayjs";
 import { useTauriListen } from "./useTauriListen";
 
 interface Options {
@@ -44,40 +44,66 @@ export const useHistoryList = (options: Options) => {
         const isColorsGroup = group === "colors";
         const isEmailGroup = group === "email";
         const isCodeGroup = group === "code";
-        const isNormalGroup = group !== "all"
-          && !isFavoriteGroup
-          && !isLinksGroup
-          && !isColorsGroup
-          && !isCodeGroup;
+        const isNormalGroup =
+          group !== "all" &&
+          !isFavoriteGroup &&
+          !isLinksGroup &&
+          !isColorsGroup &&
+          !isEmailGroup &&
+          !isCodeGroup;
 
         return qb
           .$if(!!dateRange, (eb) => {
-            return eb.where((eb) => eb.or([
-              eb.and([
-                eb("createTime", ">=", dayjs(dateRange![0]).format("YYYY-MM-DD HH:mm:ss")),
-                eb("createTime", "<=", dayjs(dateRange![1]).format("YYYY-MM-DD HH:mm:ss"))
+            return eb.where((eb) =>
+              eb.or([
+                eb.and([
+                  eb(
+                    "createTime",
+                    ">=",
+                    dayjs(dateRange![0]).format("YYYY-MM-DD HH:mm:ss"),
+                  ),
+                  eb(
+                    "createTime",
+                    "<=",
+                    dayjs(dateRange![1]).format("YYYY-MM-DD HH:mm:ss"),
+                  ),
+                ]),
+                eb.and([
+                  eb("createTime", ">=", String(dateRange![0])),
+                  eb("createTime", "<=", String(dateRange![1])),
+                ]),
               ]),
-              eb.and([
-                eb("createTime", ">=", String(dateRange![0])),
-                eb("createTime", "<=", String(dateRange![1]))
-              ])
-            ]));
+            );
           })
           .$if(!!filterTags && filterTags.length < 12, (eb) => {
             return eb.where((eb) => {
               const conditions: any[] = [];
-              if (filterTags!.includes("text")) conditions.push(eb.and([eb("type", "=", "text"), eb("subtype", "is", null)]));
-              if (filterTags!.includes("rtf")) conditions.push(eb("type", "=", "rtf"));
-              if (filterTags!.includes("html")) conditions.push(eb("type", "=", "html"));
-              if (filterTags!.includes("image")) conditions.push(eb("type", "=", "image"));
-              if (filterTags!.includes("url")) conditions.push(eb("subtype", "=", "url"));
-              if (filterTags!.includes("code")) conditions.push(eb("subtype", "like", "code_%"));
-              if (filterTags!.includes("markdown")) conditions.push(eb("subtype", "=", "markdown"));
-              if (filterTags!.includes("path")) conditions.push(eb("subtype", "=", "path"));
-              if (filterTags!.includes("email")) conditions.push(eb("subtype", "=", "email"));
-              if (filterTags!.includes("color")) conditions.push(eb("subtype", "=", "color"));
-              if (filterTags!.includes("command")) conditions.push(eb("subtype", "=", "command"));
-              if (filterTags!.includes("files")) conditions.push(eb("type", "=", "files"));
+              if (filterTags!.includes("text"))
+                conditions.push(
+                  eb.and([eb("type", "=", "text"), eb("subtype", "is", null)]),
+                );
+              if (filterTags!.includes("rtf"))
+                conditions.push(eb("type", "=", "rtf"));
+              if (filterTags!.includes("html"))
+                conditions.push(eb("type", "=", "html"));
+              if (filterTags!.includes("image"))
+                conditions.push(eb("type", "=", "image"));
+              if (filterTags!.includes("url"))
+                conditions.push(eb("subtype", "=", "url"));
+              if (filterTags!.includes("code"))
+                conditions.push(eb("subtype", "like", "code_%"));
+              if (filterTags!.includes("markdown"))
+                conditions.push(eb("subtype", "=", "markdown"));
+              if (filterTags!.includes("path"))
+                conditions.push(eb("subtype", "=", "path"));
+              if (filterTags!.includes("email"))
+                conditions.push(eb("subtype", "=", "email"));
+              if (filterTags!.includes("color"))
+                conditions.push(eb("subtype", "=", "color"));
+              if (filterTags!.includes("command"))
+                conditions.push(eb("subtype", "=", "command"));
+              if (filterTags!.includes("files"))
+                conditions.push(eb("type", "=", "files"));
 
               return eb.or(conditions);
             });
@@ -109,7 +135,9 @@ export const useHistoryList = (options: Options) => {
         if (!isString(value)) continue;
 
         if (type === "image") {
-          const { getDefaultSaveImagePath } = await import("tauri-plugin-clipboard-x-api");
+          const { getDefaultSaveImagePath } = await import(
+            "tauri-plugin-clipboard-x-api"
+          );
           const defaultPath = join(await getDefaultSaveImagePath(), value);
           const customPath = join(getSaveImagePath(), value);
 
@@ -160,7 +188,12 @@ export const useHistoryList = (options: Options) => {
     await reload();
 
     rootState.activeId = rootState.list[0]?.id;
-  }, [rootState.group, rootState.search, rootState.dateRange, rootState.filterTags]);
+  }, [
+    rootState.group,
+    rootState.search,
+    rootState.dateRange,
+    rootState.filterTags,
+  ]);
 
   return {
     loadMore,

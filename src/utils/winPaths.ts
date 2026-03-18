@@ -62,7 +62,6 @@ const SYS_COMMANDS = new Set([
  */
 const SHELL_GUID_REGEX = /^shell:::\{[0-9A-Fa-f-]+\}$/;
 
-
 /**
  * 检测是否为环境变量路径 (%...%)
  */
@@ -87,7 +86,6 @@ export const isSysCommand = (value: string): boolean => {
   if (!isWin) return false;
   return SYS_COMMANDS.has(value.trim().toLowerCase());
 };
-
 
 /**
  * 检测是否为文件系统路径 (X:\... 或 \\server\...)

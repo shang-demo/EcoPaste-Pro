@@ -33,7 +33,7 @@
       },
       {
         "center": true,
-        "dragDropEnabled": false,
+        "dragDropEnabled": true,
         "height": 480,
         "hiddenTitle": true,
         "label": "preference",

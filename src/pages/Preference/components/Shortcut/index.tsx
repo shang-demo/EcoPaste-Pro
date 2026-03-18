@@ -14,6 +14,7 @@ const Shortcut = () => {
     <>
       <ProList header={t("preference.shortcut.shortcut.title")}>
         <ProShortcut
+          supportDoubleClick={true}
           onChange={(value) => {
             globalStore.shortcut.clipboard = value;
           }}

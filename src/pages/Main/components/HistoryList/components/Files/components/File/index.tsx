@@ -34,7 +34,7 @@ const File: FC<FileProps> = (props) => {
 
       if (isLinux) return;
 
-      state.icon = await icon(path, { size: 256, savePath: getSaveIconPath() });
+      state.icon = await icon(path, { savePath: getSaveIconPath(), size: 256 });
     } catch {
       state.fullName = await fullName(path);
     }
@@ -46,9 +46,7 @@ const File: FC<FileProps> = (props) => {
     }
 
     return (
-      <div
-        className={clsx("h-7", { "py-0.5": count > 1 })}
-      >
+      <div className={clsx("h-7", { "py-0.5": count > 1 })}>
         <Flex align="center" className="h-full" gap={4}>
           {state.icon && <LocalImage className="h-full" src={state.icon} />}
 

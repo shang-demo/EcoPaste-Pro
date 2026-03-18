@@ -1,4 +1,9 @@
-import { Menu, MenuItem, type MenuItemOptions, PredefinedMenuItem } from "@tauri-apps/api/menu";
+import {
+  Menu,
+  MenuItem,
+  type MenuItemOptions,
+  PredefinedMenuItem,
+} from "@tauri-apps/api/menu";
 import { downloadDir } from "@tauri-apps/api/path";
 import { copyFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { openPath, openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
@@ -35,11 +40,11 @@ export const useContextMenu = (props: UseContextMenuProps) => {
   const deleteLocalFileRef = useRef(true);
 
   const pasteAsText = () => {
-    return pasteToClipboard(data, true);
+    return pasteToClipboard(data, true, { pinned: rootState.pinned });
   };
 
   const pasteAction = () => {
-    return pasteToClipboard(data);
+    return pasteToClipboard(data, undefined, { pinned: rootState.pinned });
   };
 
   const handleFavorite = async () => {
@@ -136,12 +141,16 @@ export const useContextMenu = (props: UseContextMenuProps) => {
           createElement(
             "div",
             { style: { marginTop: 8 } },
-            createElement(Checkbox, {
-              defaultChecked: true,
-              onChange: (e: any) => {
-                deleteLocalFileRef.current = e.target.checked;
+            createElement(
+              Checkbox,
+              {
+                defaultChecked: true,
+                onChange: (e: any) => {
+                  deleteLocalFileRef.current = e.target.checked;
+                },
               },
-            }, t("clipboard.hints.delete_local_file")),
+              t("clipboard.hints.delete_local_file"),
+            ),
           ),
       );
 
@@ -210,7 +219,10 @@ export const useContextMenu = (props: UseContextMenuProps) => {
     const { hideWindow } = await import("@/plugins/window");
 
     await writeText(result);
-    hideWindow();
+    // 窗口置顶（钉住）时不关闭窗口
+    if (!rootState.pinned) {
+      hideWindow();
+    }
     await paste();
   };
 
@@ -320,11 +332,7 @@ export const useContextMenu = (props: UseContextMenuProps) => {
 
     // 文件类型
     if (type === "files") {
-      return [
-        [copy, pastePath],
-        [showInExplorer],
-        [fav, note, del],
-      ];
+      return [[copy, pastePath], [showInExplorer], [fav, note, del]];
     }
 
     // 富文本类型
@@ -387,27 +395,15 @@ export const useContextMenu = (props: UseContextMenuProps) => {
     }
 
     if (isMarkdown) {
-      return [
-        [copy, paste],
-        [exportFile],
-        [edit, fav, note, del],
-      ];
+      return [[copy, paste], [exportFile], [edit, fav, note, del]];
     }
 
     if (isCode) {
-      return [
-        [copy, paste],
-        [exportFile],
-        [edit, fav, note, del],
-      ];
+      return [[copy, paste], [exportFile], [edit, fav, note, del]];
     }
 
     // 默认：纯文本
-    return [
-      [copy, paste],
-      [exportFile],
-      [edit, fav, note, del],
-    ];
+    return [[copy, paste], [exportFile], [edit, fav, note, del]];
   };
 
   const handleContextMenu = async (event: MouseEvent) => {
@@ -433,7 +429,10 @@ export const useContextMenu = (props: UseContextMenuProps) => {
         {
           action: async () => {
             await writeText(selectedText);
-            hideWindow();
+            // 窗口置顶（钉住）时不关闭窗口
+            if (!rootState.pinned) {
+              hideWindow();
+            }
             await paste();
           },
           text: t("clipboard.button.context_menu.paste_selection"),

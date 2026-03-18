@@ -48,10 +48,10 @@ export interface State {
 }
 
 const INITIAL_STATE: State = {
+  expandedIds: [],
   group: "all",
   list: [],
   quickPasteKeys: [],
-  expandedIds: [],
 };
 
 interface MainContextValue {
@@ -138,7 +138,7 @@ const Main = () => {
 
     if (!data) return;
 
-    pasteToClipboard(data, true);
+    pasteToClipboard(data, true, { pinned: state.pinned });
   });
 
   // 监听快速粘贴的快捷键
@@ -150,7 +150,7 @@ const Main = () => {
 
       const data = state.list[index - 1];
 
-      pasteToClipboard(data);
+      pasteToClipboard(data, undefined, { pinned: state.pinned });
     },
     [state.quickPasteKeys],
   );

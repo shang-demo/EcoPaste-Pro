@@ -1,165 +1,131 @@
-import { emit } from "@tauri-apps/api/event";
 import { tempDir } from "@tauri-apps/api/path";
 import { remove } from "@tauri-apps/plugin-fs";
-import { platform } from "@tauri-apps/plugin-os";
-import { compress, decompress, fullName } from "tauri-plugin-fs-pro-api";
-import { LISTEN_KEY } from "@/constants";
+import { decompress, fullName } from "tauri-plugin-fs-pro-api";
 import {
   createSlimDatabase,
   downloadWebdavBackup,
-  getWebdavComputerName,
   listWebdavBackups,
   uploadWebdavBackup,
 } from "@/plugins/webdav";
-import { globalStore } from "@/stores/global";
-import { dayjs, formatDate } from "@/utils/dayjs";
 import {
   getBackupExtname,
   getSaveDatabasePath,
   getSaveDataPath,
-  getSaveImagePath,
-  getSaveStorePath,
   join,
 } from "@/utils/path";
-import { wait } from "@/utils/shared";
-import { restoreStore, saveStore } from "@/utils/store";
+import { saveStore } from "@/utils/store";
+import { hotReloadData } from "@/utils/hotReload";
+import {
+  cleanupPaths,
+  compressStaging,
+  copyStoreToStaging,
+  createFullBackupArchive,
+  createStagingDir,
+} from "./backupArchive";
+import type { BackupMode } from "./backupFilename";
+import { buildBackupBasename } from "./backupFilename";
 
-let cachedComputerName: string | undefined;
-
-export const buildBackupTime = () => {
-  return formatDate(dayjs(), "YYYYMMDDHHmmss");
-};
-
-const normalizeComputerName = (value?: string) => {
-  const name = value?.trim();
-  if (!name) return "Unknown";
-  return name;
-};
-
-const resolveComputerName = async (value?: string) => {
-  if (value?.trim()) {
-    cachedComputerName = value.trim();
-    return cachedComputerName;
-  }
-  if (cachedComputerName) return cachedComputerName;
-  const fetched = await getWebdavComputerName();
-  cachedComputerName = normalizeComputerName(fetched);
-  return cachedComputerName;
-};
-
-const capitalizeFirst = (value: string) => {
-  if (!value) return value;
-  return value.slice(0, 1).toUpperCase() + value.slice(1);
-};
-
-export const getDefaultWebdavFilename = async (computerName?: string, slim = false) => {
-  const appName = globalStore.env.appName || "EcoPaste";
-  const device = await resolveComputerName(computerName);
-  const deviceName = normalizeComputerName(device).replace(/\s+/g, "");
-  const os = capitalizeFirst(await platform());
-  const timestamp = buildBackupTime();
-  const mode = slim ? "slim" : "full";
-  return `${appName}.${timestamp}.${deviceName}.${os}.${mode}`;
-};
-
+/**
+ * Normalize WebDAV backup file name (ensure correct extension)
+ */
 export const normalizeWebdavBackupFileName = (fileName: string) => {
-  const extname = getBackupExtname();
-  if (fileName.endsWith(`.${extname}`)) return fileName;
+  const ext = getBackupExtname();
+  if (fileName.endsWith(`.${ext}`)) return fileName;
   if (fileName.toLowerCase().endsWith(".zip")) {
-    return `${fileName.slice(0, -4)}.${extname}`;
+    return `${fileName.slice(0, -4)}.${ext}`;
   }
-  return `${fileName}.${extname}`;
+  return `${fileName}.${ext}`;
 };
 
-export const getDefaultWebdavBackupFileName = async (computerName?: string, slim = false) => {
-  return normalizeWebdavBackupFileName(
-    await getDefaultWebdavFilename(computerName, slim),
-  );
+/**
+ * Generate default WebDAV backup filename (without extension)
+ */
+export const getDefaultWebdavFilename = async (
+  computerName?: string,
+  lite = false,
+) => {
+  const mode: BackupMode = lite ? "lite" : "full";
+  return buildBackupBasename(mode, computerName);
 };
 
+/**
+ * Generate default WebDAV backup filename (with extension)
+ */
+export const getDefaultWebdavBackupFileName = async (
+  computerName?: string,
+  lite = false,
+) => {
+  const mode: BackupMode = lite ? "lite" : "full";
+  const basename = await buildBackupBasename(mode, computerName);
+  return normalizeWebdavBackupFileName(basename);
+};
+
+/**
+ * List WebDAV backup files
+ */
 export const listWebdavBackupFiles = async () => {
   const list = await listWebdavBackups();
-  const extname = getBackupExtname();
-  return list.filter((item) => item.fileName.endsWith(`.${extname}`));
+  const ext = getBackupExtname();
+  return list.filter((item) => item.fileName.endsWith(`.${ext}`));
 };
 
+/**
+ * Create WebDAV backup archive
+ */
 export const createWebdavBackupArchive = async (
   fileName: string,
-  slim: boolean,
+  lite: boolean,
 ) => {
-  await saveStore(true);
-
-  const basePath = getSaveDataPath();
   const tempRoot = await tempDir();
   const archivePath = join(tempRoot, fileName);
-  const cleanupPaths: string[] = [];
 
-  if (slim) {
-    // Create a staging directory that mirrors basePath structure
-    // so the zip contains the same filenames as a normal export
-    const stagingDir = join(tempRoot, `slim-staging-${Date.now()}`);
-    await import("@tauri-apps/plugin-fs").then((fs) => fs.mkdir(stagingDir, { recursive: true }));
-    cleanupPaths.push(stagingDir);
+  if (lite) {
+    await saveStore(true);
+    const stagingDir = await createStagingDir("lite-staging");
+    const cleanupList = [stagingDir];
 
-    // Copy store file to staging dir with original name
-    const storePath = await getSaveStorePath(true);
-    const storeBasename = await fullName(storePath);
-    const stagingStorePath = join(stagingDir, storeBasename);
-    await import("@tauri-apps/plugin-fs").then((fs) => fs.copyFile(storePath, stagingStorePath));
+    const storeBasename = await copyStoreToStaging(stagingDir);
 
-    // Create slim DB in staging dir with original DB name
     const sourceDbPath = await getSaveDatabasePath();
     const dbBasename = await fullName(sourceDbPath);
     const stagingDbPath = join(stagingDir, dbBasename);
     await createSlimDatabase(sourceDbPath, stagingDbPath);
 
-    await compress(stagingDir, archivePath, {
-      includes: [storeBasename, dbBasename],
-    });
-  } else {
-    const includes: string[] = [await fullName(await getSaveStorePath(true))];
-    includes.push(
-      await fullName(getSaveImagePath()),
-      await fullName(await getSaveDatabasePath()),
-    );
-    await compress(basePath, archivePath, { includes });
+    await compressStaging(stagingDir, archivePath, [storeBasename, dbBasename]);
+
+    return { archivePath, cleanupPaths: cleanupList };
   }
 
-  return {
-    archivePath,
-    cleanupPaths,
-  };
+  const result = await createFullBackupArchive(archivePath);
+  return { archivePath: result.archivePath, cleanupPaths: result.cleanupList };
 };
 
-export const cleanupBackupFiles = async (paths: string[]) => {
-  for (const path of paths) {
-    try {
-      await remove(path);
-    } catch (error) {
-      void error;
-    }
-  }
-};
+/**
+ * Cleanup backup temp files
+ */
+export { cleanupPaths as cleanupBackupFiles };
 
-export const backupToWebdav = async (fileName: string, slim: boolean) => {
+/**
+ * Backup to WebDAV
+ */
+export const backupToWebdav = async (fileName: string, lite: boolean) => {
   const resolvedName = normalizeWebdavBackupFileName(fileName);
-  const { archivePath, cleanupPaths } = await createWebdavBackupArchive(
-    resolvedName,
-    slim,
-  );
+  const { archivePath, cleanupPaths: cleanups } =
+    await createWebdavBackupArchive(resolvedName, lite);
   try {
     await uploadWebdavBackup(archivePath, resolvedName);
   } finally {
-    await cleanupBackupFiles([archivePath, ...cleanupPaths]);
+    await cleanupPaths([archivePath, ...cleanups]);
   }
 };
 
+/**
+ * Restore from WebDAV backup
+ */
 export const restoreWebdavBackup = async (fileName: string) => {
   const path = await downloadWebdavBackup(fileName);
-  emit(LISTEN_KEY.CLOSE_DATABASE);
-  await wait();
-  await decompress(path, getSaveDataPath());
-  await remove(path);
-  await restoreStore(true);
-  emit(LISTEN_KEY.REFRESH_CLIPBOARD_LIST);
+  await hotReloadData(async () => {
+    await decompress(path, getSaveDataPath());
+    await remove(path);
+  });
 };

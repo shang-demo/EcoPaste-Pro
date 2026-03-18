@@ -1,6 +1,4 @@
-import { relaunch } from "@tauri-apps/plugin-process";
 import { useMount, useReactive } from "ahooks";
-import clsx from "clsx";
 import {
   Button,
   Checkbox,
@@ -14,6 +12,7 @@ import {
   Tooltip,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import clsx from "clsx";
 import { filesize } from "filesize";
 import { type Key, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,7 +20,6 @@ import { useSnapshot } from "valtio";
 import ProList from "@/components/ProList";
 import ProListItem from "@/components/ProListItem";
 import UnoIcon from "@/components/UnoIcon";
-import ScheduleConfigComponent from "./ScheduleConfig";
 import {
   cancelWebdavUpload,
   deleteWebdavBackup,
@@ -33,7 +31,6 @@ import {
 import { clipboardStore } from "@/stores/clipboard";
 import type { AutoBackupStrategy } from "@/types/store";
 import { formatDate } from "@/utils/dayjs";
-import { wait } from "@/utils/shared";
 import {
   backupToWebdav,
   getDefaultWebdavFilename,
@@ -42,6 +39,7 @@ import {
   restoreWebdavBackup,
 } from "@/utils/webdavBackup";
 import type { State } from "../..";
+import ScheduleConfigComponent from "./ScheduleConfig";
 
 interface WebdavFormState {
   address: string;
@@ -97,7 +95,12 @@ const Webdav = (props: { state: State }) => {
       form.path = config.path;
     }
     try {
-      setBackupName(await getDefaultWebdavFilename(undefined, clipboardStore.webdav.manualSlim));
+      setBackupName(
+        await getDefaultWebdavFilename(
+          undefined,
+          clipboardStore.webdav.manualLite,
+        ),
+      );
     } catch (error: any) {
       message.error(String(error));
     }
@@ -131,7 +134,9 @@ const Webdav = (props: { state: State }) => {
       });
       const duration = Date.now() - start;
       setTestSuccess(true);
-      message.success(t("preference.data_backup.webdav.hints.test_success") + ` (延迟: ${duration}ms)`);
+      message.success(
+        `${t("preference.data_backup.webdav.hints.test_success")} (延迟: ${duration}ms)`,
+      );
       setTimeout(() => setTestSuccess(undefined), 3000);
     } catch (error: any) {
       setTestSuccess(false);
@@ -151,18 +156,29 @@ const Webdav = (props: { state: State }) => {
     try {
       const name = await getWebdavComputerName();
       setComputerName(name);
-      setBackupName(await getDefaultWebdavFilename(name, clipboardStore.webdav.manualSlim));
+      setBackupName(
+        await getDefaultWebdavFilename(name, clipboardStore.webdav.manualLite),
+      );
     } catch (error: any) {
       message.error(String(error));
       try {
-        setBackupName(await getDefaultWebdavFilename(computerName, clipboardStore.webdav.manualSlim));
+        setBackupName(
+          await getDefaultWebdavFilename(
+            computerName,
+            clipboardStore.webdav.manualLite,
+          ),
+        );
       } catch (innerError: any) {
         message.error(String(innerError));
       }
     }
   };
 
-  const updateStatus = (status: "success" | "error", error?: string, mode?: "full" | "slim") => {
+  const updateStatus = (
+    status: "success" | "error",
+    error?: string,
+    mode?: "full" | "lite",
+  ) => {
     clipboardStore.webdav.lastBackupStatus = status;
     clipboardStore.webdav.lastBackupAt = formatDate();
     clipboardStore.webdav.lastBackupError = error;
@@ -188,17 +204,17 @@ const Webdav = (props: { state: State }) => {
     let name = backupName.trim();
     if (!name) return;
     // Inject mode marker if not already present
-    if (!name.includes(".slim") && !name.includes(".full")) {
-      name = `${name}.${webdav.manualSlim ? "slim" : "full"}`;
+    if (!name.includes(".lite") && !name.includes(".full")) {
+      name = `${name}.${webdav.manualLite ? "lite" : "full"}`;
     }
     const fileName = normalizeWebdavBackupFileName(name);
 
     try {
       setUploading(true);
       await saveConfig();
-      await backupToWebdav(fileName, webdav.manualSlim);
+      await backupToWebdav(fileName, webdav.manualLite);
       await trimBackups();
-      updateStatus("success", undefined, webdav.manualSlim ? "slim" : "full");
+      updateStatus("success", undefined, webdav.manualLite ? "lite" : "full");
       message.success(t("preference.data_backup.webdav.hints.backup_success"));
       setBackupOpen(false);
     } catch (error: any) {
@@ -265,8 +281,6 @@ const Webdav = (props: { state: State }) => {
       state.spinning = true;
       await restoreWebdavBackup(fileName);
       message.success(t("preference.data_backup.webdav.hints.restore_success"));
-      await wait(300);
-      await relaunch();
     } catch (error: any) {
       message.error(String(error));
     } finally {
@@ -280,8 +294,8 @@ const Webdav = (props: { state: State }) => {
         cancelText: t("preference.data_backup.webdav.button.cancel_restore"),
         centered: true,
         content: t("preference.data_backup.webdav.hints.confirm_delete"),
-        okText: t("preference.data_backup.webdav.button.delete"),
         okButtonProps: { danger: true },
+        okText: t("preference.data_backup.webdav.button.delete"),
         onCancel: () => resolve(false),
         onOk: () => resolve(true),
       });
@@ -302,11 +316,14 @@ const Webdav = (props: { state: State }) => {
       Modal.confirm({
         cancelText: t("preference.data_backup.webdav.button.cancel_restore"),
         centered: true,
-        content: t("preference.data_backup.webdav.hints.confirm_delete_selected", {
-          total: selectedKeys.length,
-        }),
-        okText: t("preference.data_backup.webdav.button.delete"),
+        content: t(
+          "preference.data_backup.webdav.hints.confirm_delete_selected",
+          {
+            total: selectedKeys.length,
+          },
+        ),
         okButtonProps: { danger: true },
+        okText: t("preference.data_backup.webdav.button.delete"),
         onCancel: () => resolve(false),
         onOk: () => resolve(true),
       });
@@ -390,10 +407,12 @@ const Webdav = (props: { state: State }) => {
       onHeaderCell: () => ({ className: "text-center" }),
       render: (value: string) => {
         const parts = value.split(".");
-        // Mode is at parts[4]: 'slim' or 'full' (format: AppName.TIMESTAMP.DEVICE.OS.MODE.ext)
+        // Mode is at parts[4]: 'lite' or 'full' (format: AppName.TIMESTAMP.DEVICE.OS.MODE.ext)
         const mode = parts[4];
-        if (mode === "slim") return t("preference.data_backup.webdav.table.mode_slim", "精简");
-        if (mode === "full") return t("preference.data_backup.webdav.table.mode_full", "完整");
+        if (mode === "lite")
+          return t("preference.data_backup.webdav.table.mode_lite", "轻量");
+        if (mode === "full")
+          return t("preference.data_backup.webdav.table.mode_full", "完整");
         return "-";
       },
       title: t("preference.data_backup.webdav.table.mode", "模式"),
@@ -416,9 +435,9 @@ const Webdav = (props: { state: State }) => {
   const backupMode = webdav.lastBackupMode;
   const statusText =
     status === "success"
-      ? (backupMode === "slim"
-          ? t("preference.data_backup.webdav.status.slim_success", "精简备份成功")
-          : t("preference.data_backup.webdav.status.full_success", "完整备份成功"))
+      ? backupMode === "lite"
+        ? t("preference.data_backup.webdav.status.lite_success", "轻量备份成功")
+        : t("preference.data_backup.webdav.status.full_success", "完整备份成功")
       : status === "error"
         ? t("preference.data_backup.webdav.status.failed")
         : t("preference.data_backup.webdav.status.never");
@@ -480,28 +499,40 @@ const Webdav = (props: { state: State }) => {
               addonAfter={
                 <div
                   className={clsx(
-                    "webdav-test transition-colors flex h-[30px] cursor-pointer select-none items-center px-3 min-w-[72px] justify-center",
+                    "webdav-test flex h-[30px] min-w-[72px] cursor-pointer select-none items-center justify-center px-3 transition-colors",
                     {
                       "text-green-6": testSuccess === true,
                       "text-red-6": testSuccess === false,
-                    }
+                    },
                   )}
                   onClick={handleTest}
                 >
                   {testing ? (
                     <Flex align="center" gap={4}>
-                      <UnoIcon className="animate-spin" name="i-lucide:loader-2" />
-                      {t("preference.data_backup.webdav.button.testing", "正在测试...")}
+                      <UnoIcon
+                        className="animate-spin"
+                        name="i-lucide:loader-2"
+                      />
+                      {t(
+                        "preference.data_backup.webdav.button.testing",
+                        "正在测试...",
+                      )}
                     </Flex>
                   ) : testSuccess === true ? (
                     <Flex align="center" gap={4}>
                       <UnoIcon name="i-lucide:check" />
-                      {t("preference.data_backup.webdav.button.test_success_short", "连接成功")}
+                      {t(
+                        "preference.data_backup.webdav.button.test_success_short",
+                        "连接成功",
+                      )}
                     </Flex>
                   ) : testSuccess === false ? (
                     <Flex align="center" gap={4}>
                       <UnoIcon name="i-lucide:x" />
-                      {t("preference.data_backup.webdav.button.test_failed_short", "连接失败")}
+                      {t(
+                        "preference.data_backup.webdav.button.test_failed_short",
+                        "连接失败",
+                      )}
                     </Flex>
                   ) : (
                     testLabel
@@ -550,53 +581,105 @@ const Webdav = (props: { state: State }) => {
         </ProListItem>
 
         <ProListItem
-          description={t("preference.data_backup.webdav.hints.auto_strategy", "设置 WebDAV 自动备份启用状态和备份模式")}
-          title={t("preference.data_backup.webdav.label.auto_strategy", "自动备份策略")}
+          description={t(
+            "preference.data_backup.webdav.hints.auto_strategy",
+            "设置 WebDAV 自动备份启用状态和备份模式",
+          )}
+          title={t(
+            "preference.data_backup.webdav.label.auto_strategy",
+            "自动备份策略",
+          )}
         >
           <Select
             onChange={(value: AutoBackupStrategy) => {
               clipboardStore.webdav.autoStrategy = value;
             }}
             options={[
-              { label: t("preference.data_backup.webdav.strategy.off", "关闭"), value: "off" },
-              { label: t("preference.data_backup.webdav.strategy.full", "完整备份"), value: "full" },
-              { label: t("preference.data_backup.webdav.strategy.slim", "精简备份"), value: "slim" },
-              { label: t("preference.data_backup.webdav.strategy.combined", "组合备份"), value: "combined" },
+              {
+                label: t("preference.data_backup.webdav.strategy.off", "关闭"),
+                value: "off",
+              },
+              {
+                label: t(
+                  "preference.data_backup.webdav.strategy.full",
+                  "完整备份",
+                ),
+                value: "full",
+              },
+              {
+                label: t(
+                  "preference.data_backup.webdav.strategy.lite",
+                  "轻量备份",
+                ),
+                value: "lite",
+              },
+              {
+                label: t(
+                  "preference.data_backup.webdav.strategy.combined",
+                  "组合备份",
+                ),
+                value: "combined",
+              },
             ]}
             style={{ width: 120 }}
             value={webdav.autoStrategy}
           />
         </ProListItem>
 
-        {(webdav.autoStrategy === "full" || webdav.autoStrategy === "slim") && (
+        {(webdav.autoStrategy === "full" || webdav.autoStrategy === "lite") && (
           <ScheduleConfigComponent
-            description={t("preference.data_backup.webdav.hints.schedule", "设置 WebDAV 自动备份的时间")}
+            description={t(
+              "preference.data_backup.webdav.hints.schedule",
+              "设置 WebDAV 自动备份的时间",
+            )}
             onChange={(patch) => {
-              const key = webdav.autoStrategy === "full" ? "fullSchedule" : "slimSchedule";
+              const key =
+                webdav.autoStrategy === "full"
+                  ? "fullSchedule"
+                  : "liteSchedule";
               Object.assign(clipboardStore.webdav[key], patch);
             }}
-            title={t("preference.data_backup.webdav.label.schedule", "备份周期")}
-            value={webdav.autoStrategy === "full" ? webdav.fullSchedule : webdav.slimSchedule}
+            title={t(
+              "preference.data_backup.webdav.label.schedule",
+              "备份周期",
+            )}
+            value={
+              webdav.autoStrategy === "full"
+                ? webdav.fullSchedule
+                : webdav.liteSchedule
+            }
           />
         )}
 
         {webdav.autoStrategy === "combined" && (
           <>
             <ScheduleConfigComponent
-              description={t("preference.data_backup.webdav.hints.full_schedule", "设置 WebDAV 自动完整备份的时间")}
+              description={t(
+                "preference.data_backup.webdav.hints.full_schedule",
+                "设置 WebDAV 自动完整备份的时间",
+              )}
               onChange={(patch) => {
                 Object.assign(clipboardStore.webdav.fullSchedule, patch);
               }}
-              title={t("preference.data_backup.webdav.label.full_schedule", "完整备份周期")}
+              title={t(
+                "preference.data_backup.webdav.label.full_schedule",
+                "完整备份周期",
+              )}
               value={webdav.fullSchedule}
             />
             <ScheduleConfigComponent
-              description={t("preference.data_backup.webdav.hints.slim_schedule", "设置 WebDAV 自动精简备份的时间")}
+              description={t(
+                "preference.data_backup.webdav.hints.lite_schedule",
+                "设置 WebDAV 自动轻量备份的时间",
+              )}
               onChange={(patch) => {
-                Object.assign(clipboardStore.webdav.slimSchedule, patch);
+                Object.assign(clipboardStore.webdav.liteSchedule, patch);
               }}
-              title={t("preference.data_backup.webdav.label.slim_schedule", "精简备份周期")}
-              value={webdav.slimSchedule}
+              title={t(
+                "preference.data_backup.webdav.label.lite_schedule",
+                "轻量备份周期",
+              )}
+              value={webdav.liteSchedule}
             />
           </>
         )}
@@ -658,18 +741,28 @@ const Webdav = (props: { state: State }) => {
               value={backupName}
             />
           </Space>
-          <Tooltip title={t("preference.data_backup.webdav.hints.slim", "备份时跳过图片和文件(夹)类型的内容，仅保留文本等其他内容与设置以提升速度")}>
+          <Tooltip
+            title={t(
+              "preference.data_backup.webdav.hints.lite",
+              "备份时跳过图片和文件(夹)类型的内容，仅保留文本等其他内容与设置以提升速度",
+            )}
+          >
             <Checkbox
-              checked={webdav.manualSlim}
+              checked={webdav.manualLite}
               onChange={async (e) => {
-                clipboardStore.webdav.manualSlim = e.target.checked;
+                clipboardStore.webdav.manualLite = e.target.checked;
                 // Regenerate filename with updated mode marker
                 try {
-                  setBackupName(await getDefaultWebdavFilename(computerName, e.target.checked));
+                  setBackupName(
+                    await getDefaultWebdavFilename(
+                      computerName,
+                      e.target.checked,
+                    ),
+                  );
                 } catch {}
               }}
             >
-              {t("preference.data_backup.webdav.label.slim", "精简备份")}
+              {t("preference.data_backup.webdav.label.lite", "轻量备份")}
             </Checkbox>
           </Tooltip>
         </Space>

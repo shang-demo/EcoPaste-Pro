@@ -66,7 +66,7 @@ export const hexToRgb = (
   const g = Number.parseInt(expandedHex.substring(2, 4), 16);
   const b = Number.parseInt(expandedHex.substring(4, 6), 16);
 
-  return { r, g, b };
+  return { b, g, r };
 };
 
 /**
@@ -137,7 +137,7 @@ export const parseColorString = (
       const rgb = cmykToRgb(c, m, y, k);
       return {
         format: "cmyk",
-        values: { c, m, y, k, rgb, hex: rgbToHex(rgb.r, rgb.g, rgb.b) },
+        values: { c, hex: rgbToHex(rgb.r, rgb.g, rgb.b), k, m, rgb, y },
       };
     }
   }
@@ -155,7 +155,7 @@ export const parseColorString = (
 
       return {
         format: "rgb",
-        values: { r, g, b, hex },
+        values: { b, g, hex, r },
       };
     }
   }
@@ -171,7 +171,7 @@ export const parseColorString = (
     if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255) {
       return {
         format: "rgb",
-        values: { r, g, b, hex: rgbToHex(r, g, b) },
+        values: { b, g, hex: rgbToHex(r, g, b), r },
       };
     }
   }
@@ -199,7 +199,7 @@ export const parseColorString = (
       const rgb = cmykToRgb(c, m, y, k);
       return {
         format: "cmyk",
-        values: { c, m, y, k, rgb, hex: rgbToHex(rgb.r, rgb.g, rgb.b) },
+        values: { c, hex: rgbToHex(rgb.r, rgb.g, rgb.b), k, m, rgb, y },
       };
     }
   }
@@ -256,7 +256,7 @@ export const cmykToRgb = (
   const g = Math.round(255 * (1 - mDecimal) * (1 - kDecimal));
   const b = Math.round(255 * (1 - yDecimal) * (1 - kDecimal));
 
-  return { r, g, b };
+  return { b, g, r };
 };
 
 /**
@@ -282,7 +282,7 @@ export const rgbToCmyk = (r: number, g: number, b: number): CmykValue => {
 
   // 如果K为1，则所有颜色都是黑色
   if (k === 1) {
-    return { c: 0, m: 0, y: 0, k: 100 };
+    return { c: 0, k: 100, m: 0, y: 0 };
   }
 
   // 计算CMY分量
@@ -291,5 +291,5 @@ export const rgbToCmyk = (r: number, g: number, b: number): CmykValue => {
   const y = Math.round(((1 - bDecimal - k) / (1 - k)) * 100);
   const kPercent = Math.round(k * 100);
 
-  return { c, m, y, k: kPercent };
+  return { c, k: kPercent, m, y };
 };

@@ -83,7 +83,29 @@ Installation Guide: [Click here](https://ecopaste.cn/guide/install#linux)
 
 > This repository is a fork of [EcoPasteHub/EcoPaste](https://github.com/EcoPasteHub/EcoPaste) with the following usability improvements and update history:
 
-### M05.x <font size="-2" color="gray">(Based on original v0.6.0-beta.3 branch)</font>
+### Pro.5.x <font size="-2" color="gray">(Based on the original v0.6.0-beta.3 branch)</font>
+
+#### Pro.5.2
+
+##### ✨ New Features
+- **📦 Local Data Filter Support**: A completely refactored local data export engine with powerful multi-dimensional filtering, supporting scope (All/Favorites) + 12 content types. The exported backup matches exactly the filtered contents and associated images, ensuring accurate and compact backups that can be seamlessly restored.
+- **🏷️ Global Backup Naming Convention**: Unified the backup file naming convention for both WebDAV and local exports (`AppName.Timestamp.DeviceName.OS.Mode.Extension`). Introduced 4 clear backup modes: `full`, `lite`, `filter`, and `favs` (Favorites only) for more organized file management.
+- **📥 Drag and Drop Backup Import**: Added the ability to directly drag and drop local backup files to restore data. Following a successful import, the clipboard list is automatically refreshed instantly, achieving a seamless restoration without manual application restart.
+- **⌨️ Double-Click Modifier Key Activation**: Expanding beyond traditional keyboard shortcuts, this feature introduces the ability to open the clipboard window by double-tapping a modifier key (`Ctrl`, `Alt`, or `Shift`). The settings panel has been updated with a clear 'Record / Double-Click' segmented control, elegantly separating spatial shortcuts from time-based double-clicks for an intuitive configuration process.
+
+##### 💫 Experience Optimizations
+- **✂️ Automatic Edge Space Trimming**: When copying emails, links, paths, or color values, any accidental leading or trailing white spaces are intelligently stripped. This prevents such content from being misclassified as generic `Plain Text`, guaranteeing accurate type recognition.
+- **🎨 Refined Code Syntax Highlighting**: Upgraded code syntax highlighting with customized color schemes mirroring the professional aesthetics of VS Code, vastly improving readability. Implemented subtle UI refinements to smoothly blend code blocks with content cards for an immersive reading experience.
+- **🔄 Seamless Import & Restore Hot Reloading**: Comprehensively overhauled the data loading mechanisms used when `Importing Backup Files` and `Restoring from WebDAV`. This enables an instantaneous, non-disruptive hot reloading experience where the clipboard history refeshes immediately after data recovery, eliminating the need to restart the application.
+- **🛡️ Precise Clipboard Change Detection**: Optimized background listener logic to intelligently filter out "false copy" events triggered by third-party applications or the OS. The application now solely reacts to authentic clipboard content modifications, running smoother and more reliably in the background.
+- **🔍 Enhanced Source Recognition for Duplicate Copies**: When copying the exact same text or image across different applications sequentially, the source application's icon and name are now accurately updated, and the repeated item properly returns to the top of the list, providing a behavior that aligns perfectly with user intuition.
+- **🔒 Prevent Erroneous Modifications to Source Activity**: Resolved an issue in `Auto Sort` mode where a paste operation would inaccurately alter an existing clipboard record's source application, ensuring absolute fidelity in historical origin tracking.
+- **📊 Preserved Table Border Rendering**: When copying tabular data from applications like Excel, a safe, native, and non-conflicting base gridline styling is intelligently injected to exponentially increase the structural integrity and readability of the data presentation inside the application.
+- **✂️ Optimized HTML Content Rendering**: Addressed the issue of excessive, unused vertical padding appearing at the top and bottom of list cards when copying certain HTML content. Irrelevant white space is now automatically pruned to deliver a clean, compact, and beautiful layout.
+
+##### 🐞 Bug Fixes
+- **📧 Resolved Empty Email Group Display**: Fixed a stubborn issue where selecting the `Email` group occasionally displayed an empty list, failing to render the genuinely categorized email records.
+- **📌 Fixed Pinned Window Abnormal Closure Upon Pasting**: Completely resolved the behavioral bug where pasting content would forcibly and prematurely close the main clipboard window even when the `Pin Window (Stay on Top)` toggle was actively enabled.
 
 #### M05.1
 

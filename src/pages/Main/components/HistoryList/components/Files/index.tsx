@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { useSnapshot } from "valtio";
-import type { DatabaseSchemaHistory } from "@/types/database";
 import { clipboardStore } from "@/stores/clipboard";
+import type { DatabaseSchemaHistory } from "@/types/database";
 import { isImage } from "@/utils/is";
 import File from "./components/File";
 
@@ -25,11 +25,7 @@ const Files = forwardRef<HTMLDivElement, FilesProps>((props, ref) => {
   const maxHeight = expanded ? undefined : filesDisplayLines * 28;
 
   return (
-    <div
-      ref={ref}
-      className="overflow-hidden"
-      style={{ maxHeight }}
-    >
+    <div className="overflow-hidden" ref={ref} style={{ maxHeight }}>
       {value.map((path) => {
         return <File count={value.length} key={path} path={path} />;
       })}
@@ -40,4 +36,3 @@ const Files = forwardRef<HTMLDivElement, FilesProps>((props, ref) => {
 Files.displayName = "Files";
 
 export default Files;
-

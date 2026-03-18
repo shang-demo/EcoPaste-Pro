@@ -40,6 +40,21 @@ html {
   overflow-wrap: anywhere;
 }
 
+.safe-html table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.safe-html table th,
+.safe-html table td {
+  border: 1px solid var(--ant-color-border-secondary, #f0f0f0);
+  padding: 6px 13px;
+}
+
+.safe-html table th {
+  font-weight: 600;
+}
+
 .webdav-password {
   display: inline-flex;
 

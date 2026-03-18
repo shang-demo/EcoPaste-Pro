@@ -21,6 +21,7 @@ const CodeDisplayLines = () => {
 
   return (
     <ProSelect
+      className="w-30"
       description={t(
         "preference.clipboard.display_settings.hints.code_display_lines",
       )}
@@ -28,9 +29,10 @@ const CodeDisplayLines = () => {
         clipboardStore.content.codeDisplayLines = value;
       }}
       options={options}
-      title={t("preference.clipboard.display_settings.label.code_display_lines")}
+      title={t(
+        "preference.clipboard.display_settings.label.code_display_lines",
+      )}
       value={content.codeDisplayLines || 6}
-      className="w-30"
     />
   );
 };

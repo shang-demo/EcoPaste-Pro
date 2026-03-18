@@ -1,6 +1,6 @@
 mod core;
 
-use core::{prevent_default, setup};
+use core::{prevent_default, setup, shortcut_hook};
 use tauri::{generate_context, Builder, Manager, WindowEvent};
 use tauri_plugin_autostart::MacosLauncher;
 use tauri_plugin_eco_window::{show_main_window, MAIN_WINDOW_LABEL, PREFERENCE_WINDOW_LABEL};
@@ -42,6 +42,8 @@ pub fn run() {
             let preference_window = app.get_webview_window(PREFERENCE_WINDOW_LABEL).unwrap();
 
             setup::default(&app_handle, main_window.clone(), preference_window.clone());
+
+            shortcut_hook::start_double_modifier_listener(app_handle.clone());
 
             Ok(())
         })
@@ -111,6 +113,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             crate::core::source_app::get_source_app_info,
+            crate::core::source_app::get_clipboard_sequence_number,
             expand_env_vars
         ])
         .build(generate_context!())

@@ -5,13 +5,13 @@ import ProSwitch from "@/components/ProSwitch";
 import { clipboardStore } from "@/stores/clipboard";
 import AudioSettings from "./components/AudioSettings";
 import AutoPaste from "./components/AutoPaste";
+import CodeDisplayLines from "./components/CodeDisplayLines";
 import DisplayLines from "./components/DisplayLines";
+import FilesDisplayLines from "./components/FilesDisplayLines";
 import ImageDisplayHeight from "./components/ImageDisplayHeight";
 import OperationButton from "./components/OperationButton";
 import SearchPosition from "./components/SearchPosition";
 import WindowPosition from "./components/WindowPosition";
-import CodeDisplayLines from "./components/CodeDisplayLines";
-import FilesDisplayLines from "./components/FilesDisplayLines";
 
 const ClipboardSettings = () => {
   const { window, search, content } = useSnapshot(clipboardStore);
@@ -104,7 +104,9 @@ const ClipboardSettings = () => {
           onChange={(value) => {
             clipboardStore.content.enableTextSelection = value;
           }}
-          title={t("preference.clipboard.content_settings.label.enable_text_selection")}
+          title={t(
+            "preference.clipboard.content_settings.label.enable_text_selection",
+          )}
           value={content.enableTextSelection}
         />
 
@@ -149,7 +151,9 @@ const ClipboardSettings = () => {
           onChange={(value) => {
             clipboardStore.content.enableCodeHighlighting = value;
           }}
-          title={t("preference.clipboard.content_settings.label.enable_code_highlighting")}
+          title={t(
+            "preference.clipboard.content_settings.label.enable_code_highlighting",
+          )}
           value={content.enableCodeHighlighting}
         />
 
@@ -160,7 +164,9 @@ const ClipboardSettings = () => {
           onChange={(value) => {
             clipboardStore.content.recordSourceApp = value;
           }}
-          title={t("preference.clipboard.content_settings.label.record_source_app")}
+          title={t(
+            "preference.clipboard.content_settings.label.record_source_app",
+          )}
           value={content.recordSourceApp}
         />
 

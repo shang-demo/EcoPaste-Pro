@@ -19,7 +19,10 @@ export const deepAssign = <T, S>(target: T, source: S): T & S => {
  * @param target 目标对象（基准）
  * @param source 源对象（从文件读取）
  */
-export const strictDeepAssign = <T extends Record<string, any>>(target: T, source: any): T => {
+export const strictDeepAssign = <T extends Record<string, any>>(
+  target: T,
+  source: any,
+): T => {
   // 遍历 target 中的每一个 key，作为允许合并的“已知字段”
   for (const key of Object.keys(target)) {
     // 如果 source 中没有这个值，则保持 target 原样
@@ -36,7 +39,11 @@ export const strictDeepAssign = <T extends Record<string, any>>(target: T, sourc
       typeof targetVal === "object" &&
       !isArray(targetVal)
     ) {
-      if (sourceVal !== null && typeof sourceVal === "object" && !isArray(sourceVal)) {
+      if (
+        sourceVal !== null &&
+        typeof sourceVal === "object" &&
+        !isArray(sourceVal)
+      ) {
         strictDeepAssign(targetVal, sourceVal);
       }
     } else {

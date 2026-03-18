@@ -98,11 +98,11 @@ export interface ClipboardStore {
     deleteConfirm: boolean;
     autoSort: boolean;
     showOriginalContent: boolean;
-    displayLines: number;      // 显示行数，默认 4
-    codeDisplayLines: number;  // 代码显示行数，默认 6
+    displayLines: number; // 显示行数，默认 4
+    codeDisplayLines: number; // 代码显示行数，默认 6
     filesDisplayLines: number; // 文件/文件夹显示行数，默认 3
     imageDisplayHeight: number; // 图片显示高度（像素），默认 100
-    defaultCollapse: boolean;  // 默认收起，默认 false
+    defaultCollapse: boolean; // 默认收起，默认 false
   };
 
   // 历史记录
@@ -116,11 +116,11 @@ export interface ClipboardStore {
   webdav: {
     autoStrategy: AutoBackupStrategy;
     fullSchedule: ScheduleConfig;
-    slimSchedule: ScheduleConfig;
-    manualSlim: boolean;
+    liteSchedule: ScheduleConfig;
+    manualLite: boolean;
     maxBackups: number;
     lastBackupAt?: string;
-    lastBackupMode?: "full" | "slim";
+    lastBackupMode?: "full" | "lite";
     lastBackupStatus?: "none" | "success" | "error";
     lastBackupError?: string;
   };
@@ -135,7 +135,15 @@ export interface ScheduleConfig {
   // 定时模式
   fixedHour: number;
   fixedMinute: number;
-  fixedRepeat: "hourly" | "daily" | "weekly" | "biweekly" | "monthly" | "quarterly" | "semi_annual" | "yearly";
+  fixedRepeat:
+    | "hourly"
+    | "daily"
+    | "weekly"
+    | "biweekly"
+    | "monthly"
+    | "quarterly"
+    | "semi_annual"
+    | "yearly";
   // 间隔模式 (分钟)
   intervalMinutes: number;
   // cron 模式
@@ -143,4 +151,4 @@ export interface ScheduleConfig {
 }
 
 // 自动备份策略
-export type AutoBackupStrategy = "off" | "full" | "slim" | "combined";
+export type AutoBackupStrategy = "off" | "full" | "lite" | "combined";
