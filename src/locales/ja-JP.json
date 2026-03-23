@@ -161,7 +161,7 @@
           "delete_confirm": "削除確認",
           "display_lines": "テキスト表示行数",
           "enable_code_highlighting": "コードの構文ハイライト",
-          "enable_text_selection": "部分テキスト選択",
+          "enable_text_selection": "選択して貼り付け",
           "expand": "展開",
           "image_display_height": "画像表示高さ",
           "image_display_height_unit": "ピクセル",
@@ -500,7 +500,7 @@
       },
       "shortcut": {
         "hints": {
-          "paste_as_plain": "選択範囲をプレーンテキスト、パスとして貼り付けます。",
+          "paste_as_plain": "ウィンドウを非表示にして貼り付けると最新の内容がプレーンテキストになり、ウィンドウをアクティブにして選択した状態で貼り付けると選択部分がプレーンテキストになります",
           "quick_paste": "ウィンドウを隠す際、数字キーの組み合わせで最初の9項目を素早く貼り付ける"
         },
         "label": {

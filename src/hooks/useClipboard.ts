@@ -60,6 +60,54 @@ export const useClipboard = (
           search: text?.value,
         } as DatabaseSchemaHistory;
 
+        let sourceAppName = "";
+        if (clipboardStore.content.recordSourceApp) {
+          try {
+            const appInfo: any = await invoke("get_source_app_info");
+            if (appInfo?.appName) {
+              sourceAppName = appInfo.appName;
+              data.sourceAppName = appInfo.appName;
+              if (appInfo.appIcon) {
+                data.sourceAppIcon = appInfo.appIcon;
+              }
+            }
+          } catch {}
+        }
+
+        let effectiveImage = image;
+
+        /**
+         * 判定策略：底层"识别是什么"与上层"如何利用"完全解耦，同时拥有 image + html 时，根据多个特征区分表格 vs 网页图片
+         * - 1. 来源程序 `sourceAppName` 是真正的专属表格办公软件（一票否决权，百分百定性）
+         * - 2. 存在 `rtf` 格式：因为浏览器单纯复制图片时，不会同时存在 rtf 数据
+         * - 3. html 内容中含有 `<table>` 标签，单纯的网页图片复制只会有一层 <img> 标签
+         * - 4. html 内部出现 Excel 或 WPS 独有的 `xmlns:x` 命名空间或 `class="xl... / et..."` 的表格专属类名
+         */
+        const isSpreadsheetWithImage =
+          effectiveImage &&
+          html &&
+          (/(excel\.exe|excel|wps\.exe|et\.exe)/i.test(sourceAppName) ||
+            rtf ||
+            /<table[\s>]/i.test(html.value) ||
+            /xmlns:x="urn:schemas-microsoft-com/i.test(html.value) ||
+            /class="(xl\d+|et\d+)/i.test(html.value));
+
+        if (isSpreadsheetWithImage) {
+          // 如果已定性为表格，择清理 readImage() 产生的孤儿图片文件，避免磁盘塞满垃圾，此处直接删掉。
+          if (effectiveImage?.value) {
+            try {
+              const { remove: removeFile, exists: fileExists } = await import(
+                "@tauri-apps/plugin-fs"
+              );
+              if (await fileExists(effectiveImage.value)) {
+                await removeFile(effectiveImage.value);
+              }
+            } catch {}
+          }
+          // 降维打击：“复制为纯文本”开关打开之后，抹除图片属性，从而平滑地跌入下方 html 和 text 的判断分支中，完美解耦。
+          effectiveImage = undefined;
+        }
+
         if (files) {
           // 如果文件都是图片且有图片数据，优先识别为图片（如截图工具）
           const imageExtensions =
@@ -68,8 +116,8 @@ export const useClipboard = (
             files.value.length > 0 &&
             files.value.every((f: string) => imageExtensions.test(f));
 
-          if (allFilesAreImages && image) {
-            Object.assign(data, image, {
+          if (allFilesAreImages && effectiveImage) {
+            Object.assign(data, effectiveImage, {
               group: "image",
             });
           } else {
@@ -78,20 +126,10 @@ export const useClipboard = (
               search: files.value.join(" "),
             });
           }
-        } else if (image) {
-          // Excel/Sheets 复制单元格时会同时提供 image + html + text
-          // 此时应优先使用 html 而非 image
-          if (html && text && !copyPlain) {
-            html.value = html.value.trim();
-            Object.assign(data, html);
-          } else {
-            // 还原 v0.5.0 逻辑：图片优先于 HTML/RTF
-            // 从网页复制图片时，浏览器会同时提供 HTML + Image 格式
-            // 优先识别为图片，避免被误判为 HTML
-            Object.assign(data, image, {
-              group: "image",
-            });
-          }
+        } else if (effectiveImage) {
+          Object.assign(data, effectiveImage, {
+            group: "image",
+          });
         } else if (html && !copyPlain) {
           html.value = html.value.trim();
           Object.assign(data, html);
@@ -151,18 +189,6 @@ export const useClipboard = (
               value: trimmedText,
             });
           }
-        }
-
-        if (clipboardStore.content.recordSourceApp) {
-          try {
-            const appInfo: any = await invoke("get_source_app_info");
-            if (appInfo?.appName) {
-              data.sourceAppName = appInfo.appName;
-              if (appInfo.appIcon) {
-                data.sourceAppIcon = appInfo.appIcon;
-              }
-            }
-          } catch {}
         }
 
         const sqlData = cloneDeep(data);
@@ -269,7 +295,7 @@ export const useClipboard = (
         }
 
         // 内部粘贴回声拦截（仅对未匹配项，如图片因文件名重生导致无法 matched）
-        // 短期标记：拦截所有类型的即时回声；长期标记：拦截图片的延迟回声（插件异步处理可能延迟数十秒）
+        // 短期标记：拦截所有类型的即时回声；长期标记：拦截图片的延迟回声（插件异步处理可能会延迟数秒）
         if (
           (window as any).__isEcoPastePasting ||
           (type === "image" && (window as any).__isEcoPasteImageEcho)

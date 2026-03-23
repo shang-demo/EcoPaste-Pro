@@ -86,18 +86,18 @@
       }
     },
     "shortcut_key": {
+      "double_alt": "双击 Alt",
+      "double_cmd": "双击 Cmd",
+      "double_ctrl": "双击 Ctrl",
+      "double_shift": "双击 Shift",
       "hints": {
         "click": "点击录制快捷键",
         "press": "按下录制快捷键"
       },
       "mode": {
-        "record": "录制",
-        "double": "双击"
-      },
-      "double_ctrl": "双击 Ctrl",
-      "double_alt": "双击 Alt",
-      "double_shift": "双击 Shift",
-      "double_cmd": "双击 Cmd"
+        "double": "双击",
+        "record": "录制"
+      }
     },
     "tray": {
       "label": {
@@ -172,7 +172,7 @@
           "delete_confirm": "删除确认",
           "display_lines": "文本显示行数",
           "enable_code_highlighting": "代码语法高亮",
-          "enable_text_selection": "文本片段选取",
+          "enable_text_selection": "划词粘贴",
           "expand": "展开",
           "image_display_height": "图片显示高度",
           "image_display_height_unit": "像素",
@@ -515,7 +515,7 @@
       },
       "shortcut": {
         "hints": {
-          "paste_as_plain": "激活窗口时，将选中的内容粘贴为纯文本或路径",
+          "paste_as_plain": "隐藏窗口粘贴最新内容为纯文本，激活窗口粘贴选中内容为纯文本",
           "quick_paste": "隐藏窗口时，使用数字组合键快速粘贴前九项"
         },
         "label": {

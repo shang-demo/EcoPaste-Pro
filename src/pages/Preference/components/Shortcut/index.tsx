@@ -34,7 +34,7 @@ const Shortcut = () => {
 
         <ProShortcut
           description={t("preference.shortcut.shortcut.hints.paste_as_plain")}
-          isSystem={false}
+          isSystem={true}
           onChange={(value) => {
             globalStore.shortcut.pastePlain = value;
           }}

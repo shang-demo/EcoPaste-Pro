@@ -84,7 +84,13 @@ pub fn get_previous_window() -> Option<i32> {
 pub async fn paste<R: Runtime>(app_handle: AppHandle<R>, window: WebviewWindow<R>) {
     set_macos_panel(&app_handle, &window, MacOSPanelStatus::Resign);
 
-    let script = r#"tell application "System Events" to keystroke "v" using command down"#;
+    let script = r#"tell application "System Events"
+        key up command
+        key up option
+        key up control
+        key up shift
+        keystroke "v" using command down
+    end tell"#;
 
     Command::new("osascript")
         .args(["-e", script])

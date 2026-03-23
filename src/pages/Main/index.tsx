@@ -131,15 +131,29 @@ const Main = () => {
   });
 
   // 监听粘贴为纯文本的快捷键
-  useKeyPress(shortcut.pastePlain, (event) => {
-    event.preventDefault();
+  useRegister(
+    async () => {
+      const { getCurrentWebviewWindow } = await import(
+        "@tauri-apps/api/webviewWindow"
+      );
+      const { isLinux } = await import("@/utils/is");
+      const appWindow = getCurrentWebviewWindow();
 
-    const data = find(state.list, { id: state.activeId });
+      let focused = await appWindow.isFocused();
 
-    if (!data) return;
+      if (isLinux) {
+        focused = await appWindow.isVisible();
+      }
 
-    pasteToClipboard(data, true, { pinned: state.pinned });
-  });
+      const targetId = focused ? state.activeId : state.list[0]?.id;
+      const data = find(state.list, { id: targetId });
+
+      if (!data) return;
+
+      pasteToClipboard(data, true, { pinned: state.pinned });
+    },
+    [shortcut.pastePlain],
+  );
 
   // 监听快速粘贴的快捷键
   useRegister(

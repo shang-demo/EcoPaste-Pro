@@ -164,7 +164,7 @@
           "delete_confirm": "Delete Confirmation",
           "display_lines": "Text Display Lines",
           "enable_code_highlighting": "Code Syntax Highlighting",
-          "enable_text_selection": "Select Partial Text",
+          "enable_text_selection": "Select & Paste",
           "expand": "Expand",
           "image_display_height": "Image Display Height",
           "image_display_height_unit": "px",
@@ -503,7 +503,7 @@
       },
       "shortcut": {
         "hints": {
-          "paste_as_plain": "Paste selections as plain text or paths when the window is activated",
+          "paste_as_plain": "Paste latest content as plain text in the hidden window, and paste selected content as plain text in the active window.",
           "quick_paste": "Use number key combos to quickly paste top 9 items when window is hidden"
         },
         "label": {

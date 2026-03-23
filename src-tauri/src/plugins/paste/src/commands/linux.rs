@@ -129,6 +129,15 @@ pub async fn paste() {
 
     wait(100);
 
+    dispatch(&EventType::KeyRelease(Key::ControlLeft));
+    dispatch(&EventType::KeyRelease(Key::ControlRight));
+    dispatch(&EventType::KeyRelease(Key::Alt));
+    dispatch(&EventType::KeyRelease(Key::AltGr));
+    dispatch(&EventType::KeyRelease(Key::ShiftLeft));
+    dispatch(&EventType::KeyRelease(Key::ShiftRight));
+    dispatch(&EventType::KeyRelease(Key::MetaLeft));
+    dispatch(&EventType::KeyRelease(Key::MetaRight));
+
     dispatch(&EventType::KeyPress(Key::ShiftLeft));
     dispatch(&EventType::KeyPress(Key::Insert));
     dispatch(&EventType::KeyRelease(Key::Insert));

@@ -85,6 +85,24 @@ Installation Guide: [Click here](https://ecopaste.cn/guide/install#linux)
 
 ### Pro.5.x <font size="-2" color="gray">(Based on the original v0.6.0-beta.3 branch)</font>
 
+#### Pro.5.3
+
+##### ✨ New Features
+- **🚀 Global Shortcut for Paste as Plain Text**: Completely refactored the "Paste as Plain Text" shortcut capability, breaking the limitation of in-app use only and officially upgrading it to a global shortcut. One-click paste of the latest clipboard content when the app is in the background, and paste selected content when in the foreground, offering much more flexibility.
+
+##### 💫 Experience Optimizations
+- **📊 Refactored Clipboard Type Recognition Engine**: Fixed the issue where copying data from office software (Excel/WPS) was mistakenly saved as an image when the "Copy as Plain Text" mode was enabled.
+- **🎯 Smart Detection for Composite Table Data**: Addressing the extremely similar content characteristics when copying data from office software (Excel/WPS) vs. copying images from browsers, introduced a four-dimensional detection system to achieve absolutely precise targeting and clean extraction of office table data.
+- **🧹 Auto-Cleanup of Temporary Table Files**: Automatically deletes useless temporary images after recognizing tables, preventing residual files on the disk.
+- **🔘 Optimized Default Action Buttons**: Enabled 9 common quick actions by default and adjusted their order (Preferences → Clipboard → Action Buttons), comprehensively enhancing the out-of-the-box experience for new users.
+- **🖱️ Optimized Word Selection Paste**: Renamed "Text Snippet Selection" to "Word Selection Paste" (Preferences → Clipboard → Action Buttons) for a more intuitive expression of the feature; moved its position below "Auto Paste" in the preferences for clearer configuration.
+- **📊 Storage Stats View Space Optimization**: Deeply streamlined the redundant padding whitespace in the storage stats page, dynamically narrowing the font size and width of the left stats summary area to provide maximum visualization space for the horizontal charts.
+
+##### 🐞 Bug Fixes
+- **⌨️ Fixed Invalid Paste as Plain Text Shortcut**: Deeply refactored the underlying system-level key injection logic, resolving unresponsiveness caused by key anomalies during "Paste as Plain Text" and "Quick Paste", making paste operations more stable.
+- **📈 Fixed Stats Chart Edge Overflow**: Completely fixed the layout overflow issue where the right-side content of the stats chart was forcibly pushed out of bounds under extremely narrow window sizes.
+- **⏰ Storage Stats Time Picker Adaptive Fix**: Fixed the layout overflow issue where the exceedingly long date range selection box was pushed out of the window bounds when selecting a "Custom" time range.
+
 #### Pro.5.2
 
 ##### ✨ New Features

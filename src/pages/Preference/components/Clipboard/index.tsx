@@ -75,6 +75,19 @@ const ClipboardSettings = () => {
 
         <ProSwitch
           description={t(
+            "preference.clipboard.content_settings.hints.enable_text_selection",
+          )}
+          onChange={(value) => {
+            clipboardStore.content.enableTextSelection = value;
+          }}
+          title={t(
+            "preference.clipboard.content_settings.label.enable_text_selection",
+          )}
+          value={content.enableTextSelection}
+        />
+
+        <ProSwitch
+          description={t(
             "preference.clipboard.content_settings.hints.copy_as_plain",
           )}
           onChange={(value) => {
@@ -95,19 +108,6 @@ const ClipboardSettings = () => {
             "preference.clipboard.content_settings.label.paste_as_plain",
           )}
           value={content.pastePlain}
-        />
-
-        <ProSwitch
-          description={t(
-            "preference.clipboard.content_settings.hints.enable_text_selection",
-          )}
-          onChange={(value) => {
-            clipboardStore.content.enableTextSelection = value;
-          }}
-          title={t(
-            "preference.clipboard.content_settings.label.enable_text_selection",
-          )}
-          value={content.enableTextSelection}
         />
 
         <ProSwitch

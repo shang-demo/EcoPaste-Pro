@@ -546,7 +546,13 @@ const StorageStats = ({ refreshKey }: StorageStatsProps) => {
     <ProList header={t("preference.storage.storage_stats.title", "存储统计")}>
       {/* 时间范围居左显示，自定义日期输入框跟在其后，分段控制器在最左侧 */}
       <List.Item style={{ borderBottom: "none", paddingBottom: 0 }}>
-        <Flex align="center" className="w-full" justify="space-between">
+        <Flex
+          align="center"
+          className="w-full"
+          gap={12}
+          justify="space-between"
+          wrap="wrap"
+        >
           <Segmented<"all" | "favorites">
             onChange={handleScopeChange}
             options={[
@@ -573,20 +579,20 @@ const StorageStats = ({ refreshKey }: StorageStatsProps) => {
             size="middle"
             value={scope}
           />
-          <Flex align="center" gap={8}>
-            <span className="text-sm">
+          <Flex align="center" gap={8} justify="flex-end" wrap="wrap">
+            <span className="flex-shrink-0 whitespace-nowrap text-sm">
               {t("preference.storage.storage_stats.time_range", "时间范围")}
             </span>
             <Select
               onChange={handleTimeRangeChange}
               options={timeRangeOptions}
-              style={{ width: 110 }}
+              style={{ width: 100 }}
               value={timeRange}
             />
             {timeRange === "custom" && (
               <RangePicker
                 onChange={handleCustomRangeChange as any}
-                style={{ width: 260 }}
+                style={{ width: 240 }}
                 value={customRange}
               />
             )}
@@ -596,20 +602,15 @@ const StorageStats = ({ refreshKey }: StorageStatsProps) => {
 
       {/* 柱状图 + 已占用统计 (固定像素高度) */}
       <List.Item>
-        <div
-          className="w-full rounded-lg p-5"
-          style={{
-            background: "var(--ant-color-fill-quaternary)",
-          }}
-        >
-          <Flex align="stretch" className="h-full" gap={24}>
+        <div className="w-full py-2">
+          <Flex align="stretch" className="h-full" gap={12}>
             {/* 左侧: 已占用空间 + 历史记录数量 */}
             <Flex
               align="center"
               className="flex-shrink-0"
-              gap={32}
+              gap={16}
               justify="center"
-              style={{ minWidth: 120 }}
+              style={{ minWidth: 84 }}
               vertical
             >
               <div className="text-center">
@@ -620,7 +621,7 @@ const StorageStats = ({ refreshKey }: StorageStatsProps) => {
                   )}
                 </div>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="font-bold text-3xl leading-none">
+                  <span className="font-bold text-2xl leading-none">
                     {sizeNum}
                   </span>
                   <span className="font-medium text-color-3 text-sm">
@@ -629,12 +630,12 @@ const StorageStats = ({ refreshKey }: StorageStatsProps) => {
                 </div>
               </div>
 
-              <div className="mt-2 text-center">
+              <div className="mt-1 text-center">
                 <div className="mb-1 text-color-3 text-xs">
                   {recordsLabel}数量
                 </div>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="font-bold text-3xl leading-none">
+                  <span className="font-bold text-2xl leading-none">
                     {totalCount}
                   </span>
                   <span className="font-medium text-color-3 text-sm">条</span>
@@ -662,7 +663,7 @@ const StorageStats = ({ refreshKey }: StorageStatsProps) => {
                   return (
                     <Flex
                       align="center"
-                      className="group flex-1 cursor-pointer"
+                      className="group min-w-0 flex-1 cursor-pointer"
                       justify="flex-end"
                       key={item.key}
                       style={{ height: "100%" }}
@@ -677,7 +678,7 @@ const StorageStats = ({ refreshKey }: StorageStatsProps) => {
                           opacity: item.size > 0 ? 0.9 : 0.15,
                         }}
                       />
-                      <Flex align="center" className="mt-2 w-full" vertical>
+                      <Flex align="center" className="mt-2 min-w-0 w-full" vertical>
                         <span
                           className="mb-1 font-bold text-xs leading-none"
                           style={{ color: item.color }}

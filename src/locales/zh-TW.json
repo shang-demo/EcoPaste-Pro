@@ -164,7 +164,7 @@
           "delete_confirm": "删除確認",
           "display_lines": "文字顯示行數",
           "enable_code_highlighting": "代碼語法高亮",
-          "enable_text_selection": "文字片段選取",
+          "enable_text_selection": "劃詞粘貼",
           "expand": "展開",
           "image_display_height": "圖片顯示高度",
           "image_display_height_unit": "像素",
@@ -503,7 +503,7 @@
       },
       "shortcut": {
         "hints": {
-          "paste_as_plain": "啟動視窗時，將選中的內容粘貼為純文字或路徑",
+          "paste_as_plain": "隱藏視窗貼上最新內容為純文字，啟用視窗貼上選取內容為純文字",
           "quick_paste": "隱藏視窗時，使用數字鍵快速貼上前九項"
         },
         "label": {

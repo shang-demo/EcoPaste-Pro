@@ -108,6 +108,11 @@ pub async fn paste() {
 
     wait(100);
 
+    enigo.key(Key::Control, Release).unwrap();
+    enigo.key(Key::Alt, Release).unwrap();
+    enigo.key(Key::Meta, Release).unwrap();
+    enigo.key(Key::Shift, Release).unwrap();
+
     enigo.key(Key::Shift, Press).unwrap();
     // insert 的微软虚拟键码：https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
     enigo.key(Key::Other(0x2D), Click).unwrap();

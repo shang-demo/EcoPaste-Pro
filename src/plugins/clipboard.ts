@@ -70,7 +70,7 @@ export const markInternalClipboardWrite = (isImage = false) => {
     (window as any).__isEcoPastePasting = false;
   }, 1000);
 
-  // 图片粘贴时，插件可能延迟数十秒后再次触发事件，需要更长的保护窗口
+  // 图片粘贴时，插件可能会延迟数秒后再次触发事件，需要更长的保护窗口
   if (isImage) {
     (window as any).__isEcoPasteImageEcho = true;
     if ((window as any).__ecoPasteImageTimeout) {
