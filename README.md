@@ -1,4 +1,4 @@
-﻿<a href="https://github.com/3899/EcoPaste-Pro">
+<a href="https://github.com/3899/EcoPaste-Pro">
   <img src="https://socialify.git.ci/3899/EcoPaste-Pro/image?description=1&descriptionEditable=%E9%80%82%E7%94%A8%E4%BA%8E%20Windows%E3%80%81MacOS%20%E5%92%8C%20Linux(x11)%20%E7%9A%84%E5%BC%80%E6%BA%90%E5%89%AA%E8%B4%B4%E6%9D%BF%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7%E3%80%82&font=Source%20Code%20Pro&logo=https%3A%2F%2Fgithub.com%2FEcoPasteHub%2FEcoPaste%2Fblob%2Fmaster%2Fpublic%2Flogo.png%3Fraw%3Dtrue&name=1&owner=1&pattern=Floating%20Cogs&theme=Auto" alt="EcoPaste" />
 </a>
 
@@ -67,14 +67,24 @@
   </picture>
 </div>
 
-## 下载
+## 🌟 分支说明
 
-### Windows
-最新版本: [前往 Releases 下载最新构建程序包](https://github.com/3899/EcoPaste/releases/latest)
+> 本仓库是 [EcoPasteHub/EcoPaste](https://github.com/EcoPasteHub/EcoPaste) 的 Fork 版本，在官方原版基础上，重构并新增了跨设备数据同步、WebDAV 云端数据资产安全备份、全景存储统计等多项高级功能，同时全面增强了剪贴板内容的智能分类识别引擎与日常交互的沉浸式体验。
 
-安装指南: [点击查看](https://ecopaste.cn/guide/install#linux)
+## 📥 下载链接
 
-## 功能介绍
+### 🔗 官方原版
+- 🌐 GitHub 主页：[EcoPasteHub/EcoPaste](https://github.com/EcoPasteHub/EcoPaste)
+- 📥 官方下载：[Releases 页面](https://github.com/EcoPasteHub/EcoPaste/releases)
+- 📚 使用文档：[EcoPaste 官网](https://ecopaste.cn/)
+
+### 🔗 本 Fork 分支
+- 📥 最新版本: [前往 Releases 下载最新构建程序包](https://github.com/3899/EcoPaste-Pro/releases/latest)
+- 📚 移动端数据同步指南
+  - [Android 同步配置指南](docs/Android/README.md)（以 Tasker 为例提供完整配套文件，使用 MacroDroid 等自动化软件的用户完全可参考其逻辑举一反三自行编写）
+  - iPhone 同步配置指南（整理中，待补充...）
+
+## 📖 功能介绍
 
 - 🎉 基于 Tauri v2 开发，轻量高效，跨平台体验更进一步。
 - 💻 支持 Windows、macOS 和 Linux（x11），在多设备间无缝切换。
@@ -88,14 +98,12 @@
 
 ## 🚀 Fork 版本更新历史
 
-> 本仓库是 [3899/EcoPaste-Pro](https://github.com/3899/EcoPaste-Pro) 的 Fork 版本，在原版基础上增加了以下易用性改进与更新历史：
-
 ### Pro.5.x <font size="-2" color="gray">（基于原版v0.6.0-beta.3分支）</font>
 
 #### Pro.5.4
 
 ##### ✨ 新增功能
-- **🔄 轻量数据同步模块落地**：偏好设置加入「数据同步」入口，分为「推送数据 / 接收数据」三大模块。
+- **🔄 轻量数据同步模块落地**：偏好设置加入「数据同步」入口，分为「基础配置 / 推送数据 / 接收数据」三大模块。
 - **📤 主动推送能力接入主界面**：历史记录头部操作按钮、右键菜单、偏好设置操作按钮均新增「推送」，支持把单条剪贴板内容主动发到外部设备。
 - **⚙️ 自动推送策略**：支持「关闭 / 仅收藏 / 自定义标签」三种模式；其中仅收藏模式会在条目标星时自动推送，自定义模式支持按内容类型标签筛选。
 - **📡 自动接收服务**：新增本地 HTTP 接收接口，支持 text / html / rtf / files / image 写入本地历史，并可选自动回写系统剪贴板。
@@ -124,8 +132,8 @@
 - **📊 重构剪贴板类型识别引擎**：修复了因开启「复制为纯文本」模式后，从办公软件（Excel/WPS）复制数据被误存为图片的问题。
 - **🎯 复合型表格数据智能探测**：针对从办公软件（Excel/WPS）复制数据与浏览器复制图片时极其相似的内容特征，引入了四维探测体系，实现了对办公表格数据的绝对精准定位与纯净化提取。
 - **🧹 自动清理表格临时文件**：识别表格后，自动删除无用临时图片，避免磁盘产生残留文件。
-- **🔘 优化默认快捷按钮**：默认开启 9 项常用快捷操作并调整排序（偏好设置 → 剪贴板 → 操作按钮），全方位提升新用户开箱即用的便捷体验。
-- **🖱️ 划词粘贴功能优化**：将原「文本片段选取」功能更名为「划词粘贴」（偏好设置 → 剪贴板 → 操作按钮），功能意图表达更为直观；同时在偏好设置中将其位置移动至「自动粘贴」下方，设置时更直观。
+- **🔘 优化默认快捷按钮**：默认开启 9 项常用快捷操作并调整排序（偏好设置 → 剪贴板 → 显示设置 → 操作按钮），全方位提升新用户开箱即用的便捷体验。
+- **🖱️ 划词粘贴功能优化**：将原「文本片段选取」功能更名为「划词粘贴」（偏好设置 → 剪贴板 → 内容设置 → 划词粘贴），功能意图表达更为直观；同时在偏好设置中将其位置移动至「自动粘贴」下方，设置时更直观。
 - **📊 存储统计视图空间优化**：深度精简存储统计页面冗余的包裹留白，左侧统计摘要区字号与宽度动态缩窄，为横向统计图表提供最大化可视化空间。
 
 ##### 🐞 bug 修复

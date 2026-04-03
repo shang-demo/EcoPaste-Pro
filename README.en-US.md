@@ -1,4 +1,4 @@
-﻿<a href="https://github.com/3899/EcoPaste-Pro">
+<a href="https://github.com/3899/EcoPaste-Pro">
   <img src="https://socialify.git.ci/3899/EcoPaste-Pro/image?description=1&descriptionEditable=Open%20source%20clipboard%20management%20tools%20for%20Windows%2C%20MacOS%20and%20Linux(x11).&font=Source%20Code%20Pro&logo=https%3A%2F%2Fgithub.com%2FEcoPasteHub%2FEcoPaste%2Fblob%2Fmaster%2Fpublic%2Flogo.png%3Fraw%3Dtrue&name=1&owner=1&pattern=Floating%20Cogs&theme=Auto" alt="EcoPaste" />
 </a>
 
@@ -67,15 +67,24 @@
   </picture>
 </div>
 
-## Download
+## 🌟 Branch Information
 
-### Windows
+> This repository is a fork of [EcoPasteHub/EcoPaste](https://github.com/EcoPasteHub/EcoPaste). Building upon the official release, it restructures and introduces advanced features such as cross-device data synchronization, secure WebDAV cloud backup for data assets, and panoramic storage statistics. Additionally, it comprehensively enhances the intelligent content classification engine and the immersive experience of daily interactions.
 
-Latest Version: [Download Latest Build from Releases](https://github.com/3899/EcoPaste/releases/latest)
+## 📥 Download Links
 
-Installation Guide: [Click here](https://ecopaste.cn/guide/install#linux)
+### 🔗 Official Version
+- 🌐 GitHub Repository: [EcoPasteHub/EcoPaste](https://github.com/EcoPasteHub/EcoPaste)
+- 📥 Official Downloads: [Releases Page](https://github.com/EcoPasteHub/EcoPaste/releases)
+- 📚 Documentation: [EcoPaste Website](https://ecopaste.cn/)
 
-## Features
+### 🔗 This Fork
+- 📥 Latest Version: [Download Latest Build from Releases](https://github.com/3899/EcoPaste-Pro/releases/latest)
+- 📚 Mobile Data Sync Guide
+  - [Android Sync Configuration Guide](docs/Android/README.md) (Providing complete setup files using Tasker as an example. Users of MacroDroid and other automation software can seamlessly adapt this logic to write their own configurations)
+  - iPhone Sync Configuration Guide (WIP, to be supplemented...)
+
+## 📖 Features
 
 - 🎉 Built with Tauri v2, lightweight and efficient, taking cross-platform experience to the next level.
 - 💻 Compatible with Windows, macOS, and Linux (X11), enabling seamless switching between devices.
@@ -87,16 +96,14 @@ Installation Guide: [Click here](https://ecopaste.cn/guide/install#linux)
 - 🤝 Comprehensive documentation and community support to explore and grow with developers.
 - 🧩 Continuously optimized with more exciting features waiting to be discovered.
 
-## 🚀 Fork Update History
 
-> This repository is a fork of [3899/EcoPaste-Pro](https://github.com/3899/EcoPaste-Pro) with the following usability improvements and update history:
 
 ### Pro.5.x <font size="-2" color="gray">(Based on the original v0.6.0-beta.3 branch)</font>
 
 #### Pro.5.4
 
 ##### ✨ New Features
-- **🔄 Lightweight Data Sync Module**: Added a "Data Sync" entry in preferences, divided into "Push Data" and "Receive Data" modules.
+- **🔄 Lightweight Data Sync Module**: Added a "Data Sync" entry in preferences, divided into three modules: "Base Configuration / Push Data / Receive Data".
 - **📤 Active Push from Main UI**: Added a "Push" option to the item header actions, right-click context menu, and preference action buttons. Supports explicitly pushing a single clipboard item to external devices.
 - **⚙️ Auto-Push Strategies**: Supports three modes: "Off / Favorites Only / Custom Tags". The "Favorites Only" mode auto-pushes when an item is starred, while the custom mode filters based on specific content type tags.
 - **📡 Auto-Receive Service**: Added a local HTTP local receiving interface. Supports injecting text / html / rtf / files / image into the local history, with an option to write back to the system clipboard automatically.
@@ -125,8 +132,8 @@ Installation Guide: [Click here](https://ecopaste.cn/guide/install#linux)
 - **📊 Refactored Clipboard Type Recognition Engine**: Fixed the issue where copying data from office software (Excel/WPS) was mistakenly saved as an image when the "Copy as Plain Text" mode was enabled.
 - **🎯 Smart Detection for Composite Table Data**: Addressing the extremely similar content characteristics when copying data from office software (Excel/WPS) vs. copying images from browsers, introduced a four-dimensional detection system to achieve absolutely precise targeting and clean extraction of office table data.
 - **🧹 Auto-Cleanup of Temporary Table Files**: Automatically deletes useless temporary images after recognizing tables, preventing residual files on the disk.
-- **🔘 Optimized Default Action Buttons**: Enabled 9 common quick actions by default and adjusted their order (Preferences → Clipboard → Action Buttons), comprehensively enhancing the out-of-the-box experience for new users.
-- **🖱️ Optimized Word Selection Paste**: Renamed "Text Snippet Selection" to "Word Selection Paste" (Preferences → Clipboard → Action Buttons) for a more intuitive expression of the feature; moved its position below "Auto Paste" in the preferences for clearer configuration.
+- **🔘 Optimized Default Action Buttons**: Enabled 9 common quick actions by default and adjusted their order (Preferences → Clipboard → Display Settings → Action Buttons), comprehensively enhancing the out-of-the-box experience for new users.
+- **🖱️ Optimized Word Selection Paste**: Renamed "Text Snippet Selection" to "Word Selection Paste" (Preferences → Clipboard → Content Settings → Word Selection Paste) for a more intuitive expression of the feature; moved its position below "Auto Paste" in the preferences for clearer configuration.
 - **📊 Storage Stats View Space Optimization**: Deeply streamlined the redundant padding whitespace in the storage stats page, dynamically narrowing the font size and width of the left stats summary area to provide maximum visualization space for the horizontal charts.
 
 ##### 🐞 Bug Fixes
