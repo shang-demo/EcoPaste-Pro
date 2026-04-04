@@ -31,7 +31,7 @@ jobs:
         id: create_release
         run: npx changelogithub --draft --name ${{ steps.vars.outputs.tag }}
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # 编译 Tauri
   build-app:
