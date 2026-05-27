@@ -106,13 +106,17 @@
 - **📐 Clipboard "Sidebar Navigation" Layout**: A new sidebar navigation option has been added under "Preferences - General Settings - Appearance - View Mode". When enabled, a compact sidebar is displayed on the left side of the clipboard window, vertically organizing the application logo, the eight primary categories, favorites, and settings buttons; the right side is paired with a full-width search input, creating a more rational layout and an immersive, highly efficient operational experience.
 - **🏷️ Favorites Content Type Filtering**: Under the sidebar navigation mode, clicking the favorites button reveals a top category filter bar. A toggle for showing content type labels in favorites has also been added, allowing users to check/uncheck tags like Text, Image, and Link to filter content dynamically.
 - **📋 Favorites Sorting**: Added a new "Favorites Sort" toggle (enabled by default) under the "Preferences - Clipboard - Sort Settings" group. When enabled, users can adjust the order of items via the context menu (Pin, Move Up, Move Down, Move to Bottom) or a dedicated drag handle at the top of cards. The favorites sorting functionality is completely decoupled from the auto-sort and pin-to-top rules of standard groups, enabling mutually non-interfering double-track sorting.
+- **🔍 Search Supports Space Tokenization & Wildcards**: Refactored the search retrieval logic to support splitting multiple keywords by spaces to perform intersection (AND) queries; also compatible with * and ? wildcard syntax, effectively improving content retrieval precision and flexibility.
 
 ##### 💫 Experience Optimizations
 - **🗃️ Optimized Big Data Batch Deletion**: Refactored the underlying query logic for batch deletion and auto-cleanup by adopting a lightweight data retrieval scheme. Deletion no longer loads heavy text and image fields, drastically reducing memory footprint and completely eliminating interface lag and freezing during massive data cleanups.
+- **⚡ Input Debouncing for Search**: Configured a `300ms` debounce delay for the search input box, avoiding frequent database queries on consecutive inputs, and completely eliminating UI lag and frame drops during typing.
+- **🖼️ Fully Optimized Image Loading**: Enabled native lazy loading for the image component, and introduced a background multi-threaded asynchronous pre-decoding queue. Images outside the viewport are decoded and cached in advance, eliminating white placeholder flashes during scrolling and achieving a buttery-smooth browsing experience.
 
 ##### 🏗️ Architecture Optimization
 - **🧹 Smart Database Maintenance**: Automatically runs query execution plan optimization post-deletion to enhance SQLite database efficiency. When more than 50 items are deleted or automatically cleaned in a single run, it automatically triggers database shrinking (VACUUM) to promptly release unused disk space.
 - **🔒 Exclusive Maintenance Lock**: Employs a singleton lock mechanism to serialize database optimization, shrinking, and other maintenance operations. This effectively prevents database locks and write conflicts in high-concurrency deletion scenarios, ensuring stable background task execution.
+- **🗄️ Deep Database Index Optimization**: Constructed multiple index groups on high-frequency filtering and sorting fields in the clipboard data table. This avoids full table scans and sorting overheads, exponentially speeding up list loading and category switching under large datasets.
 
 #### Pro.5.4
 

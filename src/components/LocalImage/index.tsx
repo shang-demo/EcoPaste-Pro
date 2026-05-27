@@ -1,7 +1,7 @@
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { forwardRef, type HTMLAttributes } from "react";
+import { forwardRef, type ImgHTMLAttributes } from "react";
 
-interface LocalImageProps extends HTMLAttributes<HTMLImageElement> {
+interface LocalImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   src: string;
 }
 
@@ -9,7 +9,7 @@ const LocalImage = forwardRef<HTMLImageElement, LocalImageProps>(
   (props, ref) => {
     const { src, ...rest } = props;
 
-    return <img ref={ref} {...rest} src={convertFileSrc(src)} />;
+    return <img ref={ref} {...rest} loading="lazy" src={convertFileSrc(src)} />;
   },
 );
 

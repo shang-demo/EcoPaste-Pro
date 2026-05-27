@@ -10,6 +10,7 @@ import { clipboardStore } from "@/stores/clipboard";
 import { dayjs } from "@/utils/dayjs";
 import { isBlank } from "@/utils/is";
 import { getSaveImagePath, join } from "@/utils/path";
+import { preloadLocalImage } from "@/utils/preload";
 import { useTauriListen } from "./useTauriListen";
 
 interface Options {
@@ -141,11 +142,23 @@ export const useHistoryList = (options: Options) => {
           .$if(isCodeGroup, (eb) => eb.where("subtype", "like", "code_%"))
           .$if(isNormalGroup, (eb) => eb.where("group", "=", group))
           .$if(!isBlank(search), (eb) => {
+            const keywords = search!.trim().split(/\s+/).filter(Boolean);
+
+            const parseKeyword = (kw: string) => {
+              const parsed = kw.replace(/\*/g, "%").replace(/\?/g, "_");
+              return `%${parsed}%`;
+            };
+
             return eb.where((eb) => {
-              return eb.or([
-                eb("search", "like", eb.val(`%${search}%`)),
-                eb("note", "like", eb.val(`%${search}%`)),
-              ]);
+              return eb.and(
+                keywords.map((kw) => {
+                  const pattern = parseKeyword(kw);
+                  return eb.or([
+                    eb("search", "like", eb.val(pattern)),
+                    eb("note", "like", eb.val(pattern)),
+                  ]);
+                }),
+              );
             });
           })
           .offset((page - 1) * size)
@@ -178,6 +191,18 @@ export const useHistoryList = (options: Options) => {
         if (type === "files") {
           item.value = JSON.parse(value);
         }
+      }
+
+      // 异步在后台静默预加载非首屏或后续页面的图片，彻底消除闪烁
+      if (list.length > 0) {
+        setTimeout(() => {
+          const startIdx = page === 1 ? 4 : 0;
+          list.slice(startIdx).forEach((item) => {
+            if (item.type === "image" && isString(item.value)) {
+              preloadLocalImage(item.value);
+            }
+          });
+        }, 100);
       }
 
       state.noMore = list.length === 0;

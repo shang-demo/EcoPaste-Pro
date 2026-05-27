@@ -142,6 +142,27 @@ export const getDatabase = async () => {
     // Ignore if backfill fails
   }
 
+  // 创建高频检索及排序复合索引以提升查询响应性能
+  const indexes = [
+    { columns: ["createTime desc"], name: "idx_history_create_time" },
+    {
+      columns: ["favorite", "favoriteOrder desc", "createTime desc"],
+      name: "idx_history_favorite_order",
+    },
+    { columns: ["`group`", "createTime desc"], name: "idx_history_group_time" },
+    { columns: ["subtype", "createTime desc"], name: "idx_history_subtype_time" },
+  ];
+
+  for (const idx of indexes) {
+    try {
+      await sql`CREATE INDEX IF NOT EXISTS ${sql.raw(idx.name)} ON history (${sql.raw(
+        idx.columns.join(", "),
+      )})`.execute(db);
+    } catch (_error) {
+      // Ignore if index creation fails
+    }
+  }
+
   return db;
 };
 

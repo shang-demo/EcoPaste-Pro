@@ -1,4 +1,4 @@
-import { useBoolean, useKeyPress } from "ahooks";
+import { useBoolean, useKeyPress, useDebounce } from "ahooks";
 import type { InputRef } from "antd";
 import { Input } from "antd";
 import {
@@ -20,14 +20,15 @@ const SearchInput: FC<HTMLAttributes<HTMLDivElement>> = (props) => {
   const { rootState } = useContext(MainContext);
   const inputRef = useRef<InputRef>(null);
   const [value, setValue] = useState<string>();
+  const debouncedValue = useDebounce(value, { wait: 300 });
   const [isComposition, { setTrue, setFalse }] = useBoolean();
   const { t } = useTranslation();
 
   useEffect(() => {
     if (isComposition) return;
 
-    rootState.search = value;
-  }, [value, isComposition]);
+    rootState.search = debouncedValue;
+  }, [debouncedValue, isComposition]);
 
   useTauriFocus({
     onBlur() {

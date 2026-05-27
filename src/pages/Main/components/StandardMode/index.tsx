@@ -130,7 +130,7 @@ const StandardMode = () => {
         {/* 左侧极窄侧边栏 */}
         <Flex
           align="center"
-          className="h-full w-12 flex-shrink-0 border-color-2 border-r border-solid py-4"
+          className="b-color-2 h-full w-12 flex-shrink-0 border-r border-solid py-4"
           data-tauri-drag-region
           justify="space-between"
           vertical
@@ -170,7 +170,7 @@ const StandardMode = () => {
             </Flex>
 
             {/* 短横线分隔 */}
-            <div className="w-5 border-color-2 border-t border-solid opacity-60" />
+            <div className="b-color-2 w-5 border-t border-solid opacity-60" />
 
             {/* 收藏按钮 */}
             <UnoIcon
@@ -200,7 +200,7 @@ const StandardMode = () => {
 
           {/* 设置按钮上方分隔线并居中隔开 */}
           <Flex align="center" className="w-full" gap={12} vertical>
-            <div className="w-5 border-color-2 border-t border-solid opacity-60" />
+            <div className="b-color-2 w-5 border-t border-solid opacity-60" />
             <UnoIcon
               className="cursor-pointer text-color-2 text-lg!"
               hoverable
