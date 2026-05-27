@@ -97,6 +97,53 @@ const Main = () => {
     }
   });
 
+  useTauriListen("select_prev", () => {
+    if (state.activeId) {
+      eventBus.emit({
+        action: LISTEN_KEY.CLIPBOARD_ITEM_SELECT_PREV,
+        id: state.activeId,
+      });
+    }
+  });
+  useTauriListen("select_next", () => {
+    if (state.activeId) {
+      eventBus.emit({
+        action: LISTEN_KEY.CLIPBOARD_ITEM_SELECT_NEXT,
+        id: state.activeId,
+      });
+    }
+  });
+  useTauriListen("paste_active", () => {
+    if (state.activeId) {
+      eventBus.emit({
+        action: LISTEN_KEY.CLIPBOARD_ITEM_PASTE,
+        id: state.activeId,
+      });
+    }
+  });
+  useTauriListen("preview_active", () => {
+    if (state.activeId) {
+      eventBus.emit({
+        action: LISTEN_KEY.CLIPBOARD_ITEM_PREVIEW,
+        id: state.activeId,
+      });
+    }
+  });
+  useTauriListen("delete_active", () => {
+    if (state.activeId) {
+      eventBus.emit({
+        action: LISTEN_KEY.CLIPBOARD_ITEM_DELETE,
+        id: state.activeId,
+      });
+    }
+  });
+  useTauriListen("esc_press", () => {
+    hideWindow();
+  });
+  useTauriListen("window_hidden", () => {
+    clipboardStore.window.visible = false;
+  });
+
   useRegister(toggleWindowVisible, [shortcut.clipboard]);
 
   useKeyPress(PRESET_SHORTCUT.OPEN_PREFERENCES, () => {

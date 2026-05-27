@@ -11,7 +11,11 @@ pub enum MacOSPanelStatus {
 
 // 显示窗口
 #[command]
-pub async fn show_window<R: Runtime>(app_handle: AppHandle<R>, window: WebviewWindow<R>) {
+pub async fn show_window<R: Runtime>(
+    app_handle: AppHandle<R>,
+    window: WebviewWindow<R>,
+    _no_activate: Option<bool>,
+) {
     if is_main_window(&window) {
         set_macos_panel(&app_handle, &window, MacOSPanelStatus::Show);
     } else {
@@ -37,6 +41,16 @@ pub async fn show_taskbar_icon<R: Runtime>(
     visible: bool,
 ) {
     let _ = app_handle.set_dock_visibility(visible);
+}
+
+// 动态开关不夺焦模式 (macOS Stub)
+#[command]
+pub async fn set_window_active_mode<R: Runtime>(_window: WebviewWindow<R>, _active: bool) {}
+
+// 查询窗口可见状态 (macOS Stub)
+#[command]
+pub async fn is_window_visible<R: Runtime>(window: WebviewWindow<R>) -> bool {
+    window.is_visible().unwrap_or(false)
 }
 
 // 设置 macos 的 ns_panel 的状态

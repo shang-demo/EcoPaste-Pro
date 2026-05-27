@@ -14,7 +14,7 @@ export const globalStore = proxy<GlobalStore>({
     isDark: false,
     showFavoriteTags: true,
     theme: "auto",
-    viewMode: "top",
+    viewMode: "side",
   },
 
   env: {},

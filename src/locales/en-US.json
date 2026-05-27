@@ -202,7 +202,7 @@
       "search_box_settings": {
         "hints": {
           "auto_clear": "Clear search box contents when window is activated",
-          "default_focus": "Focuses the search box by default when the window is activated"
+          "default_focus": "Focuses the search box by default when the window is activated. Enabling this will automatically turn off 'No-Focus Mode'."
         },
         "label": {
           "auto_clear": "Auto Clear",
@@ -226,10 +226,12 @@
       },
       "window_settings": {
         "hints": {
-          "back_top": "When the window is activated, scroll to the top and check the first item"
+          "back_top": "When the window is activated, scroll to the top and check the first item",
+          "no_activate": "Enable No-Focus Mode on Windows. Enabling this mode will automatically turn off the 'Default Focus' switch."
         },
         "label": {
           "back_top": "Back to top when activated",
+          "no_activate": "No-Focus Mode",
           "show_all": "Switch to all group when activated",
           "window_position": "Window Position",
           "window_position_center": "Center on Screen",

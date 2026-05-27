@@ -38,6 +38,20 @@ const ClipboardSettings = () => {
           title={t("preference.clipboard.window_settings.label.show_all")}
           value={window.showAll}
         />
+
+        <ProSwitch
+          description={t(
+            "preference.clipboard.window_settings.hints.no_activate",
+          )}
+          onChange={(value) => {
+            clipboardStore.window.noActivate = value;
+            if (value) {
+              clipboardStore.search.defaultFocus = false;
+            }
+          }}
+          title={t("preference.clipboard.window_settings.label.no_activate")}
+          value={window.noActivate}
+        />
       </ProList>
 
       <AudioSettings />
@@ -51,6 +65,9 @@ const ClipboardSettings = () => {
           )}
           onChange={(value) => {
             clipboardStore.search.defaultFocus = value;
+            if (value) {
+              clipboardStore.window.noActivate = false;
+            }
           }}
           title={t(
             "preference.clipboard.search_box_settings.label.default_focus",

@@ -1,4 +1,5 @@
-import { useBoolean, useKeyPress, useDebounce } from "ahooks";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { useBoolean, useDebounce, useKeyPress } from "ahooks";
 import type { InputRef } from "antd";
 import { Input } from "antd";
 import {
@@ -13,6 +14,8 @@ import { useTranslation } from "react-i18next";
 import UnoIcon from "@/components/UnoIcon";
 import { PRESET_SHORTCUT } from "@/constants";
 import { useTauriFocus } from "@/hooks/useTauriFocus";
+import { useTauriListen } from "@/hooks/useTauriListen";
+import { setWindowActiveMode } from "@/plugins/window";
 import { clipboardStore } from "@/stores/clipboard";
 import { MainContext } from "../..";
 
@@ -42,16 +45,22 @@ const SearchInput: FC<HTMLAttributes<HTMLDivElement>> = (props) => {
     onFocus() {
       const { search } = clipboardStore;
 
-      // 搜索框默认聚焦
-      if (search.defaultFocus) {
+      // 搜索框默认聚焦（仅在非不夺焦模式下生效）
+      if (search.defaultFocus && !clipboardStore.window.noActivate) {
         inputRef.current?.focus();
-      } else {
-        inputRef.current?.blur();
       }
     },
   });
 
-  useKeyPress(PRESET_SHORTCUT.SEARCH, () => {
+  useTauriListen("focus_search_input", () => {
+    inputRef.current?.focus();
+  });
+
+  useKeyPress(PRESET_SHORTCUT.SEARCH, async () => {
+    if (clipboardStore.window.noActivate) {
+      await setWindowActiveMode(true);
+      await getCurrentWebviewWindow().setFocus();
+    }
     inputRef.current?.focus();
   });
 

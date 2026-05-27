@@ -5,15 +5,23 @@ import { PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
 import { LISTEN_KEY, WINDOW_LABEL } from "@/constants";
 import { clipboardStore } from "@/stores/clipboard";
 import type { WindowLabel } from "@/types/plugin";
-import { isLinux } from "@/utils/is";
+import { isLinux, isWin } from "@/utils/is";
 import { getCursorMonitor } from "@/utils/monitor";
 
 const COMMAND = {
   HIDE_WINDOW: "plugin:eco-window|hide_window",
+  IS_WINDOW_VISIBLE: "plugin:eco-window|is_window_visible",
+  SET_WINDOW_ACTIVE_MODE: "plugin:eco-window|set_window_active_mode",
   SHOW_TASKBAR_ICON: "plugin:eco-window|show_taskbar_icon",
   SHOW_WINDOW: "plugin:eco-window|show_window",
 };
 
+/**
+ * 查询窗口可见状态
+ */
+export const isWindowVisible = async (): Promise<boolean> => {
+  return await invoke(COMMAND.IS_WINDOW_VISIBLE);
+};
 /**
  * 显示窗口
  */
@@ -21,7 +29,9 @@ export const showWindow = (label?: WindowLabel) => {
   if (label) {
     emit(LISTEN_KEY.SHOW_WINDOW, label);
   } else {
-    invoke(COMMAND.SHOW_WINDOW);
+    clipboardStore.window.visible = true;
+    const noActivate = isWin && clipboardStore.window.noActivate;
+    invoke(COMMAND.SHOW_WINDOW, { noActivate });
   }
 };
 
@@ -29,9 +39,16 @@ export const showWindow = (label?: WindowLabel) => {
  * 隐藏窗口
  */
 export const hideWindow = () => {
+  clipboardStore.window.visible = false;
   invoke(COMMAND.HIDE_WINDOW);
 };
 
+/**
+ * 动态开关不夺焦模式
+ */
+export const setWindowActiveMode = (active: boolean) => {
+  invoke(COMMAND.SET_WINDOW_ACTIVE_MODE, { active });
+};
 /**
  * 切换窗口的显示和隐藏
  */
@@ -39,12 +56,17 @@ export const toggleWindowVisible = async () => {
   const appWindow = getCurrentWebviewWindow();
 
   let focused = await appWindow.isFocused();
+  console.log("[toggleWindowVisible] isFocused:", focused);
 
-  if (isLinux) {
-    focused = await appWindow.isVisible();
+  if (isLinux || (isWin && clipboardStore.window.noActivate)) {
+    // 不夺焦模式下，始终以 OS 层的真实可见状态为准
+    // 因为 SW_SHOWNOACTIVATE 绕过了 Tauri 的内部缓存，clipboardStore.window.visible 可能不准确
+    focused = await isWindowVisible();
+    console.log("[toggleWindowVisible] noActivate isVisible:", focused);
   }
 
   if (focused) {
+    console.log("[toggleWindowVisible] hiding window");
     return hideWindow();
   }
 

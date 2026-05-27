@@ -62,3 +62,6 @@ tauri-nspanel.workspace = true
 
 [features]
 cargo-clippy = []
+
+[profile.release]
+strip = false
