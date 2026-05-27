@@ -9,6 +9,7 @@ import { isMac } from "@/utils/is";
 import Language from "./components/Language";
 import MacosPermissions from "./components/MacosPermissions";
 import ThemeMode from "./components/ThemeMode";
+import ViewMode from "./components/ViewMode";
 
 const General = () => {
   const { app, update } = useSnapshot(globalStore);
@@ -70,6 +71,8 @@ const General = () => {
         <Language />
 
         <ThemeMode />
+
+        <ViewMode />
       </ProList>
 
       <ProList header={t("preference.settings.update_settings.title")}>

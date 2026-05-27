@@ -10,8 +10,11 @@ export const globalStore = proxy<GlobalStore>({
   },
 
   appearance: {
+    favoriteTags: ["text", "image", "links"],
     isDark: false,
+    showFavoriteTags: true,
     theme: "auto",
+    viewMode: "top",
   },
 
   env: {},

@@ -12,7 +12,10 @@ import { useImmediateKey } from "@/hooks/useImmediateKey";
 import { useRegister } from "@/hooks/useRegister";
 import { useSubscribeKey } from "@/hooks/useSubscribeKey";
 import { useTauriListen } from "@/hooks/useTauriListen";
-import { markInternalClipboardWrite, pasteToClipboard } from "@/plugins/clipboard";
+import {
+  markInternalClipboardWrite,
+  pasteToClipboard,
+} from "@/plugins/clipboard";
 import {
   showTaskbarIcon,
   showWindow,
@@ -46,10 +49,12 @@ export interface State {
   expandedIds: string[];
   dateRange?: [number, number];
   filterTags?: string[];
+  favoriteFilter?: "all" | "text" | "image" | "links";
 }
 
 const INITIAL_STATE: State = {
   expandedIds: [],
+  favoriteFilter: "all",
   group: "all",
   list: [],
   quickPasteKeys: [],
@@ -129,29 +134,26 @@ const Main = () => {
     markInternalClipboardWrite(payload === "image");
   });
 
-  useRegister(
-    async () => {
-      const { getCurrentWebviewWindow } = await import(
-        "@tauri-apps/api/webviewWindow"
-      );
-      const { isLinux } = await import("@/utils/is");
-      const appWindow = getCurrentWebviewWindow();
+  useRegister(async () => {
+    const { getCurrentWebviewWindow } = await import(
+      "@tauri-apps/api/webviewWindow"
+    );
+    const { isLinux } = await import("@/utils/is");
+    const appWindow = getCurrentWebviewWindow();
 
-      let focused = await appWindow.isFocused();
+    let focused = await appWindow.isFocused();
 
-      if (isLinux) {
-        focused = await appWindow.isVisible();
-      }
+    if (isLinux) {
+      focused = await appWindow.isVisible();
+    }
 
-      const targetId = focused ? state.activeId : state.list[0]?.id;
-      const data = find(state.list, { id: targetId });
+    const targetId = focused ? state.activeId : state.list[0]?.id;
+    const data = find(state.list, { id: targetId });
 
-      if (!data) return;
+    if (!data) return;
 
-      pasteToClipboard(data, true, { pinned: state.pinned });
-    },
-    [shortcut.pastePlain],
-  );
+    pasteToClipboard(data, true, { pinned: state.pinned });
+  }, [shortcut.pastePlain]);
 
   useRegister(
     async (event) => {

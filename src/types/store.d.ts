@@ -24,6 +24,9 @@ export interface GlobalStore {
     theme: Theme;
     isDark: boolean;
     language?: Language;
+    viewMode?: "top" | "side";
+    showFavoriteTags?: boolean;
+    favoriteTags?: string[];
   };
 
   update: {

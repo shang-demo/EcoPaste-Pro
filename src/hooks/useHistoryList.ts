@@ -38,7 +38,8 @@ export const useHistoryList = (options: Options) => {
 
       const list = await selectHistory((qb) => {
         const { size } = state;
-        const { group, search, dateRange, filterTags } = rootState;
+        const { group, search, dateRange, filterTags, favoriteFilter } =
+          rootState;
         const isFavoriteGroup = group === "favorite";
         const isLinksGroup = group === "links";
         const isColorsGroup = group === "colors";
@@ -108,7 +109,31 @@ export const useHistoryList = (options: Options) => {
               return eb.or(conditions);
             });
           })
-          .$if(isFavoriteGroup, (eb) => eb.where("favorite", "=", true))
+          .$if(isFavoriteGroup, (eb) => {
+            return eb
+              .where("favorite", "=", true)
+              .$if(favoriteFilter === "text", (eb) =>
+                eb.where("group", "=", "text"),
+              )
+              .$if(favoriteFilter === "image", (eb) =>
+                eb.where("group", "=", "image"),
+              )
+              .$if(favoriteFilter === "links", (eb) =>
+                eb.where("subtype", "in", ["url", "path"]),
+              )
+              .$if(favoriteFilter === "colors", (eb) =>
+                eb.where("subtype", "=", "color"),
+              )
+              .$if(favoriteFilter === "email", (eb) =>
+                eb.where("subtype", "=", "email"),
+              )
+              .$if(favoriteFilter === "code", (eb) =>
+                eb.where("subtype", "like", "code_%"),
+              )
+              .$if(favoriteFilter === "files", (eb) =>
+                eb.where("type", "=", "files"),
+              );
+          })
           .$if(isLinksGroup, (eb) => eb.where("subtype", "in", ["url", "path"]))
           .$if(isColorsGroup, (eb) => eb.where("subtype", "=", "color"))
           .$if(isEmailGroup, (eb) => eb.where("subtype", "=", "email"))
@@ -191,6 +216,7 @@ export const useHistoryList = (options: Options) => {
     rootState.activeId = rootState.list[0]?.id;
   }, [
     rootState.group,
+    rootState.favoriteFilter,
     rootState.search,
     rootState.dateRange,
     rootState.filterTags,

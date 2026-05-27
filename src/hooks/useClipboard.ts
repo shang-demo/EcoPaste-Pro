@@ -247,7 +247,27 @@ export const useClipboard = (
         let visible = state.group === "all" || state.group === group;
 
         if (!visible) {
-          if (state.group === "favorite" && data.favorite) visible = true;
+          if (state.group === "favorite" && data.favorite) {
+            const favFilter = state.favoriteFilter || "all";
+            if (favFilter === "all") visible = true;
+            else if (favFilter === "text" && group === "text") visible = true;
+            else if (favFilter === "image" && group === "image") visible = true;
+            else if (
+              favFilter === "links" &&
+              (sqlData.subtype === "url" || sqlData.subtype === "path")
+            )
+              visible = true;
+            else if (favFilter === "colors" && sqlData.subtype === "color")
+              visible = true;
+            else if (favFilter === "email" && sqlData.subtype === "email")
+              visible = true;
+            else if (
+              favFilter === "code" &&
+              sqlData.subtype?.startsWith("code_")
+            )
+              visible = true;
+            else if (favFilter === "files" && group === "files") visible = true;
+          }
           if (
             state.group === "links" &&
             (sqlData.subtype === "url" || sqlData.subtype === "path")
@@ -349,15 +369,12 @@ export const useClipboard = (
                 return false;
               }
               // custom: 根据标签筛选
-              const effectiveTag =
-                sqlData.subtype || sqlData.type || "text";
+              const effectiveTag = sqlData.subtype || sqlData.type || "text";
               return autoPushTags.includes(effectiveTag);
             })();
 
             if (shouldPush) {
-              const creds = await invoke(
-                "plugin:transfer|get_transfer_config",
-              );
+              const creds = await invoke("plugin:transfer|get_transfer_config");
               if (creds) {
                 const providers = [
                   transferStore.push.barkEnabled ? "bark" : null,
@@ -369,29 +386,30 @@ export const useClipboard = (
                 }
 
                 invoke("plugin:transfer|push_clipboard_item", {
+                  config: creds,
                   item: buildTransferPushItem(sqlData, {
+                    displayName:
+                      sqlData.type === "image" &&
+                      typeof sqlData.value === "string"
+                        ? sqlData.value
+                        : null,
                     localPath:
                       sqlData.type === "image" && typeof data.value === "string"
                         ? data.value
                         : null,
-                    displayName:
-                      sqlData.type === "image" && typeof sqlData.value === "string"
-                        ? sqlData.value
-                        : null,
                   }),
-                  config: creds,
                   nonSensitive: {
-                    providers,
-                    service_port: transferStore.receive.port,
-                    bark_level: transferStore.push.barkLevel,
-                    bark_auto_copy: transferStore.push.barkAutoCopy,
                     bark_archive: transferStore.push.barkArchive,
+                    bark_auto_copy: transferStore.push.barkAutoCopy,
+                    bark_group_mapping: transferStore.push.barkGroupMapping,
                     bark_group_mode: transferStore.push.barkGroupMode,
-                    bark_group_mapping:
-                      transferStore.push.barkGroupMapping,
+                    bark_level: transferStore.push.barkLevel,
+                    image_local_directory:
+                      transferStore.push.imageLocalDirectory,
                     image_strategy: transferStore.push.imageStrategy,
                     image_ttl_seconds: transferStore.push.imageTtlSeconds,
-                    image_local_directory: transferStore.push.imageLocalDirectory,
+                    providers,
+                    service_port: transferStore.receive.port,
                     webhook_payload_template:
                       transferStore.push.webhookPayloadTemplate,
                   },
