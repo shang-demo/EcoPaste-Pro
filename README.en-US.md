@@ -100,6 +100,20 @@
 
 ### Pro.5.x <font size="-2" color="gray">(Based on the original v0.6.0-beta.3 branch)</font>
 
+#### Pro.5.5
+
+##### ✨ New Features
+- **📐 Clipboard "Sidebar Navigation" Layout**: A new sidebar navigation option has been added under "Preferences - General Settings - Appearance - View Mode". When enabled, a compact sidebar is displayed on the left side of the clipboard window, vertically organizing the application logo, the eight primary categories, favorites, and settings buttons; the right side is paired with a full-width search input, creating a more rational layout and an immersive, highly efficient operational experience.
+- **🏷️ Favorites Content Type Filtering**: Under the sidebar navigation mode, clicking the favorites button reveals a top category filter bar. A toggle for showing content type labels in favorites has also been added, allowing users to check/uncheck tags like Text, Image, and Link to filter content dynamically.
+- **📋 Favorites Sorting**: Added a new "Favorites Sort" toggle (enabled by default) under the "Preferences - Clipboard - Sort Settings" group. When enabled, users can adjust the order of items via the context menu (Pin, Move Up, Move Down, Move to Bottom) or a dedicated drag handle at the top of cards. The favorites sorting functionality is completely decoupled from the auto-sort and pin-to-top rules of standard groups, enabling mutually non-interfering double-track sorting.
+
+##### 💫 Experience Optimizations
+- **🗃️ Optimized Big Data Batch Deletion**: Refactored the underlying query logic for batch deletion and auto-cleanup by adopting a lightweight data retrieval scheme. Deletion no longer loads heavy text and image fields, drastically reducing memory footprint and completely eliminating interface lag and freezing during massive data cleanups.
+
+##### 🏗️ Architecture Optimization
+- **🧹 Smart Database Maintenance**: Automatically runs query execution plan optimization post-deletion to enhance SQLite database efficiency. When more than 50 items are deleted or automatically cleaned in a single run, it automatically triggers database shrinking (VACUUM) to promptly release unused disk space.
+- **🔒 Exclusive Maintenance Lock**: Employs a singleton lock mechanism to serialize database optimization, shrinking, and other maintenance operations. This effectively prevents database locks and write conflicts in high-concurrency deletion scenarios, ensuring stable background task execution.
+
 #### Pro.5.4
 
 ##### ✨ New Features

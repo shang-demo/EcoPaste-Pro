@@ -52,6 +52,7 @@ export const getDatabase = async () => {
     { name: "height", type: "integer" },
     { modifier: (col) => col.defaultTo(0), name: "favorite", type: "integer" },
     { name: "createTime", type: "text" },
+    { name: "favoriteOrder", type: "text" },
     { name: "note", type: "text" },
     { name: "subtype", type: "text" },
     { name: "sourceAppName", type: "text" },
@@ -88,6 +89,16 @@ export const getDatabase = async () => {
     }
   }
 
+  // 添加 favoriteOrder 列（文本类型，存储收藏夹顺序）
+  try {
+    await db.schema
+      .alterTable("history")
+      .addColumn("favoriteOrder", "text")
+      .execute();
+  } catch (_error) {
+    // Column might already exist, ignore error
+  }
+
   // 添加 value_size 列（整数类型，默认值 0）
   try {
     await db.schema
@@ -106,6 +117,15 @@ export const getDatabase = async () => {
       .execute();
   } catch (_error) {
     // Column might already exist, ignore error
+  }
+
+  // 对旧记录批量回填 favoriteOrder（使其默认等于 createTime）
+  try {
+    await sql`UPDATE history SET favoriteOrder = createTime WHERE favoriteOrder IS NULL OR favoriteOrder = ''`.execute(
+      db,
+    );
+  } catch (_error) {
+    // Ignore if backfill fails
   }
 
   // 对旧记录批量回填 value_size（按类型区分）

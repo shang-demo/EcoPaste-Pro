@@ -6,6 +6,7 @@ import { useContext, useRef } from "react";
 import { LISTEN_KEY } from "@/constants";
 import { selectHistory } from "@/database/history";
 import { MainContext } from "@/pages/Main";
+import { clipboardStore } from "@/stores/clipboard";
 import { dayjs } from "@/utils/dayjs";
 import { isBlank } from "@/utils/is";
 import { getSaveImagePath, join } from "@/utils/path";
@@ -149,7 +150,12 @@ export const useHistoryList = (options: Options) => {
           })
           .offset((page - 1) * size)
           .limit(size)
-          .orderBy("createTime", "desc");
+          .orderBy(
+            isFavoriteGroup && clipboardStore.content.favoriteSort
+              ? "favoriteOrder"
+              : "createTime",
+            "desc",
+          );
       });
 
       if (currentFetchId !== fetchIdRef.current) return;

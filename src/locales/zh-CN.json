@@ -9,6 +9,10 @@
         "edit": "编辑",
         "export_as_file": "导出为文件",
         "favorite": "收藏",
+        "move_down": "下移",
+        "move_to_bottom": "下移至底",
+        "move_to_top": "上移至顶",
+        "move_up": "上移",
         "note": "备注",
         "open_in_browser": "在浏览器访问",
         "paste": "粘贴",
@@ -220,6 +224,17 @@
           "position_top": "顶部"
         },
         "title": "搜索设置"
+      },
+      "sort_settings": {
+        "hints": {
+          "auto_sort": "复制已存在的内容时排列到最前面",
+          "favorite_sort": "开启后在收藏夹中历史记录支持拖拽与右键手动排序，且内容不受自动排序影响"
+        },
+        "label": {
+          "auto_sort": "自动排序",
+          "favorite_sort": "收藏夹排序"
+        },
+        "title": "排序设置"
       },
       "window_settings": {
         "hints": {

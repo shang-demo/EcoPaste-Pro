@@ -1,3 +1,5 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { openPath } from "@tauri-apps/plugin-opener";
 import { Flex } from "antd";
 import type { HookAPI } from "antd/es/modal/useModal";
@@ -40,6 +42,28 @@ const Item: FC<ItemProps> = (props) => {
   const contentRef = useRef<HTMLDivElement | HTMLImageElement>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
   const isTextType = type === "text" || type === "rtf" || type === "html";
+
+  const isFavoriteTab = rootState.group === "favorite";
+  const isSortEnabled = isFavoriteTab && content.favoriteSort;
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    disabled: !isSortEnabled,
+    id,
+  });
+
+  const style = {
+    opacity: isDragging ? 0.6 : 1,
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 10 : undefined,
+  };
 
   // 检查内容是否溢出（依赖 expanded 以便收起时重新检测）
   useEffect(() => {
@@ -212,13 +236,17 @@ const Item: FC<ItemProps> = (props) => {
       onClick={() => handleClick("single")}
       onContextMenu={handleContextMenu}
       onDoubleClick={() => handleClick("double")}
+      ref={setNodeRef}
+      style={style}
       vertical
     >
       <Header
         {...rest}
+        attributes={attributes}
         data={data}
         handleEdit={handleEdit}
         handleNote={handleNote}
+        listeners={listeners}
       />
 
       <div

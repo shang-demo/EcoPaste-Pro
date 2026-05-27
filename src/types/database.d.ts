@@ -19,6 +19,7 @@ export type DatabaseSchemaHistory<
   search: string;
   favorite: boolean;
   createTime: string;
+  favoriteOrder?: string;
   note?: string;
   subtype?: DatabaseSchemaHistorySubtype;
   sourceAppName?: string;

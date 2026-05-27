@@ -187,17 +187,6 @@ const ClipboardSettings = () => {
 
         <ProSwitch
           description={t(
-            "preference.clipboard.content_settings.hints.auto_sort",
-          )}
-          onChange={(value) => {
-            clipboardStore.content.autoSort = value;
-          }}
-          title={t("preference.clipboard.content_settings.label.auto_sort")}
-          value={content.autoSort}
-        />
-
-        <ProSwitch
-          description={t(
             "preference.clipboard.content_settings.hints.show_original_content",
           )}
           onChange={(value) => {
@@ -207,6 +196,28 @@ const ClipboardSettings = () => {
             "preference.clipboard.content_settings.label.show_original_content",
           )}
           value={content.showOriginalContent}
+        />
+      </ProList>
+
+      <ProList header={t("preference.clipboard.sort_settings.title")}>
+        <ProSwitch
+          description={t("preference.clipboard.sort_settings.hints.auto_sort")}
+          onChange={(value) => {
+            clipboardStore.content.autoSort = value;
+          }}
+          title={t("preference.clipboard.sort_settings.label.auto_sort")}
+          value={content.autoSort}
+        />
+
+        <ProSwitch
+          description={t(
+            "preference.clipboard.sort_settings.hints.favorite_sort",
+          )}
+          onChange={(value) => {
+            clipboardStore.content.favoriteSort = value;
+          }}
+          title={t("preference.clipboard.sort_settings.label.favorite_sort")}
+          value={content.favoriteSort}
         />
       </ProList>
     </>

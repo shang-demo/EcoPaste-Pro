@@ -17,6 +17,7 @@ export const clipboardStore = proxy<ClipboardStore>({
     displayLines: 4,
     enableCodeHighlighting: true,
     enableTextSelection: true,
+    favoriteSort: true,
     filesDisplayLines: 3,
     imageDisplayHeight: 100,
     operationButtons: [

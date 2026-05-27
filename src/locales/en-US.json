@@ -9,6 +9,10 @@
         "edit": "Edit",
         "export_as_file": "Export as File",
         "favorite": "Favorite",
+        "move_down": "Move Down",
+        "move_to_bottom": "Move to Bottom",
+        "move_to_top": "Move to Top",
+        "move_up": "Move Up",
         "note": "Note",
         "open_in_browser": "Open in Browser",
         "paste": "Paste",
@@ -208,6 +212,17 @@
           "position_top": "Top"
         },
         "title": "Search Settings"
+      },
+      "sort_settings": {
+        "hints": {
+          "auto_sort": "Alignment to the top when copying existing content",
+          "favorite_sort": "Allows drag-and-drop & right-click sorting inside Favorites, bypassing Auto Sort constraints"
+        },
+        "label": {
+          "auto_sort": "Auto Sort",
+          "favorite_sort": "Favorites Sort"
+        },
+        "title": "Sort Settings"
       },
       "window_settings": {
         "hints": {

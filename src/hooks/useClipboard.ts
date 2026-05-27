@@ -56,6 +56,7 @@ export const useClipboard = (
 
         const data = {
           createTime: formatDate(),
+          favoriteOrder: formatDate(),
           favorite: false,
           group: "text",
           id: nanoid(),

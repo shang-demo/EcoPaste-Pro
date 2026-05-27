@@ -21,6 +21,7 @@ import { hideWindow } from "@/plugins/window";
 import { clipboardStore } from "@/stores/clipboard";
 import { globalStore } from "@/stores/global";
 import { transferStore } from "@/stores/transfer";
+import { dayjs, formatDate } from "@/utils/dayjs";
 import { isMac } from "@/utils/is";
 import { join } from "@/utils/path";
 import { buildTransferPushItem } from "@/utils/transferPushItem";
@@ -34,7 +35,8 @@ interface ContextMenuItem extends MenuItemOptions {
 }
 
 export const useContextMenu = (props: UseContextMenuProps) => {
-  const { data, deleteModal, handleNote, handleEdit, handleNext } = props;
+  const { data, deleteModal, handleNote, handleEdit, handleNext, index } =
+    props;
   const { id, type, value, favorite, subtype } = data;
   const { t } = useTranslation();
   const { env } = useSnapshot(globalStore);
@@ -517,6 +519,107 @@ export const useContextMenu = (props: UseContextMenuProps) => {
     const selectedText = selection?.toString().trim() || "";
 
     const groups = buildMenuGroups();
+
+    const isFavoriteTab = rootState.group === "favorite";
+    if (isFavoriteTab && clipboardStore.content.favoriteSort) {
+      const sortGroup: ContextMenuItem[] = [
+        {
+          action: async () => {
+            const topItem = rootState.list[0];
+            if (topItem && topItem.id !== id) {
+              const topTime = dayjs(topItem.favoriteOrder || topItem.createTime);
+              const now = dayjs();
+              const nextTime = formatDate(
+                topTime.isAfter(now) ? topTime.add(1, "second") : now,
+              );
+              const [currentItem] = rootState.list.splice(index, 1);
+              currentItem.favoriteOrder = nextTime;
+              rootState.list.unshift(currentItem);
+              await updateHistory(id, { favoriteOrder: nextTime });
+            }
+          },
+          text: t("clipboard.button.context_menu.move_to_top", "上移至顶"),
+        },
+        {
+          action: async () => {
+            const prevItem = rootState.list[index - 1];
+            const currentItem = rootState.list[index];
+            if (prevItem && currentItem) {
+              const prevTime = prevItem.favoriteOrder || prevItem.createTime;
+              const currentTime = currentItem.favoriteOrder || currentItem.createTime;
+              if (prevTime === currentTime) {
+                const parsed = dayjs(currentTime);
+                prevItem.favoriteOrder = formatDate(parsed.subtract(1, "second"));
+                currentItem.favoriteOrder = formatDate(parsed);
+              } else {
+                prevItem.favoriteOrder = currentTime;
+                currentItem.favoriteOrder = prevTime;
+              }
+              rootState.list[index] = prevItem;
+              rootState.list[index - 1] = currentItem;
+              await updateHistory(currentItem.id, {
+                favoriteOrder: currentItem.favoriteOrder,
+              });
+              await updateHistory(prevItem.id, {
+                favoriteOrder: prevItem.favoriteOrder,
+              });
+            }
+          },
+          enabled: index !== 0,
+          text: t("clipboard.button.context_menu.move_up", "上移"),
+        },
+        {
+          action: async () => {
+            const nextItem = rootState.list[index + 1];
+            const currentItem = rootState.list[index];
+            if (nextItem && currentItem) {
+              const nextTime = nextItem.favoriteOrder || nextItem.createTime;
+              const currentTime = currentItem.favoriteOrder || currentItem.createTime;
+              if (nextTime === currentTime) {
+                const parsed = dayjs(currentTime);
+                currentItem.favoriteOrder = formatDate(
+                  parsed.subtract(1, "second"),
+                );
+                nextItem.favoriteOrder = formatDate(parsed);
+              } else {
+                currentItem.favoriteOrder = nextTime;
+                nextItem.favoriteOrder = currentTime;
+              }
+              rootState.list[index] = nextItem;
+              rootState.list[index + 1] = currentItem;
+              await updateHistory(currentItem.id, {
+                favoriteOrder: currentItem.favoriteOrder,
+              });
+              await updateHistory(nextItem.id, {
+                favoriteOrder: nextItem.favoriteOrder,
+              });
+            }
+          },
+          enabled: index !== rootState.list.length - 1,
+          text: t("clipboard.button.context_menu.move_down", "下移"),
+        },
+        {
+          action: async () => {
+            const bottomItem = rootState.list[rootState.list.length - 1];
+            if (bottomItem && bottomItem.id !== id) {
+              const bottomTime = dayjs(bottomItem.favoriteOrder || bottomItem.createTime);
+              const nextTime = formatDate(bottomTime.subtract(1, "second"));
+              const [currentItem] = rootState.list.splice(index, 1);
+              currentItem.favoriteOrder = nextTime;
+              rootState.list.push(currentItem);
+              await updateHistory(id, { favoriteOrder: nextTime });
+            }
+          },
+          text: t("clipboard.button.context_menu.move_to_bottom", "下移至底"),
+        },
+      ];
+
+      if (groups.length >= 2) {
+        groups.splice(groups.length - 1, 0, sortGroup);
+      } else {
+        groups.push(sortGroup);
+      }
+    }
 
     // 如果有选中文本，在最前面插入选中操作组
     if (selectedText) {

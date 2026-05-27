@@ -102,6 +102,7 @@ export interface ClipboardStore {
     enableTextSelection: boolean;
     deleteConfirm: boolean;
     autoSort: boolean;
+    favoriteSort: boolean;
     showOriginalContent: boolean;
     displayLines: number; // 显示行数，默认 4
     codeDisplayLines: number; // 代码显示行数，默认 6

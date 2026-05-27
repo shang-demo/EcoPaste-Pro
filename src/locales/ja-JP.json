@@ -9,6 +9,10 @@
         "edit": "編集",
         "export_as_file": "ファイルとしてエクスポート",
         "favorite": "コレクション",
+        "move_down": "下に移動",
+        "move_to_bottom": "最下部に移動",
+        "move_to_top": "最上部に移動",
+        "move_up": "上に移動",
         "note": "備考",
         "open_in_browser": "ブラウザで開く",
         "paste": "貼り付け",
@@ -205,6 +209,17 @@
           "position_top": "トップ"
         },
         "title": "検索設定"
+      },
+      "sort_settings": {
+        "hints": {
+          "auto_sort": "既存のコピーされたコンテンツの自動ソートを上に",
+          "favorite_sort": "有効にすると、お気に入りリストで手動ソート（ドラッグ＆ドロップおよび右クリック）が可能になり、自動ソートの影響を受けません。"
+        },
+        "label": {
+          "auto_sort": "自動ソート",
+          "favorite_sort": "お気に入りソート"
+        },
+        "title": "ソート設定"
       },
       "window_settings": {
         "hints": {
