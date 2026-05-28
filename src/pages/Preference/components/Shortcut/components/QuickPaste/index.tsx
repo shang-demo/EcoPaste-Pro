@@ -42,6 +42,7 @@ const QuickPaste = () => {
           }}
           options={options}
           showSearch={false}
+          style={{ width: 168 }}
           value={shortcut.quickPaste.value?.split("+")}
         />
 

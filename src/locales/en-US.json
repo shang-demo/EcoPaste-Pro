@@ -91,9 +91,15 @@
       }
     },
     "shortcut_key": {
+      "common_shortcuts": "Common Combinations",
+      "double_alt": "Double Alt",
+      "double_ctrl": "Double Ctrl",
+      "double_click_actions": "Double-Click Modifier",
+      "double_shift": "Double Shift",
       "hints": {
-        "click": "Click to record",
-        "press": "Press keys"
+        "click": "Click to record shortcut",
+        "press": "Press keys to record shortcut",
+        "record_click": "Click to start recording..."
       }
     },
     "tray": {
@@ -543,7 +549,8 @@
       "shortcut": {
         "hints": {
           "paste_as_plain": "Paste latest content as plain text in the hidden window, and paste selected content as plain text in the active window.",
-          "quick_paste": "Use number key combos to quickly paste top 9 items when window is hidden"
+          "quick_paste": "Use number key combos to quickly paste top 9 items when window is hidden",
+          "system_takeover": "System clipboard history is overridden"
         },
         "label": {
           "open_clipboard": "Open Clipboard Window",

@@ -91,9 +91,15 @@
       }
     },
     "shortcut_key": {
+      "common_shortcuts": "常用組合鍵",
+      "double_alt": "雙擊 Alt",
+      "double_ctrl": "雙擊 Ctrl",
+      "double_click_actions": "雙擊修飾鍵",
+      "double_shift": "雙擊 Shift",
       "hints": {
         "click": "點擊錄製快速鍵",
-        "press": "按下錄製快速鍵"
+        "press": "按下錄製快速鍵",
+        "record_click": "點擊開始錄製按鍵..."
       }
     },
     "tray": {
@@ -543,7 +549,8 @@
       "shortcut": {
         "hints": {
           "paste_as_plain": "隱藏視窗貼上最新內容為純文字，啟用視窗貼上選取內容為純文字",
-          "quick_paste": "隱藏視窗時，使用數字鍵快速貼上前九項"
+          "quick_paste": "隱藏視窗時，使用數字鍵快速貼上前九項",
+          "system_takeover": "已接管系統剪貼簿功能"
         },
         "label": {
           "open_clipboard": "打開剪貼簿視窗",

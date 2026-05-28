@@ -88,9 +88,15 @@
       }
     },
     "shortcut_key": {
+      "common_shortcuts": "一般的な組み合わせ",
+      "double_alt": "Altのダブルクリック",
+      "double_ctrl": "Ctrlのダブルクリック",
+      "double_click_actions": "修飾キーをダブルクリック",
+      "double_shift": "Shiftのダブルクリック",
       "hints": {
         "click": "クリックして入力",
-        "press": "キーを押す"
+        "press": "キーを押す",
+        "record_click": "クリックして録音を開始します..."
       }
     },
     "tray": {
@@ -540,7 +546,8 @@
       "shortcut": {
         "hints": {
           "paste_as_plain": "ウィンドウを非表示にして貼り付けると最新の内容がプレーンテキストになり、ウィンドウをアクティブにして選択した状態で貼り付けると選択部分がプレーンテキストになります",
-          "quick_paste": "ウィンドウを隠す際、数字キーの組み合わせで最初の9項目を素早く貼り付ける"
+          "quick_paste": "ウィンドウを隠す際、数字キーの組み合わせで最初の9項目を素早く貼り付ける",
+          "system_takeover": "システムクリップボード機能を上書きしました"
         },
         "label": {
           "open_clipboard": "クリップボードを開く",

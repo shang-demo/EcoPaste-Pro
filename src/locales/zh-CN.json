@@ -91,17 +91,15 @@
       }
     },
     "shortcut_key": {
+      "common_shortcuts": "常用组合键",
       "double_alt": "双击 Alt",
-      "double_cmd": "双击 Cmd",
       "double_ctrl": "双击 Ctrl",
+      "double_click_actions": "双击修饰键",
       "double_shift": "双击 Shift",
       "hints": {
         "click": "点击录制快捷键",
-        "press": "按下录制快捷键"
-      },
-      "mode": {
-        "double": "双击",
-        "record": "录制"
+        "press": "按下录制快捷键",
+        "record_click": "点击开始录制按键..."
       }
     },
     "tray": {
@@ -555,7 +553,8 @@
       "shortcut": {
         "hints": {
           "paste_as_plain": "隐藏窗口粘贴最新内容为纯文本，激活窗口粘贴选中内容为纯文本",
-          "quick_paste": "隐藏窗口时，使用数字组合键快速粘贴前九项"
+          "quick_paste": "隐藏窗口时，使用数字组合键快速粘贴前九项",
+          "system_takeover": "已接管系统剪贴板功能"
         },
         "label": {
           "open_clipboard": "打开剪贴板窗口",

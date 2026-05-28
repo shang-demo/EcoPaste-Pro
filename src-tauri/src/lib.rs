@@ -116,7 +116,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             crate::core::source_app::get_source_app_info,
             crate::core::source_app::get_clipboard_sequence_number,
-            expand_env_vars
+            expand_env_vars,
+            crate::core::shortcut_hook::set_win_v_takeover
         ])
         .build(generate_context!())
         .expect("error while running tauri application");

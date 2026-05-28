@@ -73,11 +73,11 @@ const Preset = () => {
 
         return (
           <Card key={label} size="small">
-            <div className="mb-4 break-all">{t(label)}</div>
+            <div className="mb-4 break-all font-normal">{t(label)}</div>
 
             <Flex gap="small" wrap>
               {value.map((item) => (
-                <Tag className="m-0" key={item}>
+                <Tag className="m-0 font-normal" key={item}>
                   {item}
                 </Tag>
               ))}

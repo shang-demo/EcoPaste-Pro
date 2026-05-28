@@ -104,6 +104,8 @@
 
 ##### ✨ New Features
 - **🖱️ Mouse Middle Button Global Control**: Support quick toggle of the clipboard via single-click or long-press of the middle mouse button. The trigger method and long-press duration can be customized to prevent accidental trigger. It does not affect system native features, automatically releases resources when disabled, and operations inside the window will not hide the window by mistake.
+- **⌨️ Brand New Shortcut Recording & Suggestions**: Upgraded the shortcut settings interface to support one-key recording of shortcuts. Click the dropdown button to view the suggestion panel for common shortcuts and modifier keys.
+- **🔒 Seamless Global Win+V Takeover**: Perfectly compatible with the Windows system clipboard, no system configuration changes needed. One-click takeover / auto-restore of the native Win+V feature with a zero-intrusion experience.
 
 ##### 💫 Experience Optimizations
 - **📌 Comprehensive Optimization of Window Pinning**: Upgraded the window pin/stay-on-top capability. Pinned windows now perfectly maintain their pin state across hiding and reopening under both the top bar and sidebar navigation layouts. Furthermore, the system intelligently recognizes the pinned state in Windows no-focus mode, ensuring that clicking outside the window no longer automatically hides it.

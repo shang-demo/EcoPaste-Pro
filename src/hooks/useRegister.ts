@@ -15,10 +15,6 @@ export const useRegister = (
 ) => {
   const [oldShortcuts, setOldShortcuts] = useState(deps[0]);
 
-  // 双击修饰键监听：跟随 deps 变化重新订阅。
-  // deps 变化的来源：Preference 窗口 onChange → store 更新 → emit(STORE_CHANGED)
-  //   → Main 窗口 strictDeepAssign → snapshot 变化 → deps 更新 → useEffect 重建监听器。
-  // 该同步链路近乎即时，在用户切换窗口前已完成。
   useEffect(() => {
     const [shortcuts] = deps;
     if (!shortcuts) return;
@@ -48,12 +44,45 @@ export const useRegister = (
     };
   }, deps);
 
+  // Win+V 接管触发监听：当快捷键为 Command+V 时，监听后端的接管触发事件以切换窗口显隐
+  useEffect(() => {
+    const [shortcuts] = deps;
+    if (!shortcuts) return;
+
+    const shortcutList = castArray(shortcuts);
+    const hasWinV = shortcutList.includes("Command+V");
+    if (!hasWinV) return;
+
+    let unlisten: (() => void) | undefined;
+
+    const setup = async () => {
+      unlisten = await listen(
+        "win_v_takeover_trigger",
+        () => {
+          handler({ shortcut: "Command+V", state: "Pressed", id: 0 });
+        },
+      );
+    };
+
+    setup();
+
+    return () => {
+      unlisten?.();
+    };
+  }, deps);
+
   useAsyncEffect(async () => {
     const [shortcuts] = deps;
 
     for await (const shortcut of castArray(oldShortcuts)) {
       if (!shortcut) continue;
       if (shortcut.startsWith("Double_")) continue;
+
+      if (shortcut === "Command+V") {
+        const { invoke } = await import("@tauri-apps/api/core");
+        await invoke("set_win_v_takeover", { active: false });
+        continue;
+      }
 
       const registered = await isRegistered(shortcut);
 
@@ -63,6 +92,14 @@ export const useRegister = (
     }
 
     if (!shortcuts || (typeof shortcuts === 'string' ? shortcuts.startsWith("Double_") : shortcuts[0]?.startsWith("Double_"))) {
+      setOldShortcuts(shortcuts);
+      return;
+    }
+
+    const shortcutStr = typeof shortcuts === 'string' ? shortcuts : shortcuts[0];
+    if (shortcutStr === "Command+V") {
+      const { invoke } = await import("@tauri-apps/api/core");
+      await invoke("set_win_v_takeover", { active: true });
       setOldShortcuts(shortcuts);
       return;
     }
@@ -80,6 +117,14 @@ export const useRegister = (
     const [shortcuts] = deps;
 
     if (!shortcuts || (typeof shortcuts === 'string' ? shortcuts.startsWith("Double_") : shortcuts[0]?.startsWith("Double_"))) return;
+
+    const shortcutStr = typeof shortcuts === 'string' ? shortcuts : shortcuts[0];
+    if (shortcutStr === "Command+V") {
+      import("@tauri-apps/api/core").then(({ invoke }) => {
+        invoke("set_win_v_takeover", { active: false });
+      });
+      return;
+    }
 
     unregister(shortcuts);
   });
