@@ -6,5 +6,7 @@ permissions = [
     "allow-hide-window",
     "allow-show-taskbar-icon",
     "allow-set-window-active-mode",
-    "allow-is-window-visible"
+    "allow-is-window-visible",
+    "allow-set-window-pinned",
+    "allow-set-mbutton-listener-active"
 ]

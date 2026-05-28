@@ -28,7 +28,8 @@ mod win32_hook {
     type WPARAM = usize;
     type LPARAM = isize;
     type LRESULT = isize;
-    type HOOKPROC = Option<unsafe extern "system" fn(code: i32, w_param: WPARAM, l_param: LPARAM) -> LRESULT>;
+    type HOOKPROC =
+        Option<unsafe extern "system" fn(code: i32, w_param: WPARAM, l_param: LPARAM) -> LRESULT>;
 
     #[repr(C)]
     #[derive(Copy, Clone)]
@@ -65,10 +66,20 @@ mod win32_hook {
 
     #[link(name = "user32")]
     extern "system" {
-        fn SetWindowsHookExW(id_hook: i32, lpfn: HOOKPROC, hmod: HINSTANCE, dw_thread_id: u32) -> HHOOK;
+        fn SetWindowsHookExW(
+            id_hook: i32,
+            lpfn: HOOKPROC,
+            hmod: HINSTANCE,
+            dw_thread_id: u32,
+        ) -> HHOOK;
         fn UnhookWindowsHookEx(hhk: HHOOK) -> i32;
         fn CallNextHookEx(hhk: HHOOK, n_code: i32, w_param: WPARAM, l_param: LPARAM) -> LRESULT;
-        fn GetMessageW(lp_msg: *mut MSG, hwnd: HWND, w_msg_filter_min: u32, w_msg_filter_max: u32) -> i32;
+        fn GetMessageW(
+            lp_msg: *mut MSG,
+            hwnd: HWND,
+            w_msg_filter_min: u32,
+            w_msg_filter_max: u32,
+        ) -> i32;
     }
 
     static APP_HANDLE: Mutex<Option<AppHandle>> = Mutex::new(None);
@@ -102,7 +113,12 @@ mod win32_hook {
                                         let _ = app_handle.emit("double_modifier_trigger", mod_str);
                                     }
                                     *state = None;
-                                    return CallNextHookEx(std::ptr::null_mut(), code, w_param, l_param);
+                                    return CallNextHookEx(
+                                        std::ptr::null_mut(),
+                                        code,
+                                        w_param,
+                                        l_param,
+                                    );
                                 }
                             }
                         }
@@ -120,12 +136,7 @@ mod win32_hook {
         *APP_HANDLE.lock().unwrap() = Some(app_handle);
 
         std::thread::spawn(move || unsafe {
-            let hook = SetWindowsHookExW(
-                WH_KEYBOARD_LL,
-                Some(hook_proc),
-                std::ptr::null_mut(),
-                0,
-            );
+            let hook = SetWindowsHookExW(WH_KEYBOARD_LL, Some(hook_proc), std::ptr::null_mut(), 0);
 
             if !hook.is_null() {
                 let mut msg = std::mem::zeroed();
@@ -144,14 +155,103 @@ pub fn start_double_modifier_listener(app_handle: AppHandle) {
 }
 
 #[cfg(not(target_os = "windows"))]
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+#[cfg(not(target_os = "windows"))]
+use std::sync::Mutex;
+
+#[cfg(not(target_os = "windows"))]
+static MBUTTON_ACTIVE: AtomicBool = AtomicBool::new(false);
+#[cfg(not(target_os = "windows"))]
+static MBUTTON_TRIGGER_MODE: Mutex<String> = Mutex::new(String::new());
+#[cfg(not(target_os = "windows"))]
+static MBUTTON_DELAY: AtomicU64 = AtomicU64::new(500);
+
+#[cfg(not(target_os = "windows"))]
+static MBUTTON_PRESS_TIME: Mutex<Option<SystemTime>> = Mutex::new(None);
+#[cfg(not(target_os = "windows"))]
+static MBUTTON_TRIGGERED: AtomicBool = AtomicBool::new(false);
+
+#[cfg(not(target_os = "windows"))]
+#[derive(serde::Deserialize, Clone, Debug)]
+struct MButtonListenerPayload {
+    active: bool,
+    trigger_mode: String,
+    delay: u64,
+}
+
+#[cfg(not(target_os = "windows"))]
 pub fn start_double_modifier_listener(app_handle: AppHandle) {
-    use rdev::{EventType, Key};
+    use rdev::{Button, EventType, Key};
+    use tauri::Listener;
+
+    let app_handle_clone = app_handle.clone();
+    let _ = app_handle.listen("mbutton_listener_state", |event| {
+        if let Ok(payload) = serde_json::from_str::<MButtonListenerPayload>(event.payload()) {
+            MBUTTON_ACTIVE.store(payload.active, Ordering::Relaxed);
+            *MBUTTON_TRIGGER_MODE.lock().unwrap() = payload.trigger_mode;
+            MBUTTON_DELAY.store(payload.delay, Ordering::Relaxed);
+        }
+    });
+
+    let app_handle = app_handle_clone;
 
     std::thread::spawn(move || {
         let threshold = Duration::from_millis(400); // 400ms default
         let mut last_key: Option<(Key, SystemTime)> = None;
 
         if let Err(_error) = rdev::listen(move |event| {
+            // 1. Process Middle Mouse Button Events
+            if MBUTTON_ACTIVE.load(Ordering::Relaxed) {
+                match event.event_type {
+                    EventType::ButtonPress(Button::Middle) => {
+                        *MBUTTON_PRESS_TIME.lock().unwrap() = Some(SystemTime::now());
+                        MBUTTON_TRIGGERED.store(false, Ordering::Relaxed);
+
+                        let (trigger_mode, delay) = {
+                            let mode = MBUTTON_TRIGGER_MODE.lock().unwrap().clone();
+                            let d = MBUTTON_DELAY.load(Ordering::Relaxed);
+                            (mode, d)
+                        };
+
+                        if trigger_mode == "long_press" {
+                            let app = app_handle.clone();
+                            std::thread::spawn(move || {
+                                std::thread::sleep(Duration::from_millis(delay));
+                                let press_time = MBUTTON_PRESS_TIME.lock().unwrap();
+                                if let Some(t) = *press_time {
+                                    if let Ok(elapsed) = t.elapsed() {
+                                        if elapsed >= Duration::from_millis(delay) {
+                                            if !MBUTTON_TRIGGERED.load(Ordering::Relaxed) {
+                                                MBUTTON_TRIGGERED.store(true, Ordering::Relaxed);
+                                                let _ = app.emit("mbutton-triggered", ());
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    EventType::ButtonRelease(Button::Middle) => {
+                        let press_time = MBUTTON_PRESS_TIME.lock().unwrap().take();
+                        let triggered = MBUTTON_TRIGGERED.load(Ordering::Relaxed);
+
+                        let trigger_mode = MBUTTON_TRIGGER_MODE.lock().unwrap().clone();
+
+                        if !triggered && trigger_mode == "click" {
+                            if let Some(t) = press_time {
+                                if let Ok(elapsed) = t.elapsed() {
+                                    if elapsed < Duration::from_millis(300) {
+                                        let _ = app_handle.emit("mbutton-triggered", ());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+
+            // 2. Keyboard Events (Original logic)
             if let EventType::KeyPress(key) = event.event_type {
                 let now = SystemTime::now();
 

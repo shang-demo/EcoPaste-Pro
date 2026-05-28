@@ -1,4 +1,5 @@
 import MDEditor from "@uiw/react-md-editor";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { useBoolean } from "ahooks";
 import { Form, Input, Modal, Select } from "antd";
 import { find } from "es-toolkit/compat";
@@ -9,8 +10,11 @@ import CodeEditor from "@/components/CodeEditor";
 import ColorPicker from "@/components/ColorPicker";
 import { updateHistory } from "@/database/history";
 import { MainContext } from "@/pages/Main";
+import { setWindowActiveMode } from "@/plugins/window";
+import { clipboardStore } from "@/stores/clipboard";
 import { globalStore } from "@/stores/global";
 import type { DatabaseSchemaHistory } from "@/types/database";
+import { isWin } from "@/utils/is";
 
 export interface EditModalRef {
   open: (id: string) => void;
@@ -192,12 +196,21 @@ const EditModal = forwardRef<EditModalRef>((_, ref) => {
     return undefined;
   };
 
+  const activateWindowForEditing = async () => {
+    if (!isWin || !clipboardStore.window.noActivate) return;
+
+    await setWindowActiveMode(true);
+    await getCurrentWebviewWindow().setFocus();
+  };
+
   useImperativeHandle(ref, () => ({
-    open: (id: string) => {
+    open: async (id: string) => {
       const findItem = find(rootState.list, { id });
 
       // 只允许编辑可以进行文本编辑的内容
       if (findItem && ["text", "rtf", "html"].includes(findItem.type)) {
+        await activateWindowForEditing();
+
         const editableContent = getEditableContent(findItem);
 
         setContent(editableContent);

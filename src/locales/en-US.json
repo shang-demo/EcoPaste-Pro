@@ -511,6 +511,22 @@
       }
     },
     "shortcut": {
+      "mbutton": {
+        "hints": {
+          "enable": "When enabled, quickly open the clipboard window by clicking or holding the middle mouse button anywhere",
+          "trigger_mode": "Choose whether to trigger the clipboard window on click or long press"
+        },
+        "label": {
+          "delay": "Long Press Threshold",
+          "enable": "Enable Mouse Middle Button Open",
+          "trigger_mode": "Middle Button Trigger Mode"
+        },
+        "options": {
+          "click": "Click",
+          "long_press": "Long Press"
+        },
+        "title": "Mouse Shortcuts"
+      },
       "preset": {
         "back_to_top": "Back to Top",
         "delete": "Delete",

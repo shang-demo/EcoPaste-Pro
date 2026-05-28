@@ -14,7 +14,7 @@ import { useImmediateKey } from "./hooks/useImmediateKey";
 import { useTauriListen } from "./hooks/useTauriListen";
 import { useWindowState } from "./hooks/useWindowState";
 import { getAntdLocale, i18n } from "./locales";
-import { hideWindow, showWindow } from "./plugins/window";
+import { hideWindow, showWindow, toggleWindowVisible } from "./plugins/window";
 import { router } from "./router";
 import { globalStore } from "./stores/global";
 import { transferStore } from "./stores/transfer";
@@ -31,6 +31,16 @@ const App = () => {
   const { restoreState } = useWindowState();
   const [ready, { toggle }] = useBoolean();
 
+  useTauriListen("mbutton-triggered", () => {
+    const appWindow = getCurrentWebviewWindow();
+    if (appWindow.label !== WINDOW_LABEL.MAIN) return;
+
+    toggleWindowVisible().catch((err) => {
+      // biome-ignore lint/suspicious/noConsole: log error
+      console.error(err);
+    });
+  });
+
   useMount(async () => {
     await restoreState();
 
@@ -38,7 +48,24 @@ const App = () => {
 
     const appWindow = getCurrentWebviewWindow();
 
-    if (appWindow.label === WINDOW_LABEL.MAIN && transferStore.receive.masterEnabled) {
+    if (
+      appWindow.label === WINDOW_LABEL.MAIN &&
+      globalStore.shortcut.mbuttonOpen?.enable
+    ) {
+      invoke("plugin:eco-window|set_mbutton_listener_active", {
+        active: true,
+        delay: globalStore.shortcut.mbuttonOpen.delay ?? 500,
+        triggerMode: globalStore.shortcut.mbuttonOpen.triggerMode,
+      }).catch((err) => {
+        // biome-ignore lint/suspicious/noConsole: log error
+        console.error(err);
+      });
+    }
+
+    if (
+      appWindow.label === WINDOW_LABEL.MAIN &&
+      transferStore.receive.masterEnabled
+    ) {
       try {
         const dbPath = await getSaveDatabasePath();
         const config = await invoke<{ receive_token?: string } | null>(

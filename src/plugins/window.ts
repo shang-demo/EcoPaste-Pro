@@ -49,7 +49,7 @@ export const hideWindow = () => {
  * 动态开关不夺焦模式
  */
 export const setWindowActiveMode = (active: boolean) => {
-  invoke(COMMAND.SET_WINDOW_ACTIVE_MODE, { active });
+  return invoke(COMMAND.SET_WINDOW_ACTIVE_MODE, { active });
 };
 
 /**

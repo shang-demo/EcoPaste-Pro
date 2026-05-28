@@ -5,6 +5,7 @@ const COMMANDS: &[&str] = &[
     "set_window_active_mode",
     "is_window_visible",
     "set_window_pinned",
+    "set_mbutton_listener_active",
 ];
 
 fn main() {

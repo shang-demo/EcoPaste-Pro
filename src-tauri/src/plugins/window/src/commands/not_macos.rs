@@ -1,4 +1,4 @@
-use super::{is_main_window, shared_hide_window, shared_show_window};
+use super::{is_main_window, shared_hide_window, shared_show_window, MAIN_WINDOW_LABEL};
 #[cfg(target_os = "windows")]
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Emitter, Manager, Runtime, WebviewWindow};
@@ -11,8 +11,10 @@ use windows::Win32::UI::WindowsAndMessaging::{
     GWL_EXSTYLE, HC_ACTION, HHOOK, KBDLLHOOKSTRUCT, MSLLHOOKSTRUCT, SWP_FRAMECHANGED, SWP_NOMOVE,
     SWP_NOSIZE, SWP_NOZORDER, SW_HIDE, SW_SHOWNOACTIVATE, WH_KEYBOARD_LL, WH_MOUSE_LL, WM_KEYDOWN,
     WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN, WM_SYSKEYDOWN, WS_EX_NOACTIVATE, HWND_TOPMOST,
-    SWP_NOACTIVATE, SWP_SHOWWINDOW,
+    GetMessageW, MSG, PostThreadMessageW, SWP_NOACTIVATE, SWP_SHOWWINDOW, WM_QUIT,
 };
+#[cfg(target_os = "windows")]
+use windows::Win32::System::Threading::GetCurrentThreadId;
 #[cfg(target_os = "windows")]
 struct HookState {
     window: Option<WebviewWindow<tauri::Wry>>,
@@ -441,5 +443,219 @@ pub async fn set_window_pinned(pinned: bool) {
     {
         let mut state = HOOK_STATE.lock().unwrap();
         state.pinned = pinned;
+    }
+}
+
+#[cfg(target_os = "windows")]
+struct SendableHhook(HHOOK);
+#[cfg(target_os = "windows")]
+unsafe impl Send for SendableHhook {}
+#[cfg(target_os = "windows")]
+unsafe impl Sync for SendableHhook {}
+
+#[cfg(target_os = "windows")]
+#[derive(Clone, Copy)]
+struct SendableHwnd(HWND);
+#[cfg(target_os = "windows")]
+unsafe impl Send for SendableHwnd {}
+#[cfg(target_os = "windows")]
+unsafe impl Sync for SendableHwnd {}
+
+#[cfg(target_os = "windows")]
+struct MButtonHookConfig {
+    app_handle: Option<AppHandle<tauri::Wry>>,
+    main_hwnd: Option<SendableHwnd>,
+    trigger_mode: String,
+    delay: u64,
+}
+
+#[cfg(target_os = "windows")]
+static GLOBAL_MOUSE_HOOK: Mutex<Option<SendableHhook>> = Mutex::new(None);
+
+#[cfg(target_os = "windows")]
+static MBUTTON_CONFIG: Mutex<MButtonHookConfig> = Mutex::new(MButtonHookConfig {
+    app_handle: None,
+    main_hwnd: None,
+    trigger_mode: String::new(),
+    delay: 500,
+});
+
+#[cfg(target_os = "windows")]
+static MBUTTON_PRESS_TIME: Mutex<Option<std::time::SystemTime>> = Mutex::new(None);
+
+#[cfg(target_os = "windows")]
+static MBUTTON_TRIGGERED: Mutex<bool> = Mutex::new(false);
+
+#[cfg(target_os = "windows")]
+unsafe fn is_point_inside_visible_hwnd(hwnd: HWND, x: i32, y: i32) -> bool {
+    if !IsWindowVisible(hwnd).as_bool() {
+        return false;
+    }
+
+    let mut rect = RECT::default();
+    if GetWindowRect(hwnd, &mut rect).is_ok() {
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    }
+
+    false
+}
+
+#[cfg(target_os = "windows")]
+unsafe extern "system" fn global_mbutton_proc(
+    code: i32,
+    w_param: WPARAM,
+    l_param: LPARAM,
+) -> LRESULT {
+    if code == HC_ACTION as i32 {
+        let msg = w_param.0 as u32;
+        const WM_MBUTTONDOWN: u32 = 0x0207;
+        const WM_MBUTTONUP: u32 = 0x0208;
+
+        if msg == WM_MBUTTONDOWN {
+            let mouse = *(l_param.0 as *const MSLLHOOKSTRUCT);
+            let pt = mouse.pt;
+
+            let (trigger_mode, delay, app_handle) = {
+                let config = MBUTTON_CONFIG.lock().unwrap();
+                if let Some(hwnd) = config.main_hwnd {
+                    if is_point_inside_visible_hwnd(hwnd.0, pt.x, pt.y) {
+                        return CallNextHookEx(None, code, w_param, l_param);
+                    }
+                }
+
+                (
+                    config.trigger_mode.clone(),
+                    config.delay,
+                    config.app_handle.clone(),
+                )
+            };
+
+            if let Some(app) = app_handle {
+                if trigger_mode == "click" {
+                    let _ = app.emit("mbutton-triggered", ());
+                } else if trigger_mode == "long_press" {
+                    *MBUTTON_PRESS_TIME.lock().unwrap() = Some(std::time::SystemTime::now());
+                    *MBUTTON_TRIGGERED.lock().unwrap() = false;
+
+                    std::thread::spawn(move || {
+                        std::thread::sleep(std::time::Duration::from_millis(delay));
+                        let press_time = MBUTTON_PRESS_TIME.lock().unwrap();
+                        if let Some(t) = *press_time {
+                            if let Ok(elapsed) = t.elapsed() {
+                                if elapsed >= std::time::Duration::from_millis(delay) {
+                                    let mut triggered = MBUTTON_TRIGGERED.lock().unwrap();
+                                    if !*triggered {
+                                        *triggered = true;
+                                        let _ = app.emit("mbutton-triggered", ());
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        } else if msg == WM_MBUTTONUP {
+            let _ = MBUTTON_PRESS_TIME.lock().unwrap().take();
+        }
+    }
+    CallNextHookEx(None, code, w_param, l_param)
+}
+
+#[cfg(target_os = "windows")]
+static HOOK_THREAD_ID: Mutex<Option<u32>> = Mutex::new(None);
+
+#[command]
+pub async fn set_mbutton_listener_active<R: Runtime>(
+    app_handle: AppHandle<R>,
+    active: bool,
+    trigger_mode: String,
+    delay: u64,
+) {
+    #[cfg(target_os = "windows")]
+    {
+        let app_handle_clone = unsafe {
+            &*(&app_handle as *const AppHandle<R> as *const AppHandle<tauri::Wry>)
+        }
+        .clone();
+        let main_hwnd = app_handle_clone
+            .get_webview_window(MAIN_WINDOW_LABEL)
+            .and_then(|window| window.hwnd().ok())
+            .map(|hwnd| SendableHwnd(HWND(hwnd.0 as *mut _)));
+
+        {
+            let mut config = MBUTTON_CONFIG.lock().unwrap();
+            config.app_handle = Some(app_handle_clone);
+            config.main_hwnd = main_hwnd;
+            config.trigger_mode = trigger_mode.clone();
+            config.delay = delay;
+        }
+
+        if active {
+            let mut thread_id_guard = HOOK_THREAD_ID.lock().unwrap();
+            if thread_id_guard.is_none() {
+                let (tx, rx) = std::sync::mpsc::channel();
+                std::thread::spawn(move || unsafe {
+                    let tid = GetCurrentThreadId();
+                    let _ = tx.send(tid);
+
+                    let h_instance = windows::Win32::System::LibraryLoader::GetModuleHandleW(None)
+                        .unwrap_or_default();
+                    match SetWindowsHookExW(WH_MOUSE_LL, Some(global_mbutton_proc), h_instance, 0) {
+                        Ok(hook) => {
+                            {
+                                *GLOBAL_MOUSE_HOOK.lock().unwrap() = Some(SendableHhook(hook));
+                            }
+
+                            let mut msg: MSG = std::mem::zeroed();
+                            // GetMessageW returns standard BOOL. We check for .0 > 0 (since WM_QUIT is 0 and error is -1)
+                            while GetMessageW(
+                                &mut msg,
+                                windows::Win32::Foundation::HWND(std::ptr::null_mut()),
+                                0,
+                                0,
+                            )
+                            .0 > 0
+                            {
+                                // Pump messages
+                            }
+
+                            let hook_to_remove = GLOBAL_MOUSE_HOOK.lock().unwrap().take();
+                            if let Some(h) = hook_to_remove {
+                                let _ = UnhookWindowsHookEx(h.0);
+                            }
+                        }
+                        Err(e) => {
+                            eprintln!("[EcoPaste] Failed to set global middle button mouse hook: {:?}", e);
+                        }
+                    }
+                });
+
+                if let Ok(tid) = rx.recv() {
+                    *thread_id_guard = Some(tid);
+                }
+            }
+        } else {
+            let mut thread_id_guard = HOOK_THREAD_ID.lock().unwrap();
+            if let Some(tid) = thread_id_guard.take() {
+                unsafe {
+                    let _ = PostThreadMessageW(tid, WM_QUIT, WPARAM(0), LPARAM(0));
+                }
+            }
+        }
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        #[derive(serde::Serialize, Clone)]
+        struct MButtonListenerPayload {
+            active: bool,
+            trigger_mode: String,
+            delay: u64,
+        }
+        let payload = MButtonListenerPayload {
+            active,
+            trigger_mode,
+            delay,
+        };
+        let _ = app_handle.emit("mbutton_listener_state", payload);
     }
 }

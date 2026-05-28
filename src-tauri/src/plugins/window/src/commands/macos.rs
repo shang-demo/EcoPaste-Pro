@@ -100,3 +100,25 @@ pub fn set_macos_panel<R: Runtime>(
         });
     }
 }
+
+#[derive(serde::Serialize, Clone)]
+struct MButtonListenerPayload {
+    active: bool,
+    trigger_mode: String,
+    delay: u64,
+}
+
+#[command]
+pub async fn set_mbutton_listener_active<R: Runtime>(
+    app_handle: AppHandle<R>,
+    active: bool,
+    trigger_mode: String,
+    delay: u64,
+) {
+    let payload = MButtonListenerPayload {
+        active,
+        trigger_mode,
+        delay,
+    };
+    let _ = app_handle.emit("mbutton_listener_state", payload);
+}

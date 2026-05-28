@@ -523,6 +523,22 @@
       }
     },
     "shortcut": {
+      "mbutton": {
+        "hints": {
+          "enable": "开启后可在任意地方通过鼠标中键快速打开剪贴板窗口",
+          "trigger_mode": "选择鼠标中键打开剪贴板的触发方式"
+        },
+        "label": {
+          "delay": "长按阈值",
+          "enable": "鼠标中键打开剪贴板",
+          "trigger_mode": "中键触发方式"
+        },
+        "options": {
+          "click": "单击",
+          "long_press": "长按"
+        },
+        "title": "鼠标快捷键"
+      },
       "preset": {
         "back_to_top": "回到顶部",
         "delete": "删除",

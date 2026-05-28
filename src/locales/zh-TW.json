@@ -511,6 +511,22 @@
       }
     },
     "shortcut": {
+      "mbutton": {
+        "hints": {
+          "enable": "開啟後可在任意地方透過滑鼠中鍵快速打開剪貼簿視窗",
+          "trigger_mode": "選擇滑鼠中鍵打開剪貼簿的觸發方式"
+        },
+        "label": {
+          "delay": "長按閾值",
+          "enable": "滑鼠中鍵打開剪貼簿",
+          "trigger_mode": "中鍵觸發方式"
+        },
+        "options": {
+          "click": "按一下",
+          "long_press": "長按"
+        },
+        "title": "滑鼠快速鍵"
+      },
       "preset": {
         "back_to_top": "回到頂部",
         "delete": "删除",

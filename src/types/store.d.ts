@@ -43,6 +43,11 @@ export interface GlobalStore {
       value: string;
     };
     pastePlain: string;
+    mbuttonOpen?: {
+      enable: boolean;
+      triggerMode: "click" | "long_press";
+      delay?: number;
+    };
   };
 
   // 只在当前系统环境使用
