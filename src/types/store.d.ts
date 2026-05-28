@@ -78,6 +78,7 @@ export interface ClipboardStore {
     showAll: boolean;
     noActivate?: boolean;
     visible?: boolean;
+    pinned?: boolean;
   };
 
   // 音效设置

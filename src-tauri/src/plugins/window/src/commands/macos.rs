@@ -15,6 +15,7 @@ pub async fn show_window<R: Runtime>(
     app_handle: AppHandle<R>,
     window: WebviewWindow<R>,
     _no_activate: Option<bool>,
+    _pinned: Option<bool>,
 ) {
     if is_main_window(&window) {
         set_macos_panel(&app_handle, &window, MacOSPanelStatus::Show);
@@ -52,6 +53,10 @@ pub async fn set_window_active_mode<R: Runtime>(_window: WebviewWindow<R>, _acti
 pub async fn is_window_visible<R: Runtime>(window: WebviewWindow<R>) -> bool {
     window.is_visible().unwrap_or(false)
 }
+
+// 动态设置窗口钉住状态 (macOS Stub)
+#[command]
+pub async fn set_window_pinned(_pinned: bool) {}
 
 // 设置 macos 的 ns_panel 的状态
 pub fn set_macos_panel<R: Runtime>(

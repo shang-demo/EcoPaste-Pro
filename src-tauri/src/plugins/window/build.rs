@@ -4,6 +4,7 @@ const COMMANDS: &[&str] = &[
     "show_taskbar_icon",
     "set_window_active_mode",
     "is_window_visible",
+    "set_window_pinned",
 ];
 
 fn main() {

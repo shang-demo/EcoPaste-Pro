@@ -78,5 +78,6 @@ export const clipboardStore = proxy<ClipboardStore>({
     showAll: false,
     style: "standard",
     visible: false,
+    pinned: false,
   },
 });

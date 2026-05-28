@@ -2,7 +2,7 @@ import { useEventEmitter, useKeyPress, useMount, useReactive } from "ahooks";
 import type { EventEmitter } from "ahooks/lib/useEventEmitter";
 import { range } from "es-toolkit";
 import { find, last } from "es-toolkit/compat";
-import { createContext, useRef } from "react";
+import { createContext, useEffect, useRef } from "react";
 import { startListening, stopListening } from "tauri-plugin-clipboard-x-api";
 import { useSnapshot } from "valtio";
 import Audio, { type AudioRef } from "@/components/Audio";
@@ -20,6 +20,7 @@ import {
   showTaskbarIcon,
   showWindow,
   toggleWindowVisible,
+  setWindowPinned,
 } from "@/plugins/window";
 import { clipboardStore } from "@/stores/clipboard";
 import { globalStore } from "@/stores/global";
@@ -69,7 +70,10 @@ export const MainContext = createContext<MainContextValue>({
 });
 
 const Main = () => {
-  const state = useReactive<State>(INITIAL_STATE);
+  const state = useReactive<State>({
+    ...INITIAL_STATE,
+    pinned: clipboardStore.window.pinned,
+  });
   const { shortcut } = useSnapshot(globalStore);
   const { window } = useSnapshot(clipboardStore);
   const eventBus = useEventEmitter<EventBusPayload>();
@@ -78,6 +82,11 @@ const Main = () => {
   useMount(() => {
     state.eventBus = eventBus;
   });
+
+  useEffect(() => {
+    clipboardStore.window.pinned = state.pinned;
+    setWindowPinned(!!state.pinned);
+  }, [state.pinned]);
 
   useClipboard(state, {
     beforeRead() {

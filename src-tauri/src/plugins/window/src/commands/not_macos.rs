@@ -10,13 +10,15 @@ use windows::Win32::UI::WindowsAndMessaging::{
     SetWindowLongPtrW, SetWindowPos, SetWindowsHookExW, ShowWindow, UnhookWindowsHookEx,
     GWL_EXSTYLE, HC_ACTION, HHOOK, KBDLLHOOKSTRUCT, MSLLHOOKSTRUCT, SWP_FRAMECHANGED, SWP_NOMOVE,
     SWP_NOSIZE, SWP_NOZORDER, SW_HIDE, SW_SHOWNOACTIVATE, WH_KEYBOARD_LL, WH_MOUSE_LL, WM_KEYDOWN,
-    WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN, WM_SYSKEYDOWN, WS_EX_NOACTIVATE,
+    WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN, WM_SYSKEYDOWN, WS_EX_NOACTIVATE, HWND_TOPMOST,
+    SWP_NOACTIVATE, SWP_SHOWWINDOW,
 };
 #[cfg(target_os = "windows")]
 struct HookState {
     window: Option<WebviewWindow<tauri::Wry>>,
     mouse_hook: Option<HHOOK>,
     kbd_hook: Option<HHOOK>,
+    pinned: bool,
 }
 #[cfg(target_os = "windows")]
 unsafe impl Send for HookState {}
@@ -27,6 +29,7 @@ static HOOK_STATE: Mutex<HookState> = Mutex::new(HookState {
     window: None,
     mouse_hook: None,
     kbd_hook: None,
+    pinned: false,
 });
 #[cfg(target_os = "windows")]
 fn uninstall_hooks_with_handle<R: Runtime>(app_handle: &AppHandle<R>) {
@@ -75,12 +78,18 @@ unsafe extern "system" fn low_level_mouse_proc(
                         && pt.y >= rect.top
                         && pt.y <= rect.bottom;
                     if !inside {
-                        let app_handle = window.app_handle().clone();
-                        // 直接使用 Win32 API 隐藏窗口，绕过 Tauri 内部可见性缓存
-                        // （因为显示时用了 SW_SHOWNOACTIVATE 绕过了 Tauri，hide() 会被缓存判断跳过）
-                        let _ = ShowWindow(hwnd, SW_HIDE);
-                        let _ = window.emit("window_hidden", ());
-                        uninstall_hooks_with_handle(&app_handle);
+                        let is_pinned = {
+                            let state = HOOK_STATE.lock().unwrap();
+                            state.pinned
+                        };
+                        if !is_pinned {
+                            let app_handle = window.app_handle().clone();
+                            // 直接使用 Win32 API 隐藏窗口，绕过 Tauri 内部可见性缓存
+                            // （因为显示时用了 SW_SHOWNOACTIVATE 绕过了 Tauri，hide() 会被缓存判断跳过）
+                            let _ = ShowWindow(hwnd, SW_HIDE);
+                            let _ = window.emit("window_hidden", ());
+                            uninstall_hooks_with_handle(&app_handle);
+                        }
                     } else if msg == WM_LBUTTONDOWN {
                         // 如果点击了窗口内部，且点击的是左键
                         // 判断是否点击在搜索框区域（顶部 65 像素或底部 65 像素）
@@ -151,8 +160,8 @@ unsafe extern "system" fn low_level_keyboard_proc(
                     let mut trigger_focus = false;
                     let mut trigger_action = None;
 
-                    if vk == 0x25 || vk == 0x27 || vk == 0xBF {
-                        // Left, Right, Slash (/)
+                    if vk == 0x25 || vk == 0x27 || vk == 0xBF || vk == 0x20 {
+                        // Left, Right, Slash (/), Space
                         trigger_focus = true;
                     } else if vk == 0x46 {
                         // F key
@@ -173,12 +182,18 @@ unsafe extern "system" fn low_level_keyboard_proc(
                     } else if vk == 0x20 {
                         // Space
                         trigger_action = Some("preview_active");
-                    } else if vk == 0x08 || vk == 0x2E {
-                        // Backspace or Delete
-                        trigger_action = Some("delete_active");
                     } else if vk == 0x1B {
                         // Escape
-                        trigger_action = Some("esc_press");
+                        if let Ok(hwnd_ptr) = window.hwnd() {
+                            let hwnd = HWND(hwnd_ptr.0 as *mut _);
+                            unsafe {
+                                let _ = ShowWindow(hwnd, SW_HIDE);
+                            }
+                        }
+                        let _ = window.emit("window_hidden", ());
+                        let app_handle = window.app_handle().clone();
+                        uninstall_hooks_with_handle(&app_handle);
+                        return LRESULT(1);
                     }
 
                     if trigger_focus {
@@ -222,6 +237,7 @@ pub async fn show_window<R: Runtime>(
     _app_handle: AppHandle<R>,
     window: WebviewWindow<R>,
     no_activate: Option<bool>,
+    pinned: Option<bool>,
 ) {
     // 偏好设置等非主窗口绝不进行不夺焦改造，直接显示，避免置于底层
     if !is_main_window(&window) {
@@ -241,10 +257,20 @@ pub async fn show_window<R: Runtime>(
                     let _ = SetWindowLongPtrW(hwnd, GWL_EXSTYLE, new_style);
                     // 2. 用 SW_SHOWNOACTIVATE 原生 Win32 方法无焦点显示，确保绝对不抢占前台输入焦点！
                     let _ = ShowWindow(hwnd, SW_SHOWNOACTIVATE);
+                    // 3. 强行将窗口置于最顶层 (HWND_TOPMOST)，即使有其他置顶窗口，也能显示在最前，且不夺取焦点
+                    let _ = SetWindowPos(
+                        hwnd,
+                        HWND_TOPMOST,
+                        0,
+                        0,
+                        0,
+                        0,
+                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_FRAMECHANGED,
+                    );
                 }
             }
             let _ = window.unminimize();
-
+            
             // 3. 将全局鼠标/键盘监听钩子全部转移到主 GUI 线程的事件循环中注册，完美解决卡顿问题
             let window_clone = window.clone();
             let raw_window = unsafe {
@@ -254,6 +280,7 @@ pub async fn show_window<R: Runtime>(
 
             let _ = _app_handle.run_on_main_thread(move || {
                 let mut state = HOOK_STATE.lock().unwrap();
+                state.pinned = pinned.unwrap_or(false);
                 // 确保安全，先清理旧钩子
                 if let Some(hook) = state.mouse_hook.take() {
                     unsafe {
@@ -405,4 +432,14 @@ pub async fn is_window_visible<R: Runtime>(window: WebviewWindow<R>) -> bool {
         }
     }
     window.is_visible().unwrap_or(false)
+}
+
+// 动态设置窗口钉住状态
+#[command]
+pub async fn set_window_pinned(pinned: bool) {
+    #[cfg(target_os = "windows")]
+    {
+        let mut state = HOOK_STATE.lock().unwrap();
+        state.pinned = pinned;
+    }
 }

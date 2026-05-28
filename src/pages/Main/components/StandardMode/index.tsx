@@ -214,9 +214,19 @@ const StandardMode = () => {
         </Flex>
 
         {/* 右侧主容器 */}
-        <Flex className="flex-1 overflow-hidden py-3" gap={12} vertical>
+        <Flex
+          className="flex-1 overflow-hidden py-3"
+          data-tauri-drag-region
+          gap={12}
+          vertical
+        >
           {/* 搜索框 & 日期标签筛选 & 钉住 */}
-          <Flex align="center" className="w-full flex-shrink-0 px-3" gap={12}>
+          <Flex
+            align="center"
+            className="w-full flex-shrink-0 px-3"
+            data-tauri-drag-region
+            gap={12}
+          >
             <SearchInput className="flex-1" />
             <Flex align="center" className="text-color-2 text-lg" gap={12}>
               <DateFilter />
@@ -229,6 +239,7 @@ const StandardMode = () => {
             <Flex
               align="center"
               className="flex-shrink-0 flex-wrap px-3"
+              data-tauri-drag-region
               gap={14}
             >
               {favoriteSubFilters.map((sub) => {

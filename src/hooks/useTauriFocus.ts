@@ -29,5 +29,7 @@ export const useTauriFocus = (props: Props) => {
     unlistenRef.current = await appWindow.onFocusChanged(debounced);
   });
 
-  useUnmount(unlistenRef.current);
+  useUnmount(() => {
+    unlistenRef.current();
+  });
 };

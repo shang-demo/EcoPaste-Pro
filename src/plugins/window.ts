@@ -14,6 +14,7 @@ const COMMAND = {
   SET_WINDOW_ACTIVE_MODE: "plugin:eco-window|set_window_active_mode",
   SHOW_TASKBAR_ICON: "plugin:eco-window|show_taskbar_icon",
   SHOW_WINDOW: "plugin:eco-window|show_window",
+  SET_WINDOW_PINNED: "plugin:eco-window|set_window_pinned",
 };
 
 /**
@@ -31,7 +32,8 @@ export const showWindow = (label?: WindowLabel) => {
   } else {
     clipboardStore.window.visible = true;
     const noActivate = isWin && clipboardStore.window.noActivate;
-    invoke(COMMAND.SHOW_WINDOW, { noActivate });
+    const pinned = clipboardStore.window.pinned;
+    invoke(COMMAND.SHOW_WINDOW, { noActivate, pinned });
   }
 };
 
@@ -48,6 +50,13 @@ export const hideWindow = () => {
  */
 export const setWindowActiveMode = (active: boolean) => {
   invoke(COMMAND.SET_WINDOW_ACTIVE_MODE, { active });
+};
+
+/**
+ * 动态设置窗口钉住状态
+ */
+export const setWindowPinned = (pinned: boolean) => {
+  invoke(COMMAND.SET_WINDOW_PINNED, { pinned });
 };
 /**
  * 切换窗口的显示和隐藏

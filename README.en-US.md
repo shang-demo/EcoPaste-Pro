@@ -100,6 +100,19 @@
 
 ### Pro.5.x <font size="-2" color="gray">(Based on the original v0.6.0-beta.3 branch)</font>
 
+#### Pro.5.6
+
+##### 💫 Experience Optimizations
+- **📌 Comprehensive Optimization of Window Pinning**: Upgraded the window pin/stay-on-top capability. Pinned windows now perfectly maintain their pin state across hiding and reopening under both the top bar and sidebar navigation layouts. Furthermore, the system intelligently recognizes the pinned state in Windows no-focus mode, ensuring that clicking outside the window no longer automatically hides it.
+- **🔒 Ultimate Experience Upgrades for Windows No-Focus Silent Paste Mode**:
+  - **New `Space Bar` Search Activation**: In the inactive state, pressing the Space Bar quickly activates the search box and inputs the text.
+  - **New `ESC Key` Rapid Hiding**: In no-focus mode, pressing the `ESC` key instantly hides the window and returns it to the background.
+  - **Streamlined `Backspace` & `Delete` Key Interception**: Completely removed key interception for Backspace and Delete in the inactive state, preventing accidental deletion of clipboard data when editing external text and ensuring data safety.
+- **📐 Expanded Sidebar Navigation Mode Drag Regions**: In the sidebar navigation layout, the sidebar, window top header bar, search bar, and filter tabs are now directly draggable to move the window.
+
+##### 🐞 Bug Fixes
+- **🧹 Fixed Memory Leak Issues in Focus and Notification Events**: Optimized the event cleanup logic during component destruction. After switching navigation modes or reloading the layout, all event listeners are now properly released, completely resolving event listener accumulation, background runtime anomalies, and potential memory leaks.
+
 #### Pro.5.5
 
 ##### ✨ New Features
@@ -107,7 +120,7 @@
 - **🏷️ Favorites Content Type Filtering**: Under the sidebar navigation mode, clicking the favorites button reveals a top category filter bar. A toggle for showing content type labels in favorites has also been added, allowing users to check/uncheck tags like Text, Image, and Link to filter content dynamically.
 - **📋 Favorites Sorting**: Added a new "Favorites Sort" toggle (enabled by default) under the "Preferences - Clipboard - Sort Settings" group. When enabled, users can adjust the order of items via the context menu (Pin, Move Up, Move Down, Move to Bottom) or a dedicated drag handle at the top of cards. The favorites sorting functionality is completely decoupled from the auto-sort and pin-to-top rules of standard groups, enabling mutually non-interfering double-track sorting.
 - **🔍 Search Supports Space Tokenization & Wildcards**: Refactored the search retrieval logic to support splitting multiple keywords by spaces to perform intersection (AND) queries; also compatible with `*` and `?` wildcard syntax, effectively improving content retrieval precision and flexibility.
-- **🔒 New Windows No-Focus Silent Paste Mode**: Added this feature switch under "Preferences - Clipboard - Window Settings". Enabling it will automatically turn off the window's default focus. Summoning the clipboard will not steal the active window's focus, allowing for non-disruptive silent operations such as file renaming and double-click paste. Pressing the left/right arrow keys, `Ctrl+F`, `/` shortcuts, or directly clicking the search box will automatically activate and focus the window, balancing silent pasting and high-speed search retrieval.
+- **🔒 New Windows No-Focus Silent Paste Mode**: Added this feature switch under "Preferences - Clipboard - Window Settings". Enabling it will automatically turn off the window's default focus. Summoning the clipboard will not steal the active window's focus, allowing for non-disruptive silent operations such as file renaming and double-click paste. Pressing the left/right arrow keys, space bar, `Ctrl+F`, `/` shortcuts, or directly clicking the search box will automatically activate and focus the window, balancing silent pasting and high-speed search retrieval.
 
 ##### 💫 Experience Optimizations
 - **🗃️ Optimized Big Data Batch Deletion**: Refactored the underlying query logic for batch deletion and auto-cleanup by adopting a lightweight data retrieval scheme. Deletion no longer loads heavy text and image fields, drastically reducing memory footprint and completely eliminating interface lag and freezing during massive data cleanups.

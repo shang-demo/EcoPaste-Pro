@@ -9,5 +9,7 @@ export const useTauriListen = <T>(...args: Parameters<typeof listen<T>>) => {
     unlistenRef.current = await listen<T>(...args);
   });
 
-  useUnmount(unlistenRef.current);
+  useUnmount(() => {
+    unlistenRef.current();
+  });
 };
