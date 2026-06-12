@@ -42,6 +42,7 @@ export const showWindow = (label?: WindowLabel) => {
  */
 export const hideWindow = () => {
   clipboardStore.window.visible = false;
+  emit("window_hidden");
   invoke(COMMAND.HIDE_WINDOW);
 };
 

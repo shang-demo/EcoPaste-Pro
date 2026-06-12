@@ -199,8 +199,12 @@ const EditModal = forwardRef<EditModalRef>((_, ref) => {
   const activateWindowForEditing = async () => {
     if (!isWin || !clipboardStore.window.noActivate) return;
 
-    await setWindowActiveMode(true);
-    await getCurrentWebviewWindow().setFocus();
+    try {
+      await setWindowActiveMode(true);
+      getCurrentWebviewWindow().setFocus().catch(() => {});
+    } catch (e) {
+      console.error("[EditModal] activateWindowForEditing error:", e);
+    }
   };
 
   useImperativeHandle(ref, () => ({

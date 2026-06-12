@@ -88,6 +88,14 @@ const Main = () => {
     setWindowPinned(!!state.pinned);
   }, [state.pinned]);
 
+  useEffect(() => {
+    if (!window.visible) {
+      if (window.showAll) {
+        state.group = "all";
+      }
+    }
+  }, [window.visible, window.showAll]);
+
   useClipboard(state, {
     beforeRead() {
       if (!clipboardStore.audio.copy) return;
